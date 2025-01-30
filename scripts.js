@@ -1,70 +1,86 @@
 // script.js
 document.addEventListener('DOMContentLoaded', () => {
-    // Данные игры
-    let coins = 0;
-    let clickPower = 1;
-    
+    // Состояние игры
+    let state = {
+        coins: 0,
+        clickPower: 1,
+        upgrades: [false, false, false]
+    };
+
     // Элементы интерфейса
-    const coinCountElement = document.getElementById('coin-count');
-    const clickPowerElement = document.getElementById('click-power');
-    const clickerBtn = document.getElementById('clicker-btn');
-    const buyButtons = document.querySelectorAll('.buy-btn');
+    const elements = {
+        coins: document.getElementById('coin-count'),
+        power: document.getElementById('click-power'),
+        clicker: document.getElementById('clicker-btn'),
+        upgrades: document.querySelectorAll('.buy-btn')
+    };
 
-    // Обработчик кликов
-    clickerBtn.addEventListener('click', () => {
-        coins += clickPower;
-        updateDisplay();
-        clickerBtn.classList.add('click-animation');
-        setTimeout(() => clickerBtn.classList.remove('click-animation'), 200);
-        saveProgress();
-    });
+    // Инициализация игры
+    function init() {
+        loadProgress();
+        setupEventListeners();
+        updateUI();
+    }
 
-    // Обработчики для кнопок улучшений
-    buyButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            if(button.disabled) return;
-            
-            const cost = parseInt(button.dataset.cost);
-            const power = parseInt(button.dataset.power);
-            
-            if(coins >= cost) {
-                coins -= cost;
-                clickPower += power;
-                button.disabled = true;
-                button.textContent = "Куплено";
-                updateDisplay();
-                saveProgress();
-            }
+    // Обработчики событий
+    function setupEventListeners() {
+        elements.clicker.addEventListener('click', handleClick);
+        elements.upgrades.forEach((btn, index) => {
+            btn.addEventListener('click', () => handleUpgrade(index));
         });
-    });
+    }
+
+    // Основной клик
+    function handleClick() {
+        state.coins += state.clickPower;
+        elements.clicker.classList.add('click-effect');
+        setTimeout(() => elements.clicker.classList.remove('click-effect'), 200);
+        updateUI();
+        saveProgress();
+    }
+
+    // Покупка улучшения
+    function handleUpgrade(index) {
+        const btn = elements.upgrades[index];
+        const cost = parseInt(btn.dataset.cost);
+        const power = parseInt(btn.dataset.power);
+
+        if (state.coins >= cost && !state.upgrades[index]) {
+            state.coins -= cost;
+            state.clickPower += power;
+            state.upgrades[index] = true;
+            btn.disabled = true;
+            btn.textContent = "Куплено";
+            updateUI();
+            saveProgress();
+        }
+    }
 
     // Обновление интерфейса
-    function updateDisplay() {
-        coinCountElement.textContent = coins;
-        clickPowerElement.textContent = clickPower;
+    function updateUI() {
+        elements.coins.textContent = state.coins;
+        elements.power.textContent = state.clickPower;
     }
 
     // Сохранение прогресса
     function saveProgress() {
-        localStorage.setItem('coins', coins);
-        localStorage.setItem('clickPower', clickPower);
-        localStorage.setItem('upgrades', JSON.stringify(Array.from(buyButtons).map(btn => btn.disabled)));
+        localStorage.setItem('clickerGame', JSON.stringify(state));
     }
 
     // Загрузка прогресса
     function loadProgress() {
-        coins = parseInt(localStorage.getItem('coins')) || 0;
-        clickPower = parseInt(localStorage.getItem('clickPower')) || 1;
-        const upgrades = JSON.parse(localStorage.getItem('upgrades')) || [];
-        
-        buyButtons.forEach((btn, index) => {
-            btn.disabled = upgrades[index] || false;
-            if(btn.disabled) btn.textContent = "Куплено";
-        });
-        
-        updateDisplay();
+        const saved = localStorage.getItem('clickerGame');
+        if (saved) {
+            state = JSON.parse(saved);
+            elements.upgrades.forEach((btn, index) => {
+                if (state.upgrades[index]) {
+                    btn.disabled = true;
+                    btn.textContent = "Куплено";
+                }
+            });
+        }
     }
 
-    // Инициализация
-    loadProgress();
+    // Запуск игры
+    init();
 });
