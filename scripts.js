@@ -22,6 +22,12 @@ const logElement = document.getElementById('log');
 const playerImg = document.getElementById('player-img');
 const enemyImg = document.getElementById('enemy-img');
 
+// Звуковые эффекты
+const attackSound = document.getElementById('attack-sound');
+const defendSound = document.getElementById('defend-sound');
+const victorySound = document.getElementById('victory-sound');
+const defeatSound = document.getElementById('defeat-sound');
+
 // Обновление статуса игры
 function updateStatus() {
     playerHealthElement.textContent = player.health;
@@ -45,12 +51,14 @@ function attack() {
     addLog(`Вы атаковали врага и нанесли ${damage} урона!`);
     updateStatus();
 
-    // Анимация атаки
+    // Анимация и звук атаки
     enemyImg.classList.add('shake');
+    attackSound.play();
     setTimeout(() => enemyImg.classList.remove('shake'), 500);
 
     if (enemy.health <= 0) {
         addLog("Вы победили врага!");
+        victorySound.play();
         resetEnemy();
     } else {
         enemyAttack();
@@ -64,12 +72,14 @@ function enemyAttack() {
     addLog(`Враг атаковал вас и нанес ${damage} урона!`);
     updateStatus();
 
-    // Анимация атаки
+    // Анимация и звук атаки
     playerImg.classList.add('shake');
+    attackSound.play();
     setTimeout(() => playerImg.classList.remove('shake'), 500);
 
     if (player.health <= 0) {
         addLog("Вы проиграли!");
+        defeatSound.play();
     }
 }
 
@@ -79,8 +89,9 @@ function defend() {
     addLog(`Вы защитились и восстановили ${player.defense} здоровья.`);
     updateStatus();
 
-    // Анимация защиты
+    // Анимация и звук защиты
     playerImg.classList.add('blink');
+    defendSound.play();
     setTimeout(() => playerImg.classList.remove('blink'), 500);
 
     enemyAttack();
