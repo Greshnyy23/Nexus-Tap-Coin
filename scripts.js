@@ -3,7 +3,7 @@ const player = {
     health: 100,
     attack: 10,
     defense: 5,
-    inventory: []
+    inventory: ["Зелье здоровья", "Меч"]
 };
 
 // Данные врага
@@ -21,6 +21,11 @@ const enemyHealthBar = document.getElementById('enemy-health-bar');
 const logElement = document.getElementById('log');
 const playerImg = document.getElementById('player-img');
 const enemyImg = document.getElementById('enemy-img');
+
+// Модальное окно инвентаря
+const inventoryModal = document.getElementById('inventory-modal');
+const inventoryList = document.getElementById('inventory-list');
+const closeModal = document.querySelector('.close');
 
 // Звуковые эффекты
 const attackSound = document.getElementById('attack-sound');
@@ -97,11 +102,21 @@ function defend() {
     enemyAttack();
 }
 
-// Показать инвентарь
+// Открытие инвентаря
 function showInventory() {
-    const items = player.inventory.length > 0 ? player.inventory.join(", ") : "пусто";
-    addLog(`Ваш инвентарь: ${items}`);
+    inventoryList.innerHTML = ""; // Очистка списка
+    player.inventory.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        inventoryList.appendChild(li);
+    });
+    inventoryModal.style.display = "flex"; // Показ модального окна
 }
+
+// Закрытие модального окна
+closeModal.addEventListener('click', () => {
+    inventoryModal.style.display = "none";
+});
 
 // Сброс врага
 function resetEnemy() {
