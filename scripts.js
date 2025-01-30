@@ -1,134 +1,60 @@
-// Данные игрока
-const player = {
-    health: 100,
-    attack: 10,
-    defense: 5,
-    inventory: ["Зелье здоровья", "Меч"]
-};
-
-// Данные врага
-const enemy = {
-    health: 50,
-    attack: 8,
-    defense: 3
-};
+// Данные игры
+let coins = 0;
+let clickPower = 1;
 
 // Элементы интерфейса
-const playerHealthElement = document.getElementById('player-health');
-const enemyHealthElement = document.getElementById('enemy-health');
-const playerHealthBar = document.getElementById('player-health-bar');
-const enemyHealthBar = document.getElementById('enemy-health-bar');
-const logElement = document.getElementById('log');
-const playerImg = document.getElementById('player-img');
-const enemyImg = document.getElementById('enemy-img');
+const coinCountElement = document.getElementById('coin-count');
+const clickerBtn = document.getElementById('clicker-btn');
+const buyButtons = document.querySelectorAll('.buy-btn');
 
-// Модальное окно инвентаря
-const inventoryModal = document.getElementById('inventory-modal');
-const inventoryList = document.getElementById('inventory-list');
-const closeModal = document.querySelector('.close');
+// Загрузка сохраненного прогресса
+function loadProgress() {
+    const savedCoins = localStorage.getItem('coins');
+    const savedClickPower = localStorage.getItem('clickPower');
 
-// Звуковые эффекты
-const attackSound = document.getElementById('attack-sound');
-const defendSound = document.getElementById('defend-sound');
-const victorySound = document.getElementById('victory-sound');
-const defeatSound = document.getElementById('defeat-sound');
+    if (savedCoins) {
+        coins = parseInt(savedCoins);
+        coinCountElement.textContent = coins;
+    }
 
-// Обновление статуса игры
-function updateStatus() {
-    playerHealthElement.textContent = player.health;
-    enemyHealthElement.textContent = enemy.health;
-    playerHealthBar.style.width = `${player.health}%`;
-    enemyHealthBar.style.width = `${enemy.health}%`;
-}
-
-// Логирование событий
-function addLog(message) {
-    const logEntry = document.createElement('p');
-    logEntry.textContent = message;
-    logElement.appendChild(logEntry);
-    logElement.scrollTop = logElement.scrollHeight; // Автопрокрутка
-}
-
-// Атака игрока
-function attack() {
-    const damage = Math.max(0, player.attack - enemy.defense);
-    enemy.health -= damage;
-    addLog(`Вы атаковали врага и нанесли ${damage} урона!`);
-    updateStatus();
-
-    // Анимация и звук атаки
-    enemyImg.classList.add('shake');
-    attackSound.play();
-    setTimeout(() => enemyImg.classList.remove('shake'), 500);
-
-    if (enemy.health <= 0) {
-        addLog("Вы победили врага!");
-        victorySound.play();
-        resetEnemy();
-    } else {
-        enemyAttack();
+    if (savedClickPower) {
+        clickPower = parseInt(savedClickPower);
     }
 }
 
-// Атака врага
-function enemyAttack() {
-    const damage = Math.max(0, enemy.attack - player.defense);
-    player.health -= damage;
-    addLog(`Враг атаковал вас и нанес ${damage} урона!`);
-    updateStatus();
-
-    // Анимация и звук атаки
-    playerImg.classList.add('shake');
-    attackSound.play();
-    setTimeout(() => playerImg.classList.remove('shake'), 500);
-
-    if (player.health <= 0) {
-        addLog("Вы проиграли!");
-        defeatSound.play();
-    }
+// Сохранение прогресса
+function saveProgress() {
+    localStorage.setItem('coins', coins);
+    localStorage.setItem('clickPower', clickPower);
 }
 
-// Защита игрока
-function defend() {
-    player.health += player.defense;
-    addLog(`Вы защитились и восстановили ${player.defense} здоровья.`);
-    updateStatus();
-
-    // Анимация и звук защиты
-    playerImg.classList.add('blink');
-    defendSound.play();
-    setTimeout(() => playerImg.classList.remove('blink'), 500);
-
-    enemyAttack();
-}
-
-// Открытие инвентаря
-function showInventory() {
-    inventoryList.innerHTML = ""; // Очистка списка
-    player.inventory.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        inventoryList.appendChild(li);
-    });
-    inventoryModal.style.display = "flex"; // Показ модального окна
-}
-
-// Закрытие модального окна
-closeModal.addEventListener('click', () => {
-    inventoryModal.style.display = "none";
+// Клик по кнопке
+clickerBtn.addEventListener('click', () => {
+    coins += clickPower;
+    coinCountElement.textContent = coins;
+    clickerBtn.classList.add('click-animation');
+    setTimeout(() => clickerBtn.classList.remove('click-animation'), 200);
+    saveProgress();
 });
 
-// Сброс врага
-function resetEnemy() {
-    enemy.health = 50;
-    updateStatus();
-}
+// Покупка улучшений
+buyButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const cost = parseInt(button.getAttribute('data-cost'));
+        const power = parseInt(button.getAttribute('data-power'));
 
-// Назначение обработчиков кнопок
-document.getElementById('attack-btn').addEventListener('click', attack);
-document.getElementById('defend-btn').addEventListener('click', defend);
-document.getElementById('inventory-btn').addEventListener('click', showInventory);
+        if (coins >= cost) {
+            coins -= cost;
+            clickPower += power;
+            coinCountElement.textContent = coins;
+            button.disabled = true;
+            button.textContent = "Куплено";
+            saveProgress();
+        } else {
+            alert("Недостаточно монет!");
+        }
+    });
+});
 
 // Инициализация игры
-updateStatus();
-addLog("Игра началась! Выберите действие.");
+loadProgress();
