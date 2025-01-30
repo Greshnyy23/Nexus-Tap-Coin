@@ -2,170 +2,204 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Idle Miner</title>
+    <title>Idle Miner Pro</title>
     <style>
+        :root {
+            --primary: #FFD700;
+            --secondary: #4A90E2;
+            --background: #1A1A1A;
+            --card-bg: #2D2D2D;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #1a1a1a;
+            background-color: var(--background);
             color: white;
         }
 
         .container {
-            background-color: #2d2d2d;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, #333333, #2a2a2a);
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.2s;
         }
 
-        .stats {
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            color: var(--primary);
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(255,215,0,0.3);
+        }
+
+        .main-button {
+            background: linear-gradient(45deg, var(--secondary), #6B46C1);
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            width: 100%;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(74,144,226,0.3);
+        }
+
+        .main-button:active {
+            transform: scale(0.98);
+        }
+
+        .shop-tabs {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
-            font-size: 1.2em;
         }
 
-        button {
-            background-color: #4CAF50;
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            background: var(--card-bg);
             border: none;
             color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
+            border-radius: 8px;
             cursor: pointer;
-            border-radius: 5px;
-            transition: transform 0.1s;
+            transition: all 0.3s;
         }
 
-        button:active {
-            transform: scale(0.95);
+        .tab-button.active {
+            background: var(--secondary);
+            box-shadow: 0 2px 8px rgba(74,144,226,0.4);
         }
 
-        .shop-item {
-            background-color: #333;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
+        .upgrade-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .upgrade-card:hover {
+            transform: translateX(10px);
+        }
+
+        .upgrade-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .upgrade-info {
+            flex-grow: 1;
+        }
+
+        .upgrade-title {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .upgrade-description {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .upgrade-price {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
         }
 
         .disabled {
-            background-color: #666 !important;
-            cursor: not-allowed;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        @keyframes coinBounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .coin-animation {
+            animation: coinBounce 0.3s;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="stats">
-            <div>💰 Золото: <span id="gold">0</span></div>
-            <div>⛏️ Кирки: <span id="miners">0</span></div>
-            <div>⚡ Мощность клика: <span id="clickPower">1</span></div>
-        </div>
-
-        <button id="clickButton">Кликни чтобы добыть!</button>
-
-        <div class="shop">
-            <h3>Магазин</h3>
-            <div class="shop-item">
-                Кирка (+1 золото/сек)<br>
-                Цена: 10 золота<br>
-                <button onclick="buyMiner()" id="buyMiner">Купить кирку</button>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">💰 Золото</div>
+                <div class="stat-value" id="gold">0</div>
             </div>
-            
-            <div class="shop-item">
-                Улучшение клика (+1 к клику)<br>
-                Цена: 50 золота<br>
-                <button onclick="buyClickPower()" id="buyClickPower">Улучшить клик</button>
+            <div class="stat-card">
+                <div class="stat-label">⚡ В секунду</div>
+                <div class="stat-value" id="gps">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">🎯 Мощность</div>
+                <div class="stat-value" id="clickPower">1</div>
             </div>
         </div>
-    </div>
 
-    <script>
-        let gameState = {
-            gold: 0,
-            miners: 0,
-            clickPower: 1,
-            lastUpdate: Date.now()
-        };
+        <button class="main-button" id="clickButton">⛏️ Добыть золото</button>
 
-        // Загрузка сохранения
-        function loadGame() {
-            const saved = localStorage.getItem('idleSave');
-            if(saved) {
-                gameState = JSON.parse(saved);
-                gameState.lastUpdate = Date.now();
-                updateUI();
-            }
-        }
+        <div class="shop-tabs">
+            <button class="tab-button active" onclick="showTab('miners')">Шахтеры</button>
+            <button class="tab-button" onclick="showTab('upgrades')">Улучшения</button>
+            <button class="tab-button" onclick="showTab('boosts')">Бусты</button>
+        </div>
 
-        // Сохранение игры
-        function saveGame() {
-            gameState.lastUpdate = Date.now();
-            localStorage.setItem('idleSave', JSON.stringify(gameState));
-        }
+        <div id="minersTab" class="shop-content">
+            <div class="upgrade-card">
+                <div class="upgrade-icon">⛏️</div>
+                <div class="upgrade-info">
+                    <div class="upgrade-title">Новичок-шахтер</div>
+                    <div class="upgrade-description">+1 золото в секунду</div>
+                </div>
+                <div class="upgrade-price" id="miner1Price">10</div>
+                <button class="buy-button" onclick="buyUpgrade('miner1')">Купить</button>
+            </div>
 
-        // Расчет авто-добычи
-        function calculateOfflineEarnings() {
-            const now = Date.now();
-            const diff = now - gameState.lastUpdate;
-            const secondsPassed = Math.floor(diff / 1000);
-            
-            gameState.gold += gameState.miners * secondsPassed;
-            gameState.lastUpdate = now;
-            
-            updateUI();
-            saveGame();
-        }
-
-        // Обновление интерфейса
-        function updateUI() {
-            document.getElementById('gold').textContent = Math.floor(gameState.gold);
-            document.getElementById('miners').textContent = gameState.miners;
-            document.getElementById('clickPower').textContent = gameState.clickPower;
-            
-            document.getElementById('buyMiner').disabled = gameState.gold < 10;
-            document.getElementById('buyClickPower').disabled = gameState.gold < 50;
-        }
-
-        // Покупка улучшений
-        function buyMiner() {
-            if(gameState.gold >= 10) {
-                gameState.gold -= 10;
-                gameState.miners++;
-                updateUI();
-                saveGame();
-            }
-        }
-
-        function buyClickPower() {
-            if(gameState.gold >= 50) {
-                gameState.gold -= 50;
-                gameState.clickPower++;
-                updateUI();
-                saveGame();
-            }
-        }
-
-        // Ручной клик
-        document.getElementById('clickButton').addEventListener('click', () => {
-            gameState.gold += gameState.clickPower;
-            updateUI();
-            saveGame();
-        });
-
-        // Авто-обновление каждую секунду
-        setInterval(() => {
-            gameState.gold += gameState.miners;
-            updateUI();
-            saveGame();
-        }, 1000);
-
-        // Инициализация игры
-        loadGame();
-        calculateOfflineEarnings();
-    </script>
-</body>
-</html>
+            <div class="upgrade-card">
+                <div class="upgrade-icon">👷</div>
+                <div class="upgrade-info">
+                    <div class="upgrade-title">Профессионал</div>
+                    <div class="upgrade-description">+5 золота в секунду</div>
+                </div>
+                <div class="upgrade-price" id="miner2Price">50</div>
+                <button class="buy-button" onclick="buyUpgrade('miner2')">Купить</button
