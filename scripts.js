@@ -18,6 +18,10 @@ const buyClickUpgradeButton = document.getElementById('buyClickUpgradeButton');
 const buyBoostButton = document.getElementById('buyBoostButton');
 const achievementList = document.getElementById('achievementList');
 
+// Инициализация Telegram Web App
+const tg = window.Telegram.WebApp;
+tg.expand(); // Развернуть приложение на весь экран
+
 // Обновление статистики
 function updateStats() {
     goldElement.textContent = gold;
@@ -32,8 +36,7 @@ function checkLevelUp() {
     if (experience >= level * 10) {
         level++;
         experience = 0;
-        alert(`Вы достигли уровня ${level}!`);
-        checkAchievements();
+        tg.showAlert(`Вы достигли уровня ${level}!`);
     }
 }
 
@@ -70,7 +73,7 @@ buyMinerButton.addEventListener('click', () => {
         goldPerSecond += 1;
         updateStats();
     } else {
-        alert('Недостаточно золота!');
+        tg.showAlert('Недостаточно золота!');
     }
 });
 
@@ -82,7 +85,7 @@ buyProMinerButton.addEventListener('click', () => {
         goldPerSecond += 5;
         updateStats();
     } else {
-        alert('Недостаточно золота!');
+        tg.showAlert('Недостаточно золота!');
     }
 });
 
@@ -94,7 +97,7 @@ buyClickUpgradeButton.addEventListener('click', () => {
         clickPower += 1;
         updateStats();
     } else {
-        alert('Недостаточно золота!');
+        tg.showAlert('Недостаточно золота!');
     }
 });
 
@@ -106,11 +109,11 @@ buyBoostButton.addEventListener('click', () => {
         isBoostActive = true;
         setTimeout(() => {
             isBoostActive = false;
-            alert('Буст добычи закончился!');
+            tg.showAlert('Буст добычи закончился!');
         }, 30000);
         updateStats();
     } else {
-        alert('Недостаточно золота!');
+        tg.showAlert('Недостаточно золота!');
     }
 });
 
