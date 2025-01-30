@@ -96,7 +96,7 @@ document.getElementById('buyBoostButton').addEventListener('click', () => {
 setInterval(() => {
     gameState.gold += gameState.gps;
     updateUI();
-}, 1000);
+}, 1000); // каждую секунду золото добавляется в зависимости от gps
 
 // Проверка достижений
 function checkAchievements(achievement) {
