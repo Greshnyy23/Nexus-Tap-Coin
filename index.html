@@ -9,15 +9,39 @@
 <body>
     <div class="game-container">
         <h1>RPG Game</h1>
-        <div id="game-status">
-            <p>Здоровье игрока: <span id="player-health">100</span></p>
-            <p>Здоровье врага: <span id="enemy-health">50</span></p>
+        
+        <!-- Игрок -->
+        <div class="character">
+            <img src="player.png" alt="Игрок" id="player-img">
+            <div class="health-bar">
+                <div id="player-health-bar" class="health-bar-inner"></div>
+            </div>
+            <p>Игрок: <span id="player-health">100</span> HP</p>
         </div>
+
+        <!-- Враг -->
+        <div class="character">
+            <img src="enemy.png" alt="Враг" id="enemy-img">
+            <div class="health-bar">
+                <div id="enemy-health-bar" class="health-bar-inner"></div>
+            </div>
+            <p>Враг: <span id="enemy-health">50</span> HP</p>
+        </div>
+
+        <!-- Действия -->
         <div id="actions">
-            <button id="attack-btn">Атаковать</button>
-            <button id="defend-btn">Защищаться</button>
-            <button id="inventory-btn">Инвентарь</button>
+            <button id="attack-btn" class="action-btn">
+                <span>⚔️ Атаковать</span>
+            </button>
+            <button id="defend-btn" class="action-btn">
+                <span>🛡️ Защищаться</span>
+            </button>
+            <button id="inventory-btn" class="action-btn">
+                <span>🎒 Инвентарь</span>
+            </button>
         </div>
+
+        <!-- Лог событий -->
         <div id="log"></div>
     </div>
     <script src="script.js"></script>
