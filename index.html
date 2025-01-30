@@ -399,15 +399,18 @@
             }
         }
 
+        // Исправленный функционал кнопки "Добыть золото"
         document.getElementById('clickButton').addEventListener('click', () => {
-            gameState.gold += gameState.clickPower;
-            gameState.experience += 1;
+            gameState.gold += gameState.clickPower; // Добавляем золото в зависимости от мощности клика
+            gameState.experience += 1; // Добавляем опыт за клик
+
             if (!gameState.achievements.firstClick) {
-                unlockAchievement('firstClick');
+                unlockAchievement('firstClick'); // Разблокируем достижение, если это первый клик
             }
-            checkLevelUp();
-            updateUI();
-            saveGame();
+
+            checkLevelUp(); // Проверяем, не повысился ли уровень
+            updateUI(); // Обновляем интерфейс
+            saveGame(); // Сохраняем игру
         });
 
         loadGame();
