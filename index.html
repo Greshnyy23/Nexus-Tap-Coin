@@ -231,7 +231,6 @@
         let gameState = {
             gold: 0,
             gps: 0,
-            baseGPS: 0,
             clickPower: 1,
             level: 1,
             experience: 0,
@@ -295,7 +294,7 @@
             let baseGPS = 0;
             baseGPS += gameState.upgrades.miner1.count * gameState.upgrades.miner1.gps;
             baseGPS += gameState.upgrades.miner2.count * gameState.upgrades.miner2.gps;
-            gameState.baseGPS = baseGPS;
+            gameState.gps = baseGPS;
 
             const now = Date.now();
             let totalMultiplier = 1;
@@ -307,7 +306,7 @@
                 return false;
             });
             
-            gameState.gps = gameState.baseGPS * totalMultiplier;
+            gameState.gps *= totalMultiplier;
         }
 
         function updateBuyButtons() {
@@ -322,7 +321,6 @@
             const upgrade = gameState.upgrades[type];
             if (gameState.gold >= upgrade.price) {
                 gameState.gold -= upgrade.price;
-                gameState.experience += 10;
 
                 switch (type) {
                     case 'miner1':
@@ -345,14 +343,14 @@
                 }
                 
                 increaseUpgradePrice(type);
-                checkLevelUp();
                 updateUI();
                 saveGame();
             }
         }
 
         function increaseUpgradePrice(type, multiplier = 1.15) {
-            gameState.upgrades[type].price = gameState.upgrades[type].price * multiplier;
+            gameState.upgrades[type].price *= multiplier;
+            gameState.upgrades[type].price = Math.max(1, Math.floor(gameState.upgrades[type].price)); // Минимальная цена 1
         }
 
         function applyBoost(multiplier, duration) {
