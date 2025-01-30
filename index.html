@@ -3,45 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker Game</title>
+    <title>3D Платформер</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="game-container">
-        <h1>Clicker Game</h1>
-        
-        <!-- Блок с текущим состоянием -->
-        <div class="stats">
-            <div class="coin-display">
-                <span id="coin-count">0</span> монет
-            </div>
-            <div class="click-power">
-                Сила клика: <span id="click-power">1</span>
-            </div>
-        </div>
-
-        <!-- Основная кнопка -->
-        <button id="clicker-btn">🪙 Кликни меня!</button>
-
-        <!-- Система улучшений -->
-        <div class="upgrades">
-            <h2>Улучшения</h2>
-            <div class="upgrade">
-                <p>+1 монета/клик (10 монет)</p>
-                <button class="buy-btn" data-cost="10" data-power="1">Купить</button>
-            </div>
-            <div class="upgrade">
-                <p>+2 монеты/клик (50 монет)</p>
-                <button class="buy-btn" data-cost="50" data-power="2">Купить</button>
-            </div>
-            <div class="upgrade">
-                <p>+5 монет/клик (100 монет)</p>
-                <button class="buy-btn" data-cost="100" data-power="5">Купить</button>
-            </div>
-        </div>
+    <div id="game-container">
+        <div id="score">Очки: 0</div>
+        <div id="timer">Время: 60</div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r146/three.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
