@@ -3,90 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Змейка</title>
+    <title>Музыкальный плеер</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .player {
+            background: #2a2a2a;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .cover-art {
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+            background: #333;
+            overflow: hidden;
+        }
+
+        #visualizer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .controls {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #000;
-            color: #fff;
-            font-family: Arial, sans-serif;
+            gap: 15px;
+            margin-bottom: 20px;
         }
-        canvas {
-            border: 1px solid #fff;
+
+        button {
+            background: #4CAF50;
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background: #404040;
+            border-radius: 5px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        #progress {
+            height: 100%;
+            background: #4CAF50;
+            border-radius: 5px;
+            width: 0%;
+        }
+
+        .time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .playlist {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .track {
+            padding: 10px;
+            background: #333;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .track:hover {
+            background: #404040;
         }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="player">
+        <div class="cover-art">
+            <canvas id="visualizer"></canvas>
+        </div>
+        
+        <div class="controls">
+            <button id="prevBtn">⏮</button>
+            <button id="playPauseBtn">▶</button>
+            <button id="nextBtn">⏭</button>
+        </div>
+
+        <div class="progress-container">
+            <div id="progress"></div>
+        </div>
+
+        <div class="time">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+        </div>
+    </div>
+
+    <div class="playlist" id="playlist"></div>
+
     <script>
-        const canvas = document.getElementById('gameCanvas');
+        const audio = new Audio();
+        const playlist = [
+            {
+                title: "Пример трека 1",
+                artist: "Исполнитель 1",
+                url: "https://example.com/music1.mp3"
+            },
+            {
+                title: "Пример трека 2",
+                artist: "Исполнитель 2",
+                url: "https://example.com/music2.mp3"
+            }
+        ];
+
+        let currentTrack = 0;
+        let isPlaying = false;
+        const canvas = document.getElementById('visualizer');
         const ctx = canvas.getContext('2d');
 
-        const gridSize = 20;
-        const tileCount = canvas.width / gridSize;
+        // Инициализация визуализатора
+        canvas.width = 200;
+        canvas.height = 200;
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
 
-        let snake = [{ x: 10, y: 10 }];
-        let direction = { x: 0, y: 0 };
-        let food = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
-        let score = 0;
+        function updateVisualizer() {
+            requestAnimationFrame(updateVisualizer);
+            analyser.getByteFrequencyData(dataArray);
+            
+            ctx.fillStyle = '#333';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            const barWidth = (canvas.width / bufferLength) * 2.5;
+            let x = 0;
 
-        function gameLoop() {
-            update();
-            draw();
-            setTimeout(gameLoop, 100);
+            for(let i = 0; i < bufferLength; i++) {
+                const barHeight = dataArray[i] / 2;
+                ctx.fillStyle = `hsl(${i * 2}, 100%, 50%)`;
+                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                x += barWidth + 1;
+            }
         }
 
-        function update() {
-            const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+        function loadTrack(trackIndex) {
+            currentTrack = trackIndex;
+            audio.src = playlist[trackIndex].url;
+            audio.load();
+            updatePlaylist();
+        }
 
-            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount || snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-                resetGame();
-                return;
-            }
+        function updatePlaylist() {
+            const playlistDiv = document.getElementById('playlist');
+            playlistDiv.innerHTML = playlist.map((track, index) => `
+                <div class="track" onclick="loadTrack(${index})">
+                    ${index + 1}. ${track.title} - ${track.artist}
+                    ${index === currentTrack ? '▶' : ''}
+                </div>
+            `).join('');
+        }
 
-            snake.unshift(head);
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            const currentTime = document.getElementById('currentTime');
+            const duration = document.getElementById('duration');
 
-            if (head.x === food.x && head.y === food.y) {
-                score++;
-                food = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
+            progress.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+            currentTime.textContent = formatTime(audio.currentTime);
+            duration.textContent = formatTime(audio.duration);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            seconds = Math.floor(seconds % 60);
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Обработчики событий
+        document.getElementById('playPauseBtn').addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
             } else {
-                snake.pop();
+                audio.play();
+                updateVisualizer();
             }
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = 'lime';
-            snake.forEach(segment => ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize));
-
-            ctx.fillStyle = 'red';
-            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-
-            ctx.fillStyle = 'white';
-            ctx.fillText(`Счет: ${score}`, 10, 20);
-        }
-
-        function resetGame() {
-            snake = [{ x: 10, y: 10 }];
-            direction = { x: 0, y: 0 };
-            score = 0;
-        }
-
-        window.addEventListener('keydown', e => {
-            switch (e.key) {
-                case 'ArrowUp': if (direction.y === 0) direction = { x: 0, y: -1 }; break;
-                case 'ArrowDown': if (direction.y === 0) direction = { x: 0, y: 1 }; break;
-                case 'ArrowLeft': if (direction.x === 0) direction = { x: -1, y: 0 }; break;
-                case 'ArrowRight': if (direction.x === 0) direction = { x: 1, y: 0 }; break;
-            }
+            isPlaying = !isPlaying;
+            document.getElementById('playPauseBtn').textContent = isPlaying ? '⏸' : '▶';
         });
 
-        gameLoop();
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            loadTrack(currentTrack);
+            if (isPlaying) audio.play();
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+            loadTrack(currentTrack);
+            if (isPlaying) audio.play();
+        });
+
+        document.querySelector('.progress-container').addEventListener('click', (e) => {
+            const rect = e.target.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            audio.currentTime = pos * audio.duration;
+        });
+
+        audio.addEventListener('timeupdate', updateProgress);
+        audio.addEventListener('ended', () => {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            loadTrack(currentTrack);
+            audio.play();
+        });
+
+        // Инициализация
+        loadTrack(0);
+        updatePlaylist();
     </script>
 </body>
 </html>
