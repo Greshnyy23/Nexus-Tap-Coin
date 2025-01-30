@@ -47,7 +47,7 @@ h1 {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
 }
 
-.upgrades {
+.upgrades, .auto-clickers, .multipliers {
     margin-top: 20px;
 }
 
