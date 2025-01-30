@@ -1,55 +1,89 @@
-const gameboard = document.getElementById("gameboard");
-let currentPlayer = "X";
-let board = ["", "", "", "", "", "", "", "", ""];
+// Данные игрока
+const player = {
+    health: 100,
+    attack: 10,
+    defense: 5,
+    inventory: []
+};
 
-function createBoard() {
-    for (let i = 0; i < 9; i++) {
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-        cell.dataset.index = i;
-        cell.addEventListener("click", makeMove);
-        gameboard.appendChild(cell);
+// Данные врага
+const enemy = {
+    health: 50,
+    attack: 8,
+    defense: 3
+};
+
+// Элементы интерфейса
+const playerHealthElement = document.getElementById('player-health');
+const enemyHealthElement = document.getElementById('enemy-health');
+const logElement = document.getElementById('log');
+
+// Обновление статуса игры
+function updateStatus() {
+    playerHealthElement.textContent = player.health;
+    enemyHealthElement.textContent = enemy.health;
+}
+
+// Логирование событий
+function addLog(message) {
+    const logEntry = document.createElement('p');
+    logEntry.textContent = message;
+    logElement.appendChild(logEntry);
+    logElement.scrollTop = logElement.scrollHeight; // Автопрокрутка
+}
+
+// Атака игрока
+function attack() {
+    const damage = Math.max(0, player.attack - enemy.defense);
+    enemy.health -= damage;
+    addLog(`Вы атаковали врага и нанесли ${damage} урона!`);
+    updateStatus();
+
+    if (enemy.health <= 0) {
+        addLog("Вы победили врага!");
+        resetEnemy();
+    } else {
+        enemyAttack();
     }
 }
 
-function makeMove(event) {
-    const cell = event.target;
-    const index = cell.dataset.index;
+// Атака врага
+function enemyAttack() {
+    const damage = Math.max(0, enemy.attack - player.defense);
+    player.health -= damage;
+    addLog(`Враг атаковал вас и нанес ${damage} урона!`);
+    updateStatus();
 
-    if (board[index] === "") {
-        board[index] = currentPlayer;
-        cell.textContent = currentPlayer;
-        checkWinner();
-        currentPlayer = currentPlayer === "X" ? "O" : "X";
+    if (player.health <= 0) {
+        addLog("Вы проиграли!");
     }
 }
 
-function checkWinner() {
-    const winPatterns = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-        [0, 4, 8], [2, 4, 6]             // Diagonals
-    ];
-
-    for (const pattern of winPatterns) {
-        const [a, b, c] = pattern;
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            alert(`Переміг гравець ${board[a]}!`);
-            resetBoard();
-            return;
-        }
-    }
-
-    if (board.every(cell => cell !== "")) {
-        alert("Нічия!");
-        resetBoard();
-    }
+// Защита игрока
+function defend() {
+    player.health += player.defense;
+    addLog(`Вы защитились и восстановили ${player.defense} здоровья.`);
+    updateStatus();
+    enemyAttack();
 }
 
-function resetBoard() {
-    board = ["", "", "", "", "", "", "", "", ""];
-    const cells = document.querySelectorAll(".cell");
-    cells.forEach(cell => cell.textContent = "");
+// Показать инвентарь
+function showInventory() {
+    const items = player.inventory.length > 0 ? player.inventory.join(", ") : "пусто";
+    addLog(`Ваш инвентарь: ${items}`);
 }
 
-createBoard();
+// Сброс врага
+function resetEnemy() {
+    enemy.health = 50;
+    updateStatus();
+}
+
+// Назначение обработчиков кнопок
+document.getElementById('attack-btn').addEventListener('click', attack);
+document.getElementById('defend-btn').addEventListener('click', defend);
+document.getElementById('inventory-btn').addEventListener('click', showInventory);
+
+// Инициализация игры
+updateStatus();
+addLog("Игра началась! Выберите действие.");
