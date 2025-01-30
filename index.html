@@ -1,12 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Хрестики-нулики</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Хрестики-нулики</h1>
-    <div id="gameboard"></div>
+    <div class="game-container">
+        <h1>RPG Game</h1>
+        <div id="game-status">
+            <p>Здоровье игрока: <span id="player-health">100</span></p>
+            <p>Здоровье врага: <span id="enemy-health">50</span></p>
+        </div>
+        <div id="actions">
+            <button id="attack-btn">Атаковать</button>
+            <button id="defend-btn">Защищаться</button>
+            <button id="inventory-btn">Инвентарь</button>
+        </div>
+        <div id="log"></div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
