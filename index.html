@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -12,33 +11,33 @@
     <div class="game-container">
         <h1>Clicker Game</h1>
         
-        <!-- Отображение монет -->
-        <div class="coin-display">
-            <span id="coin-count">0</span> монет
+        <!-- Блок с текущим состоянием -->
+        <div class="stats">
+            <div class="coin-display">
+                <span id="coin-count">0</span> монет
+            </div>
+            <div class="click-power">
+                Сила клика: <span id="click-power">1</span>
+            </div>
         </div>
 
-        <!-- Сила клика -->
-        <div class="click-power">
-            Сила клика: <span id="click-power">1</span>
-        </div>
-
-        <!-- Кнопка кликера -->
+        <!-- Основная кнопка -->
         <button id="clicker-btn">🪙 Кликни меня!</button>
 
-        <!-- Улучшения -->
+        <!-- Система улучшений -->
         <div class="upgrades">
             <h2>Улучшения</h2>
-            <div class="upgrade" id="upgrade-1">
-                <p>Улучшение 1: +1 монета за клик</p>
-                <button class="buy-btn" data-cost="10" data-power="1">Купить за 10 монет</button>
+            <div class="upgrade">
+                <p>+1 монета/клик (10 монет)</p>
+                <button class="buy-btn" data-cost="10" data-power="1">Купить</button>
             </div>
-            <div class="upgrade" id="upgrade-2">
-                <p>Улучшение 2: +2 монеты за клик</p>
-                <button class="buy-btn" data-cost="50" data-power="2">Купить за 50 монет</button>
+            <div class="upgrade">
+                <p>+2 монеты/клик (50 монет)</p>
+                <button class="buy-btn" data-cost="50" data-power="2">Купить</button>
             </div>
-            <div class="upgrade" id="upgrade-3">
-                <p>Улучшение 3: +5 монет за клик</p>
-                <button class="buy-btn" data-cost="100" data-power="5">Купить за 100 монет</button>
+            <div class="upgrade">
+                <p>+5 монет/клик (100 монет)</p>
+                <button class="buy-btn" data-cost="100" data-power="5">Купить</button>
             </div>
         </div>
     </div>
