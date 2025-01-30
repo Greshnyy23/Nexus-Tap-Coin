@@ -2,461 +2,130 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Idle Miner Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Tap Coin</title>
     <style>
-        :root {
-            --primary: #FFD700;
-            --secondary: #4A90E2;
-            --background: #1A1A1A;
-            --card-bg: #2D2D2D;
-        }
-
         body {
-            font-family: 'Segoe UI', sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 19px;
-            background-color: var(--background);
-            color: white;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .container {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: linear-gradient(145deg, #333333, #2a2a2a);
+            background-color: #fff;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .main-button {
-            background: linear-gradient(45deg, var(--secondary), #6B46C1);
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            color: white;
-            border-radius: 50px;
-            cursor: pointer;
-            display: block;
+            max-width: 400px;
             width: 100%;
-            margin: 20px 0;
-            transition: transform 0.1s ease;
         }
 
-        .main-button:active {
-            transform: scale(0.95);
-        }
-
-        .shop-tabs {
-            display: flex;
-            gap: 10px;
+        h1 {
+            font-size: 24px;
             margin-bottom: 20px;
         }
 
-        .tab-button {
-            flex: 1;
-            padding: 12px;
-            background: var(--card-bg);
+        .stats {
+            margin-bottom: 20px;
+        }
+
+        .stats div {
+            margin: 5px 0;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
             border: none;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .tab-button.active {
-            background: var(--secondary);
-        }
-
-        .upgrade-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 15px 0;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: transform 0.2s ease;
-        }
-
-        .upgrade-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .upgrade-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .upgrade-info {
-            flex-grow: 1;
-        }
-
-        .upgrade-title {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        .upgrade-description {
-            color: #aaa;
-            font-size: 14px;
-        }
-
-        .upgrade-price {
-            background: rgba(255,255,255,0.1);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-
-        .buy-button {
-            background: var(--secondary);
-            border: none;
-            color: white;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            margin: 5px;
+            font-size: 16px;
         }
 
-        .buy-button:disabled {
-            background: #666;
-            cursor: not-allowed;
+        button:hover {
+            background-color: #0056b3;
         }
 
-        .miner-count {
-            color: var(--primary);
-            margin-left: 8px;
-            font-size: 0.9em;
+        .upgrades {
+            margin-top: 20px;
         }
 
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--secondary);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            animation: slideIn 0.5s ease;
+        .upgrade {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
+        .achievements {
+            margin-top: 20px;
+        }
+
+        .achievements ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .achievements li {
+            background-color: #e9ecef;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">💰 Золото</div>
-                <div class="stat-value" id="gold">0.0</div>
+        <h1>Idle Miner Game</h1>
+        <div class="stats">
+            <div><strong>Золото:</strong> <span id="gold">0</span></div>
+            <div><strong>В секунду:</strong> <span id="gps">0</span></div>
+            <div><strong>Мощность клика:</strong> <span id="clickPower">1</span></div>
+            <div><strong>Уровень:</strong> <span id="level">1</span></div>
+            <div><strong>Опыт:</strong> <span id="experience">0</span></div>
+        </div>
+        <button id="clickButton">⛏️ Добыть золото</button>
+
+        <h2>Улучшения</h2>
+        <div class="upgrades">
+            <div class="upgrade">
+                <strong>Шахтер</strong> (+1 золота в секунду)
+                <div>Цена: <span id="minerPrice">10</span></div>
+                <button id="buyMinerButton">Купить</button>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">⚡ В секунду</div>
-                <div class="stat-value" id="gps">0.0</div>
+            <div class="upgrade">
+                <strong>Профессиональный шахтер</strong> (+5 золота в секунду)
+                <div>Цена: <span id="proMinerPrice">50</span></div>
+                <button id="buyProMinerButton">Купить</button>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">🎯 Мощность</div>
-                <div class="stat-value" id="clickPower">1</div>
+            <div class="upgrade">
+                <strong>Улучшение клика</strong> (+1 к мощности клика)
+                <div>Цена: <span id="clickUpgradePrice">20</span></div>
+                <button id="buyClickUpgradeButton">Купить</button>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">🏆 Уровень</div>
-                <div class="stat-value" id="level">1</div>
+            <div class="upgrade">
+                <strong>Буст добычи</strong> (x2 к добыче на 30 секунд)
+                <div>Цена: <span id="boostPrice">100</span></div>
+                <button id="buyBoostButton">Купить</button>
             </div>
         </div>
-
-        <button class="main-button" id="clickButton">⛏️ Добыть золото</button>
-
-        <div class="shop-tabs">
-            <button class="tab-button active" onclick="showTab('miners')">Шахтеры</button>
-            <button class="tab-button" onclick="showTab('upgrades')">Улучшения</button>
-            <button class="tab-button" onclick="showTab('boosts')">Бусты</button>
-        </div>
-
-        <div id="minersTab" class="shop-content">
-            <div class="upgrade-card">
-                <div class="upgrade-icon">⛏️</div>
-                <div class="upgrade-info">
-                    <div class="upgrade-title">
-                        Новичок-шахтер 
-                        <span class="miner-count" data-type="miner1">0</span>
-                    </div>
-                    <div class="upgrade-description">+1 золото в секунду</div>
-                </div>
-                <div class="upgrade-price" id="miner1Price">10.0</div>
-                <button class="buy-button" onclick="buyUpgrade('miner1')">Купить</button>
-            </div>
-
-            <div class="upgrade-card">
-                <div class="upgrade-icon">👷</div>
-                <div class="upgrade-info">
-                    <div class="upgrade-title">
-                        Профессионал 
-                        <span class="miner-count" data-type="miner2">0</span>
-                    </div>
-                    <div class="upgrade-description">+5 золота в секунду</div>
-                </div>
-                <div class="upgrade-price" id="miner2Price">50.0</div>
-                <button class="buy-button" onclick="buyUpgrade('miner2')">Купить</button>
-            </div>
-        </div>
-
-        <div id="upgradesTab" class="shop-content" style="display: none;">
-            <div class="upgrade-card">
-                <div class="upgrade-icon">💪</div>
-                <div class="upgrade-info">
-                    <div class="upgrade-title">Улучшение клика</div>
-                    <div class="upgrade-description">+1 к мощности клика</div>
-                </div>
-                <div class="upgrade-price" id="clickUpgradePrice">20.0</div>
-                <button class="buy-button" onclick="buyUpgrade('clickUpgrade')">Купить</button>
-            </div>
-        </div>
-
-        <div id="boostsTab" class="shop-content" style="display: none;">
-            <div class="upgrade-card">
-                <div class="upgrade-icon">🚀</div>
-                <div class="upgrade-info">
-                    <div class="upgrade-title">Буст добычи</div>
-                    <div class="upgrade-description">x2 к добыче на 30 секунд</div>
-                </div>
-                <div class="upgrade-price" id="boostPrice">100.0</div>
-                <button class="buy-button" onclick="buyUpgrade('boost')">Купить</button>
-            </div>
+        <div class="achievements">
+            <h3>Достижения</h3>
+            <ul id="achievementList"></ul>
         </div>
     </div>
 
-    <div id="notification" class="notification" style="display: none;"></div>
-
-    <script>
-        let gameState = {
-            gold: 0,
-            gps: 0,
-            clickPower: 1,
-            level: 1,
-            experience: 0,
-            lastUpdate: Date.now(),
-            upgrades: {
-                miner1: { price: 10, gps: 1, count: 0 },
-                miner2: { price: 50, gps: 5, count: 0 },
-                clickUpgrade: { price: 20, power: 1, count: 0 },
-                boost: { price: 100, multiplier: 2, duration: 30000, count: 0 }
-            },
-            achievements: {
-                firstClick: false,
-                firstUpgrade: false,
-                firstMiner: false
-            },
-            activeBoosts: []
-        };
-
-        function loadGame() {
-            const saved = localStorage.getItem('idleSave');
-            if (saved) {
-                const savedState = JSON.parse(saved);
-                const currentTime = Date.now();
-                const timeDiff = currentTime - savedState.lastUpdate;
-                
-                const secondsElapsed = Math.floor(timeDiff / 1000);
-                savedState.gold += savedState.gps * secondsElapsed;
-                
-                gameState = savedState;
-                gameState.lastUpdate = currentTime;
-                updateGPS();
-                updateUI();
-            }
-        }
-
-        function saveGame() {
-            gameState.lastUpdate = Date.now();
-            localStorage.setItem('idleSave', JSON.stringify(gameState));
-        }
-
-        function updateUI() {
-            document.getElementById('gold').textContent = gameState.gold.toFixed(1);
-            document.getElementById('gps').textContent = gameState.gps.toFixed(1);
-            document.getElementById('clickPower').textContent = gameState.clickPower;
-            document.getElementById('level').textContent = gameState.level;
-
-            document.getElementById('miner1Price').textContent = gameState.upgrades.miner1.price.toFixed(1);
-            document.getElementById('miner2Price').textContent = gameState.upgrades.miner2.price.toFixed(1);
-            document.getElementById('clickUpgradePrice').textContent = gameState.upgrades.clickUpgrade.price.toFixed(1);
-            document.getElementById('boostPrice').textContent = gameState.upgrades.boost.price.toFixed(1);
-            
-            document.querySelectorAll('.miner-count').forEach(el => {
-                const type = el.dataset.type;
-                el.textContent = gameState.upgrades[type].count;
-            });
-
-            updateBuyButtons();
-        }
-
-        function updateGPS() {
-            let baseGPS = 0;
-            baseGPS += gameState.upgrades.miner1.count * gameState.upgrades.miner1.gps;
-            baseGPS += gameState.upgrades.miner2.count * gameState.upgrades.miner2.gps;
-            gameState.gps = baseGPS;
-
-            const now = Date.now();
-            let totalMultiplier = 1;
-            gameState.activeBoosts = gameState.activeBoosts.filter(boost => {
-                if (boost.expires > now) {
-                    totalMultiplier *= boost.multiplier;
-                    return true;
-                }
-                return false;
-            });
-            
-            gameState.gps *= totalMultiplier;
-        }
-
-        function updateBuyButtons() {
-            const buttons = document.querySelectorAll('.buy-button');
-            buttons.forEach(button => {
-                const price = parseFloat(button.previousElementSibling.textContent);
-                button.disabled = gameState.gold < price;
-            });
-        }
-
-        function buyUpgrade(type) {
-            const upgrade = gameState.upgrades[type];
-            if (gameState.gold >= upgrade.price) {
-                gameState.gold -= upgrade.price;
-
-                switch (type) {
-                    case 'miner1':
-                    case 'miner2':
-                        upgrade.count++;
-                        updateGPS();
-                        if (!gameState.achievements.firstMiner) {
-                            unlockAchievement('firstMiner');
-                        }
-                        break;
-                    case 'clickUpgrade':
-                        gameState.clickPower += upgrade.power;
-                        if (!gameState.achievements.firstUpgrade) {
-                            unlockAchievement('firstUpgrade');
-                        }
-                        break;
-                    case 'boost':
-                        applyBoost(upgrade.multiplier, upgrade.duration);
-                        break;
-                }
-                
-                increaseUpgradePrice(type);
-                updateUI();
-                saveGame();
-            }
-        }
-
-        function increaseUpgradePrice(type, multiplier = 1.15) {
-            gameState.upgrades[type].price *= multiplier;
-            gameState.upgrades[type].price = Math.max(1, Math.floor(gameState.upgrades[type].price)); // Минимальная цена 1
-        }
-
-        function applyBoost(multiplier, duration) {
-            gameState.activeBoosts.push({
-                multiplier: multiplier,
-                expires: Date.now() + duration
-            });
-            updateGPS();
-        }
-
-        function checkLevelUp() {
-            const requiredXP = gameState.level * 100;
-            if (gameState.experience >= requiredXP) {
-                gameState.level++;
-                gameState.experience -= requiredXP;
-                gameState.clickPower += Math.floor(gameState.level * 0.5);
-                showNotification(`Уровень повышен! Текущий уровень: ${gameState.level}`);
-            }
-        }
-
-        function unlockAchievement(achievement) {
-            if (!gameState.achievements[achievement]) {
-                gameState.achievements[achievement] = true;
-                showNotification(`Достижение разблокировано: ${achievement}`);
-                saveGame();
-            }
-        }
-
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
-
-        function showTab(tabName) {
-            const validTabs = ['miners', 'upgrades', 'boosts'];
-            if (!validTabs.includes(tabName)) return;
-            
-            document.querySelectorAll('.shop-content').forEach(tab => {
-                tab.style.display = 'none';
-            });
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            const tabElement = document.getElementById(`${tabName}Tab`);
-            if (tabElement) {
-                tabElement.style.display = 'block';
-                document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-            }
-        }
-
-        document.getElementById('clickButton').addEventListener('click', () => {
-            gameState.gold += gameState.clickPower;
-            gameState.experience += 1;
-
-            if (!gameState.achievements.firstClick) {
-                unlockAchievement('firstClick');
-            }
-
-            checkLevelUp();
-            updateUI();
-            saveGame();
-        });
-
-        loadGame();
-        setInterval(() => {
-            gameState.gold += gameState.gps;
-            gameState.experience += gameState.gps * 0.1;
-            checkLevelUp();
-            updateUI();
-            saveGame();
-        }, 1000);
-    </script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
