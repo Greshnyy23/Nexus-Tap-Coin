@@ -3,129 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Tap Coin</title>
+    <title>Змейка</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
         }
-
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        .stats {
-            margin-bottom: 20px;
-        }
-
-        .stats div {
-            margin: 5px 0;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .upgrades {
-            margin-top: 20px;
-        }
-
-        .upgrade {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        .achievements {
-            margin-top: 20px;
-        }
-
-        .achievements ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .achievements li {
-            background-color: #e9ecef;
-            padding: 5px;
-            margin: 5px 0;
-            border-radius: 5px;
+        canvas {
+            border: 1px solid #fff;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Idle Miner Game</h1>
-        <div class="stats">
-            <div><strong>Золото:</strong> <span id="gold">0</span></div>
-            <div><strong>В секунду:</strong> <span id="gps">0</span></div>
-            <div><strong>Мощность клика:</strong> <span id="clickPower">1</span></div>
-            <div><strong>Уровень:</strong> <span id="level">1</span></div>
-            <div><strong>Опыт:</strong> <span id="experience">0</span></div>
-        </div>
-        <button id="clickButton">⛏️ Добыть золото</button>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-        <h2>Улучшения</h2>
-        <div class="upgrades">
-            <div class="upgrade">
-                <strong>Шахтер</strong> (+1 золота в секунду)
-                <div>Цена: <span id="minerPrice">10</span></div>
-                <button id="buyMinerButton">Купить</button>
-            </div>
-            <div class="upgrade">
-                <strong>Профессиональный шахтер</strong> (+5 золота в секунду)
-                <div>Цена: <span id="proMinerPrice">50</span></div>
-                <button id="buyProMinerButton">Купить</button>
-            </div>
-            <div class="upgrade">
-                <strong>Улучшение клика</strong> (+1 к мощности клика)
-                <div>Цена: <span id="clickUpgradePrice">20</span></div>
-                <button id="buyClickUpgradeButton">Купить</button>
-            </div>
-            <div class="upgrade">
-                <strong>Буст добычи</strong> (x2 к добыче на 30 секунд)
-                <div>Цена: <span id="boostPrice">100</span></div>
-                <button id="buyBoostButton">Купить</button>
-            </div>
-        </div>
-        <div class="achievements">
-            <h3>Достижения</h3>
-            <ul id="achievementList"></ul>
-        </div>
-    </div>
+        const gridSize = 20;
+        const tileCount = canvas.width / gridSize;
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="script.js"></script>
+        let snake = [{ x: 10, y: 10 }];
+        let direction = { x: 0, y: 0 };
+        let food = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
+        let score = 0;
+
+        function gameLoop() {
+            update();
+            draw();
+            setTimeout(gameLoop, 100);
+        }
+
+        function update() {
+            const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount || snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                resetGame();
+                return;
+            }
+
+            snake.unshift(head);
+
+            if (head.x === food.x && head.y === food.y) {
+                score++;
+                food = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
+            } else {
+                snake.pop();
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = 'lime';
+            snake.forEach(segment => ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize));
+
+            ctx.fillStyle = 'red';
+            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+
+            ctx.fillStyle = 'white';
+            ctx.fillText(`Счет: ${score}`, 10, 20);
+        }
+
+        function resetGame() {
+            snake = [{ x: 10, y: 10 }];
+            direction = { x: 0, y: 0 };
+            score = 0;
+        }
+
+        window.addEventListener('keydown', e => {
+            switch (e.key) {
+                case 'ArrowUp': if (direction.y === 0) direction = { x: 0, y: -1 }; break;
+                case 'ArrowDown': if (direction.y === 0) direction = { x: 0, y: 1 }; break;
+                case 'ArrowLeft': if (direction.x === 0) direction = { x: -1, y: 0 }; break;
+                case 'ArrowRight': if (direction.x === 0) direction = { x: 1, y: 0 }; break;
+            }
+        });
+
+        gameLoop();
+    </script>
 </body>
 </html>
