@@ -16,12 +16,18 @@ const enemy = {
 // Элементы интерфейса
 const playerHealthElement = document.getElementById('player-health');
 const enemyHealthElement = document.getElementById('enemy-health');
+const playerHealthBar = document.getElementById('player-health-bar');
+const enemyHealthBar = document.getElementById('enemy-health-bar');
 const logElement = document.getElementById('log');
+const playerImg = document.getElementById('player-img');
+const enemyImg = document.getElementById('enemy-img');
 
 // Обновление статуса игры
 function updateStatus() {
     playerHealthElement.textContent = player.health;
     enemyHealthElement.textContent = enemy.health;
+    playerHealthBar.style.width = `${player.health}%`;
+    enemyHealthBar.style.width = `${enemy.health}%`;
 }
 
 // Логирование событий
@@ -39,6 +45,10 @@ function attack() {
     addLog(`Вы атаковали врага и нанесли ${damage} урона!`);
     updateStatus();
 
+    // Анимация атаки
+    enemyImg.classList.add('shake');
+    setTimeout(() => enemyImg.classList.remove('shake'), 500);
+
     if (enemy.health <= 0) {
         addLog("Вы победили врага!");
         resetEnemy();
@@ -54,6 +64,10 @@ function enemyAttack() {
     addLog(`Враг атаковал вас и нанес ${damage} урона!`);
     updateStatus();
 
+    // Анимация атаки
+    playerImg.classList.add('shake');
+    setTimeout(() => playerImg.classList.remove('shake'), 500);
+
     if (player.health <= 0) {
         addLog("Вы проиграли!");
     }
@@ -64,6 +78,11 @@ function defend() {
     player.health += player.defense;
     addLog(`Вы защитились и восстановили ${player.defense} здоровья.`);
     updateStatus();
+
+    // Анимация защиты
+    playerImg.classList.add('blink');
+    setTimeout(() => playerImg.classList.remove('blink'), 500);
+
     enemyAttack();
 }
 
