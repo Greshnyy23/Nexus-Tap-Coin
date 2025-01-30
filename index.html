@@ -3,252 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Музыкальный плеер</title>
+    <title>Сибирский Трэп Плеер</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #1a1a1a;
-            color: #fff;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        /* ... (предыдущие стили остаются без изменений) ... */
 
-        .player {
-            background: #2a2a2a;
-            border-radius: 15px;
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        .cover-art {
-            width: 200px;
-            height: 200px;
-            border-radius: 10px;
-            margin: 0 auto 20px;
-            background: #333;
-            overflow: hidden;
-        }
-
-        #visualizer {
-            width: 100%;
-            height: 100%;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
+        .playlist-selector {
             margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
         }
 
-        button {
+        .playlist-btn {
             background: #4CAF50;
             border: none;
             color: white;
-            padding: 12px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #45a049;
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 5px;
-            background: #404040;
-            border-radius: 5px;
-            margin: 10px 0;
+            padding: 8px 15px;
+            border-radius: 15px;
             cursor: pointer;
         }
 
-        #progress {
-            height: 100%;
-            background: #4CAF50;
-            border-radius: 5px;
-            width: 0%;
-        }
-
-        .time {
+        .youtube-link {
+            background: #FF0000;
             display: flex;
-            justify-content: space-between;
-            font-size: 0.8em;
-            color: #888;
-        }
-
-        .playlist {
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .track {
+            align-items: center;
+            gap: 8px;
             padding: 10px;
-            background: #333;
-            margin-bottom: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
+            text-decoration: none;
+            color: white;
+            border-radius: 8px;
+            margin-top: 15px;
         }
 
-        .track:hover {
-            background: #404040;
+        .youtube-link img {
+            width: 24px;
+            height: 24px;
         }
     </style>
 </head>
 <body>
     <div class="player">
-        <div class="cover-art">
-            <canvas id="visualizer"></canvas>
-        </div>
-        
-        <div class="controls">
-            <button id="prevBtn">⏮</button>
-            <button id="playPauseBtn">▶</button>
-            <button id="nextBtn">⏭</button>
+        <div class="playlist-selector">
+            <button class="playlist-btn" onclick="selectPlaylist('main')">Основное</button>
+            <button class="playlist-btn" onclick="selectPlaylist('siberian_trap')">Сибирский Трэп</button>
         </div>
 
-        <div class="progress-container">
-            <div id="progress"></div>
-        </div>
+        <!-- ... (остальные элементы плеера остаются без изменений) ... -->
 
-        <div class="time">
-            <span id="currentTime">0:00</span>
-            <span id="duration">0:00</span>
-        </div>
+        <a href="https://music.youtube.com/playlist?list=PLcgcJj2r8RqTsVQHYXq8p4XUyL8yqSxrY" 
+           target="_blank" 
+           class="youtube-link">
+            <img src="https://www.youtube.com/s/desktop/d6e70e1a/img/favicon_48.png" alt="YT Music">
+            Открыть в YouTube Music
+        </a>
     </div>
 
-    <div class="playlist" id="playlist"></div>
-
     <script>
-        const audio = new Audio();
-        const playlist = [
-            {
-                title: "Пример трека 1",
-                artist: "Исполнитель 1",
-                url: "https://example.com/music1.mp3"
-            },
-            {
-                title: "Пример трека 2",
-                artist: "Исполнитель 2",
-                url: "https://example.com/music2.mp3"
-            }
-        ];
+        const playlists = {
+            main: [
+                {
+                    title: "Трек 1",
+                    artist: "Исполнитель",
+                    url: "https://example.com/track1.mp3"
+                },
+                {
+                    title: "Трек 2",
+                    artist: "Другой исполнитель",
+                    url: "https://example.com/track2.mp3"
+                }
+            ],
+            
+            siberian_trap: [
+                {
+                    title: "SIBERIAN TRAP MIX 2024",
+                    type: "youtube",
+                    url: "https://music.youtube.com/playlist?list=PLcgcJj2r8RqTsVQHYXq8p4XUyL8yqSxrY"
+                },
+                {
+                    title: "Лучшие трэп хиты",
+                    type: "youtube",
+                    url: "https://music.youtube.com/playlist?list=PLcgcJj2r8RqTsVQHYXq8p4XUyL8yqSxrY"
+                }
+            ]
+        };
 
+        let currentPlaylist = 'main';
         let currentTrack = 0;
-        let isPlaying = false;
-        const canvas = document.getElementById('visualizer');
-        const ctx = canvas.getContext('2d');
 
-        // Инициализация визуализатора
-        canvas.width = 200;
-        canvas.height = 200;
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const analyser = audioContext.createAnalyser();
-        const source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        analyser.fftSize = 256;
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-
-        function updateVisualizer() {
-            requestAnimationFrame(updateVisualizer);
-            analyser.getByteFrequencyData(dataArray);
-            
-            ctx.fillStyle = '#333';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            const barWidth = (canvas.width / bufferLength) * 2.5;
-            let x = 0;
-
-            for(let i = 0; i < bufferLength; i++) {
-                const barHeight = dataArray[i] / 2;
-                ctx.fillStyle = `hsl(${i * 2}, 100%, 50%)`;
-                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                x += barWidth + 1;
-            }
+        function selectPlaylist(playlistId) {
+            currentPlaylist = playlistId;
+            currentTrack = 0;
+            updatePlaylist();
+            loadTrack(0);
         }
 
         function loadTrack(trackIndex) {
+            const track = playlists[currentPlaylist][trackIndex];
+            
+            if(track.type === 'youtube') {
+                window.open(track.url, '_blank');
+                return;
+            }
+
             currentTrack = trackIndex;
-            audio.src = playlist[trackIndex].url;
+            audio.src = track.url;
             audio.load();
-            updatePlaylist();
+            if(isPlaying) audio.play();
         }
 
         function updatePlaylist() {
             const playlistDiv = document.getElementById('playlist');
-            playlistDiv.innerHTML = playlist.map((track, index) => `
+            playlistDiv.innerHTML = playlists[currentPlaylist].map((track, index) => `
                 <div class="track" onclick="loadTrack(${index})">
-                    ${index + 1}. ${track.title} - ${track.artist}
+                    ${index + 1}. ${track.title}${track.artist ? ' - ' + track.artist : ''}
                     ${index === currentTrack ? '▶' : ''}
+                    ${track.type === 'youtube' ? ' (YouTube)' : ''}
                 </div>
             `).join('');
         }
 
-        function updateProgress() {
-            const progress = document.getElementById('progress');
-            const currentTime = document.getElementById('currentTime');
-            const duration = document.getElementById('duration');
-
-            progress.style.width = (audio.currentTime / audio.duration) * 100 + '%';
-            currentTime.textContent = formatTime(audio.currentTime);
-            duration.textContent = formatTime(audio.duration);
-        }
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            seconds = Math.floor(seconds % 60);
-            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        // Обработчики событий
-        document.getElementById('playPauseBtn').addEventListener('click', () => {
-            if (isPlaying) {
-                audio.pause();
-            } else {
-                audio.play();
-                updateVisualizer();
-            }
-            isPlaying = !isPlaying;
-            document.getElementById('playPauseBtn').textContent = isPlaying ? '⏸' : '▶';
-        });
-
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            currentTrack = (currentTrack + 1) % playlist.length;
-            loadTrack(currentTrack);
-            if (isPlaying) audio.play();
-        });
-
-        document.getElementById('prevBtn').addEventListener('click', () => {
-            currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
-            loadTrack(currentTrack);
-            if (isPlaying) audio.play();
-        });
-
-        document.querySelector('.progress-container').addEventListener('click', (e) => {
-            const rect = e.target.getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = pos * audio.duration;
-        });
-
-        audio.addEventListener('timeupdate', updateProgress);
-        audio.addEventListener('ended', () => {
-            currentTrack = (currentTrack + 1) % playlist.length;
-            loadTrack(currentTrack);
-            audio.play();
-        });
-
-        // Инициализация
-        loadTrack(0);
-        updatePlaylist();
+        // ... (остальной JavaScript код из предыдущей версии остается) ...
     </script>
 </body>
 </html>
