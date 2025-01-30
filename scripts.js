@@ -1,97 +1,159 @@
-// Инициализация сцены, камеры и рендерера
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.getElementById('game-container').appendChild(renderer.domElement);
-
-// Освещение
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(5, 5, 5).normalize();
-scene.add(light);
-
-// Платформа
-const platformGeometry = new THREE.BoxGeometry(10, 0.5, 10);
-const platformMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-const platform = new THREE.Mesh(platformGeometry, platformMaterial);
-platform.position.y = -2;
-scene.add(platform);
-
-// Персонаж
-const playerGeometry = new THREE.BoxGeometry(0.5, 1, 0.5);
-const playerMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 });
-const player = new THREE.Mesh(playerGeometry, playerMaterial);
-player.position.y = -1;
-scene.add(player);
-
-// Монеты
-const coins = [];
-const coinGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-const coinMaterial = new THREE.MeshPhongMaterial({ color: 0xffff00 });
-
-function createCoin() {
-    const coin = new THREE.Mesh(coinGeometry, coinMaterial);
-    coin.position.x = (Math.random() - 0.5) * 8;
-    coin.position.z = (Math.random() - 0.5) * 8;
-    coin.position.y = 0.5;
-    scene.add(coin);
-    coins.push(coin);
-}
-
-for (let i = 0; i < 10; i++) {
-    createCoin();
-}
-
-// Управление
-const keys = {};
-document.addEventListener('keydown', (event) => keys[event.code] = true);
-document.addEventListener('keyup', (event) => keys[event.code] = false);
-
-// Очки и таймер
-let score = 0;
-let timeLeft = 60;
-const scoreElement = document.getElementById('score');
-const timerElement = document.getElementById('timer');
-
-// Анимация и логика игры
-function animate() {
-    requestAnimationFrame(animate);
-
-    // Управление персонажем
-    if (keys['ArrowUp']) player.position.z -= 0.1;
-    if (keys['ArrowDown']) player.position.z += 0.1;
-    if (keys['ArrowLeft']) player.position.x -= 0.1;
-    if (keys['ArrowRight']) player.position.x += 0.1;
-
-    // Проверка сбора монет
-    coins.forEach((coin, index) => {
-        if (player.position.distanceTo(coin.position) < 0.5) {
-            scene.remove(coin);
-            coins.splice(index, 1);
-            score += 10;
-            scoreElement.textContent = `Очки: ${score}`;
-            createCoin();
-        }
-    });
-
-    // Обновление таймера
-    timeLeft -= 0.016; // Примерно 60 FPS
-    timerElement.textContent = `Время: ${Math.max(0, Math.floor(timeLeft))}`;
-
-    if (timeLeft <= 0) {
-        alert(`Игра окончена! Ваш счёт: ${score}`);
-        timeLeft = 60;
-        score = 0;
-        scoreElement.textContent = `Очки: ${score}`;
+const gameState = {
+    gold: 0,
+    gps: 0,
+    clickPower: 1,
+    level: 1,
+    experience: 0,
+    achievements: [],
+    upgrades: {
+        miner: { price: 10, gps: 1, count: 0 },
+        proMiner: { price: 50, gps: 5, count: 0 },
+        clickUpgrade: { price: 20, power: 1, count: 0 },
+        boost: { price: 100, multiplier: 2, duration: 30000, active: false }
     }
+};
 
-    // Рендеринг сцены
-    renderer.render(scene, camera);
+// Обновление интерфейса
+function updateUI() {
+    document.getElementById('gold').textContent = gameState.gold.toFixed(1);
+    document.getElementById('gps').textContent = gameState.gps.toFixed(1);
+    document.getElementById('clickPower').textContent = gameState.clickPower;
+    document.getElementById('minerPrice').textContent = gameState.upgrades.miner.price.toFixed(1);
+    document.getElementById('proMinerPrice').textContent = gameState.upgrades.proMiner.price.toFixed(1);
+    document.getElementById('clickUpgradePrice').textContent = gameState.upgrades.clickUpgrade.price.toFixed(1);
+    document.getElementById('boostPrice').textContent = gameState.upgrades.boost.price.toFixed(1);
+    document.getElementById('level').textContent = gameState.level;
+    document.getElementById('experience').textContent = gameState.experience;
+
+    // Обновляем доступность кнопок
+    document.getElementById('buyMinerButton').disabled = gameState.gold < gameState.upgrades.miner.price;
+    document.getElementById('buyProMinerButton').disabled = gameState.gold < gameState.upgrades.proMiner.price;
+    document.getElementById('buyClickUpgradeButton').disabled = gameState.gold < gameState.upgrades.clickUpgrade.price;
+    document.getElementById('buyBoostButton').disabled = gameState.gold < gameState.upgrades.boost.price;
+
+    updateAchievements();
 }
 
-// Позиция камеры
-camera.position.set(0, 5, 10);
-camera.lookAt(0, 0, 0);
+// Функция клика
+document.getElementById('clickButton').addEventListener('click', () => {
+    gameState.gold += gameState.clickPower;
+    gameState.experience += 1; // Получаем опыт за клик
+    checkAchievements('firstClick');
+    updateUI();
+});
 
-// Запуск анимации
-animate();
+// Функция покупки шахтера
+document.getElementById('buyMinerButton').addEventListener('click', () => {
+    if (gameState.gold >= gameState.upgrades.miner.price) {
+        gameState.gold -= gameState.upgrades.miner.price;
+        gameState.upgrades.miner.count++;
+        gameState.gps += gameState.upgrades.miner.gps;
+
+        // Увеличиваем цену на шахтера
+        gameState.upgrades.miner.price *= 1.15;
+        checkAchievements('buyMiner');
+        updateUI();
+    }
+});
+
+// Функция покупки профессионального шахтера
+document.getElementById('buyProMinerButton').addEventListener('click', () => {
+    if (gameState.gold >= gameState.upgrades.proMiner.price) {
+        gameState.gold -= gameState.upgrades.proMiner.price;
+        gameState.upgrades.proMiner.count++;
+        gameState.gps += gameState.upgrades.proMiner.gps;
+
+        // Увеличиваем цену на профессионального шахтера
+        gameState.upgrades.proMiner.price *= 1.15;
+        checkAchievements('buyProMiner');
+        updateUI();
+    }
+});
+
+// Функция покупки улучшения клика
+document.getElementById('buyClickUpgradeButton').addEventListener('click', () => {
+    if (gameState.gold >= gameState.upgrades.clickUpgrade.price) {
+        gameState.gold -= gameState.upgrades.clickUpgrade.price;
+        gameState.clickPower += gameState.upgrades.clickUpgrade.power;
+
+        // Увеличиваем цену улучшения клика
+        gameState.upgrades.clickUpgrade.price *= 1.15;
+        checkAchievements('buyClickUpgrade');
+        updateUI();
+    }
+});
+
+// Функция покупки буста
+document.getElementById('buyBoostButton').addEventListener('click', () => {
+    if (gameState.gold >= gameState.upgrades.boost.price) {
+        gameState.gold -= gameState.upgrades.boost.price;
+        applyBoost(gameState.upgrades.boost.multiplier, gameState.upgrades.boost.duration);
+        updateUI();
+    }
+});
+
+// Интервал обновления золота
+setInterval(() => {
+    gameState.gold += gameState.gps;
+    updateUI();
+}, 1000);
+
+// Проверка достижений
+function checkAchievements(achievement) {
+    if (achievement === 'firstClick' && !gameState.achievements.includes('firstClick')) {
+        gameState.achievements.push('firstClick');
+        alert('Достижение разблокировано: Первый клик!');
+    }
+    if (achievement === 'buyMiner' && !gameState.achievements.includes('buyMiner')) {
+        gameState.achievements.push('buyMiner');
+        alert('Достижение разблокировано: Куплен шахтер!');
+    }
+    if (achievement === 'buyProMiner' && !gameState.achievements.includes('buyProMiner')) {
+        gameState.achievements.push('buyProMiner');
+        alert('Достижение разблокировано: Куплен профессиональный шахтер!');
+    }
+    if (achievement === 'buyClickUpgrade' && !gameState.achievements.includes('buyClickUpgrade')) {
+        gameState.achievements.push('buyClickUpgrade');
+        alert('Достижение разблокировано: Улучшена мощность клика!');
+    }
+}
+
+// Обновление списка достижений
+function updateAchievements() {
+    const achievementList = document.getElementById('achievementList');
+    achievementList.innerHTML = ''; // Очистить список достижений
+    gameState.achievements.forEach(ach => {
+        const li = document.createElement('li');
+        li.textContent = ach.replace(/([A-Z])/g, ' $1').trim(); // Форматирование названия
+        achievementList.appendChild(li);
+    });
+}
+
+// Применение буста
+function applyBoost(multiplier, duration) {
+    gameState.gps *= multiplier; // Увеличиваем добычу золота в секунду
+    setTimeout(() => {
+        gameState.gps /= multiplier; // Возвращаем обратно после истечения времени
+    }, duration);
+}
+
+// Загрузка состояния из Local Storage
+function loadGame() {
+    const savedGame = JSON.parse(localStorage.getItem('idleMinerGame'));
+    if (savedGame) {
+        Object.assign(gameState, savedGame);
+        updateUI();
+    }
+}
+
+// Сохранение состояния в Local Storage
+function saveGame() {
+    localStorage.setItem('idleMinerGame', JSON.stringify(gameState));
+}
+
+// Сохранение состояния игры при выходе
+window.addEventListener('beforeunload', saveGame);
+
+// Начальное обновление интерфейса
+loadGame();
+updateUI();
