@@ -40,18 +40,12 @@
             padding: 20px;
             border-radius: 12px;
             text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
         }
 
         .stat-value {
             font-size: 24px;
             color: var(--primary);
             font-weight: bold;
-            text-shadow: 0 2px 4px rgba(255,215,0,0.3);
         }
 
         .main-button {
@@ -62,15 +56,9 @@
             color: white;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s;
             display: block;
             width: 100%;
             margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(74,144,226,0.3);
-        }
-
-        .main-button:active {
-            transform: scale(0.98);
         }
 
         .shop-tabs {
@@ -87,12 +75,10 @@
             color: white;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
         .tab-button.active {
             background: var(--secondary);
-            box-shadow: 0 2px 8px rgba(74,144,226,0.4);
         }
 
         .upgrade-card {
@@ -103,12 +89,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
-            transition: transform 0.2s;
             border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .upgrade-card:hover {
-            transform: translateX(10px);
         }
 
         .upgrade-icon {
@@ -150,31 +131,11 @@
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
         .buy-button:disabled {
             background: #666;
             cursor: not-allowed;
-        }
-
-        .buy-button:hover:not(:disabled) {
-            transform: scale(1.05);
-        }
-
-        .disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        @keyframes coinBounce {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .coin-animation {
-            animation: coinBounce 0.3s;
         }
 
         .miner-count {
@@ -444,10 +405,6 @@
             if (!gameState.achievements.firstClick) {
                 unlockAchievement('firstClick');
             }
-            document.getElementById('gold').classList.add('coin-animation');
-            setTimeout(() => {
-                document.getElementById('gold').classList.remove('coin-animation');
-            }, 300);
             checkLevelUp();
             updateUI();
             saveGame();
