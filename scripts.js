@@ -1,113 +1,121 @@
-let gameState = {
-    gold: 0,
-    gps: 0,
-    clickPower: 1,
-    level: 1,
-    experience: 0,
-    updates: {
-        miner: { price: 10, gps: 1, count: 0 },
-        proMiner: { price: 50, gps: 5, count: 0 },
-        clickUpgrade: { price: 20, power: 1, count: 0 },
-        boost: { price: 100, multiplier: 2, duration: 30000, active: false }
-    },
-    achievements: []
-};
+let gold = 0;
+let goldPerSecond = 0;
+let clickPower = 1;
+let level = 1;
+let experience = 0;
+let isBoostActive = false;
 
-// Функция для обновления интерфейса
-function updateUI() {
-    document.getElementById('gold').textContent = gameState.gold.toFixed(1);
-    document.getElementById('gps').textContent = gameState.gps.toFixed(1);
-    document.getElementById('clickPower').textContent = gameState.clickPower;
-    document.getElementById('experience').textContent = gameState.experience;
-    document.getElementById('level').textContent = gameState.level;
+const goldElement = document.getElementById('gold');
+const gpsElement = document.getElementById('gps');
+const clickPowerElement = document.getElementById('clickPower');
+const levelElement = document.getElementById('level');
+const experienceElement = document.getElementById('experience');
 
-    // Обновить цены
-    document.getElementById('minerPrice').textContent = gameState.updates.miner.price.toFixed(1);
-    document.getElementById('proMinerPrice').textContent = gameState.updates.proMiner.price.toFixed(1);
-    document.getElementById('clickUpgradePrice').textContent = gameState.updates.clickUpgrade.price.toFixed(1);
-    document.getElementById('boostPrice').textContent = gameState.updates.boost.price.toFixed(1);
-    
-    // Обновление кнопок
-    document.getElementById('buyMinerButton').disabled = gameState.gold < gameState.updates.miner.price;
-    document.getElementById('buyProMinerButton').disabled = gameState.gold < gameState.updates.proMiner.price;
-    document.getElementById('buyClickUpgradeButton').disabled = gameState.gold < gameState.updates.clickUpgrade.price;
-    document.getElementById('buyBoostButton').disabled = gameState.gold < gameState.updates.boost.price;
+const clickButton = document.getElementById('clickButton');
+const buyMinerButton = document.getElementById('buyMinerButton');
+const buyProMinerButton = document.getElementById('buyProMinerButton');
+const buyClickUpgradeButton = document.getElementById('buyClickUpgradeButton');
+const buyBoostButton = document.getElementById('buyBoostButton');
+const achievementList = document.getElementById('achievementList');
 
-    updateAchievements();
+// Обновление статистики
+function updateStats() {
+    goldElement.textContent = gold;
+    gpsElement.textContent = goldPerSecond;
+    clickPowerElement.textContent = clickPower;
+    levelElement.textContent = level;
+    experienceElement.textContent = experience;
 }
 
-// Функция клика
-document.getElementById('clickButton').addEventListener('click', () => {
-    gameState.gold += gameState.clickPower;
-    gameState.experience += 1; // Добавляем опыт за клик
-    updateUI();
-});
-
-// Функция покупки шахтера
-document.getElementById('buyMinerButton').addEventListener('click', () => {
-    if (gameState.gold >= gameState.updates.miner.price) {
-        gameState.gold -= gameState.updates.miner.price;
-        gameState.updates.miner.count++;
-        gameState.gps += gameState.updates.miner.gps;
-        gameState.updates.miner.price *= 1.15; // Увеличиваем цену шахтера
-        updateUI();
+// Проверка уровня
+function checkLevelUp() {
+    if (experience >= level * 10) {
+        level++;
+        experience = 0;
+        alert(`Вы достигли уровня ${level}!`);
+        checkAchievements();
     }
-});
-
-// Функция покупки профессионального шахтера
-document.getElementById('buyProMinerButton').addEventListener('click', () => {
-    if (gameState.gold >= gameState.updates.proMiner.price) {
-        gameState.gold -= gameState.updates.proMiner.price;
-        gameState.updates.proMiner.count++;
-        gameState.gps += gameState.updates.proMiner.gps;
-        gameState.updates.proMiner.price *= 1.15; // Увеличиваем цену профессионального шахтера
-        updateUI();
-    }
-});
-
-// Функция покупки улучшения клика
-document.getElementById('buyClickUpgradeButton').addEventListener('click', () => {
-    if (gameState.gold >= gameState.updates.clickUpgrade.price) {
-        gameState.gold -= gameState.updates.clickUpgrade.price;
-        gameState.clickPower += gameState.updates.clickUpgrade.power; // Увеличиваем мощность клика
-        gameState.updates.clickUpgrade.price *= 1.15; // Увеличиваем цену улучшения
-        updateUI();
-    }
-});
-
-// Функция покупки буста
-document.getElementById('buyBoostButton').addEventListener('click', () => {
-    if (gameState.gold >= gameState.updates.boost.price) {
-        gameState.gold -= gameState.updates.boost.price;
-        applyBoost(gameState.updates.boost.multiplier, gameState.updates.boost.duration);
-        updateUI();
-    }
-});
-
-// Интервал обновления золота
-setInterval(() => {
-    gameState.gold += gameState.gps;
-    updateUI();
-}, 1000);
-
-// Применение буста
-function applyBoost(multiplier, duration) {
-    gameState.gps *= multiplier; // Увеличиваем добычу золота в секунду
-    setTimeout(() => {
-        gameState.gps /= multiplier; // Возвращаем обратно после истечения времени
-    }, duration);
 }
 
-// Обновление достижений
-function updateAchievements() {
-    const achievementList = document.getElementById('achievementList');
-    achievementList.innerHTML = ''; // Очистка списка достижений
-    gameState.achievements.forEach(ach => {
-        const li = document.createElement('li');
-        li.textContent = ach;
-        achievementList.appendChild(li);
+// Проверка достижений
+function checkAchievements() {
+    const achievements = [
+        { condition: level >= 5, text: "Достигнут 5 уровень!" },
+        { condition: gold >= 1000, text: "Добыто 1000 золота!" },
+        { condition: goldPerSecond >= 10, text: "10 золота в секунду!" },
+    ];
+
+    achievements.forEach(achievement => {
+        if (achievement.condition && !achievementList.querySelector(`li:contains("${achievement.text}")`)) {
+            const li = document.createElement('li');
+            li.textContent = achievement.text;
+            achievementList.appendChild(li);
+        }
     });
 }
 
-// Начальное обновление интерфейса
-updateUI();
+// Клик по кнопке добычи золота
+clickButton.addEventListener('click', () => {
+    gold += clickPower * (isBoostActive ? 2 : 1);
+    experience += clickPower;
+    updateStats();
+    checkLevelUp();
+});
+
+// Покупка шахтера
+buyMinerButton.addEventListener('click', () => {
+    const minerPrice = parseInt(document.getElementById('minerPrice').textContent);
+    if (gold >= minerPrice) {
+        gold -= minerPrice;
+        goldPerSecond += 1;
+        updateStats();
+    } else {
+        alert('Недостаточно золота!');
+    }
+});
+
+// Покупка профессионального шахтера
+buyProMinerButton.addEventListener('click', () => {
+    const proMinerPrice = parseInt(document.getElementById('proMinerPrice').textContent);
+    if (gold >= proMinerPrice) {
+        gold -= proMinerPrice;
+        goldPerSecond += 5;
+        updateStats();
+    } else {
+        alert('Недостаточно золота!');
+    }
+});
+
+// Покупка улучшения клика
+buyClickUpgradeButton.addEventListener('click', () => {
+    const clickUpgradePrice = parseInt(document.getElementById('clickUpgradePrice').textContent);
+    if (gold >= clickUpgradePrice) {
+        gold -= clickUpgradePrice;
+        clickPower += 1;
+        updateStats();
+    } else {
+        alert('Недостаточно золота!');
+    }
+});
+
+// Покупка буста
+buyBoostButton.addEventListener('click', () => {
+    const boostPrice = parseInt(document.getElementById('boostPrice').textContent);
+    if (gold >= boostPrice) {
+        gold -= boostPrice;
+        isBoostActive = true;
+        setTimeout(() => {
+            isBoostActive = false;
+            alert('Буст добычи закончился!');
+        }, 30000);
+        updateStats();
+    } else {
+        alert('Недостаточно золота!');
+    }
+});
+
+// Автоматическая добыча золота
+setInterval(() => {
+    gold += goldPerSecond * (isBoostActive ? 2 : 1);
+    updateStats();
+}, 1000);
