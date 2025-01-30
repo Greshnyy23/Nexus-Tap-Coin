@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RPG Game</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=MedievalSharp&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="game-container">
-        <h1>RPG Game</h1>
+        <h1>RPG Adventure</h1>
         
         <!-- Игрок -->
         <div class="character">
-            <img src="player.png" alt="Игрок" id="player-img">
+            <img src="player.png" alt="Игрок" id="player-img" class="character-img">
             <div class="health-bar">
                 <div id="player-health-bar" class="health-bar-inner"></div>
             </div>
@@ -21,7 +22,7 @@
 
         <!-- Враг -->
         <div class="character">
-            <img src="enemy.png" alt="Враг" id="enemy-img">
+            <img src="enemy.png" alt="Враг" id="enemy-img" class="character-img">
             <div class="health-bar">
                 <div id="enemy-health-bar" class="health-bar-inner"></div>
             </div>
@@ -44,6 +45,13 @@
         <!-- Лог событий -->
         <div id="log"></div>
     </div>
+
+    <!-- Звуковые эффекты -->
+    <audio id="attack-sound" src="attack.mp3"></audio>
+    <audio id="defend-sound" src="defend.mp3"></audio>
+    <audio id="victory-sound" src="victory.mp3"></audio>
+    <audio id="defeat-sound" src="defeat.mp3"></audio>
+
     <script src="script.js"></script>
 </body>
 </html>
