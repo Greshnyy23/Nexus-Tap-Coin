@@ -1,7 +1,10 @@
+/* Основные стили */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #2c3e50;
-    color: #ecf0f1;
+    font-family: 'Arial', sans-serif;
+    background-image: url('background.jpg'); /* Фоновое изображение */
+    background-size: cover;
+    background-position: center;
+    color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,12 +13,24 @@ body {
 }
 
 .game-container {
-    background-color: #34495e;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный черный фон */
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     text-align: center;
-    width: 400px;
+    width: 450px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .character {
@@ -23,24 +38,26 @@ body {
 }
 
 .character img {
-    width: 100px;
-    height: 100px;
-    border: 3px solid #ecf0f1;
+    width: 120px;
+    height: 120px;
+    border: 4px solid #fff;
     border-radius: 50%;
     margin-bottom: 10px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
 
 .health-bar {
-    background-color: #555;
+    background-color: #444;
     border-radius: 10px;
     overflow: hidden;
     width: 100%;
     height: 20px;
     margin: 10px 0;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 .health-bar-inner {
-    background-color: #e74c3c;
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
     height: 100%;
     width: 100%;
     transition: width 0.3s ease;
@@ -48,22 +65,25 @@ body {
 
 #actions {
     margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
 }
 
 .action-btn {
-    background-color: #3498db;
+    background: linear-gradient(45deg, #3498db, #2980b9);
     border: none;
     color: white;
-    padding: 10px 20px;
-    margin: 5px;
+    padding: 12px 24px;
     font-size: 16px;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    border-radius: 25px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .action-btn:hover {
-    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
 }
 
 .action-btn span {
@@ -76,9 +96,10 @@ body {
     overflow-y: auto;
     border: 1px solid #555;
     padding: 10px;
-    background-color: #2c3e50;
-    color: #ecf0f1;
-    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Анимации */
