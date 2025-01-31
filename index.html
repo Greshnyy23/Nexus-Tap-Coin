@@ -240,6 +240,11 @@
     <script>
         let currency = 0;
         let earningsPerClick = 1;
+        let playTime = 0;  // Время игры в секундах
+        let maxCPS = 0;  // Максимальное количество кликов в секунду
+        let clicksThisSecond = 0;  // Клики за текущую секунду
+        let lastSecond = Math.floor(Date.now() / 1000); // Время последней проверки в секундах
+
         const upgrades = [
             { name: 'Увеличение кликов +1', price: 10, owned: 0, max: 10, type: 'click', effect: 1 },
             { name: 'Увеличение кликов +2', price: 30, owned: 0, max: 5, type: 'click', effect: 2 },
@@ -283,6 +288,7 @@
 
         function earnCurrency() {
             currency += earningsPerClick;
+            clicksThisSecond++;
             document.getElementById('currency').textContent = currency;
             showNotification(`+${earningsPerClick} валюты!`);
             saveData();
@@ -298,9 +304,18 @@
         }
 
         function updateStats() {
-            document.getElementById('playTime').textContent = `${Math.floor(0 / 60)}ч ${0 % 60}м`; // Замените на вашу логику
-            document.getElementById('totalEarned').textContent = currency; // Вставьте вашу логику
-            document.getElementById('maxCPS').textContent = 0; // Вставьте вашу логику
+            // Обновляем время игры
+            playTime = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('playTime').textContent = `${Math.floor(playTime / 3600)}ч ${(Math.floor(playTime / 60)) % 60}м`;
+
+            // Обновляем максимальное количество кликов в секунду
+            if (clicksThisSecond > maxCPS) {
+                maxCPS = clicksThisSecond;
+            }
+            document.getElementById('maxCPS').textContent = maxCPS;
+
+            // Обновляем общий заработок
+            document.getElementById('totalEarned').textContent = currency;
         }
 
         function updateUpgradesUI() {
@@ -337,10 +352,26 @@
             }
         }
 
+        // Добавим отслеживание кликов в секунду
+        function trackClicksPerSecond() {
+            const currentSecond = Math.floor(Date.now() / 1000);
+            if (currentSecond > lastSecond) {
+                lastSecond = currentSecond;
+                clicksThisSecond = 0;  // сбрасываем счетчик кликов за текущую секунду
+            }
+        }
+
         // Инициализация интерфейса
-        loadData(); // Загружаем данные при старте
+        const startTime = Date.now();  // Запоминаем время начала игры
+        loadData();  // Загружаем данные при старте
         updateStats();
         updateUpgradesUI();
+
+        // Обновление статистики каждую секунду
+        setInterval(() => {
+            updateStats();
+            trackClicksPerSecond();
+        }, 1000);
     </script>
 </body>
 </html>
