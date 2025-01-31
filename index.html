@@ -9,30 +9,29 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to bottom right, #e0f7fa, #80deea);
+            background: linear-gradient(to bottom right, #e3f2fd, #90caf9);
             color: #333;
-            transition: background 0.3s;
         }
 
         .nav {
-            background: #00796b;
-            padding: 15px;
+            background: #004d40;
+            padding: 10px;
             display: flex;
             justify-content: space-around;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .nav a {
             color: white;
             text-decoration: none;
-            font-size: 20px;
-            padding: 10px;
+            font-size: 18px;
+            padding: 10px 15px;
             transition: background 0.3s;
+            border-radius: 5px;
         }
 
         .nav a:hover {
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
         }
 
         .page {
@@ -42,17 +41,11 @@
 
         .active {
             display: block;
-            animation: fade 0.5s ease-in-out;
-        }
-
-        @keyframes fade {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .container {
-            max-width: 800px;
-            margin: auto;
+            max-width: 600px;
+            margin: 20px auto;
             padding: 20px;
             background: white;
             border-radius: 15px;
@@ -60,82 +53,69 @@
         }
 
         h2 {
-            color: #00796b;
-        }
-
-        .upgrades-grid, .achievements-grid, .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .achievement-card, .event-item, .stat-item, .upgrade {
-            background: #fafafa;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .referral-box {
-            background: rgba(188, 19, 254, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid #bc13fe;
+            color: #004d40;
             text-align: center;
         }
 
-        .code-box {
-            background: rgba(255, 255, 255, 0.3);
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-family: monospace;
-        }
-
-        button {
+        .click-button {
             background: #00796b;
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 10px 15px;
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .click-button:hover {
+            background: #004d40;
+            transform: scale(1.05);
+        }
+
+        .currency-display {
+            font-size: 24px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .upgrades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .upgrade {
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .upgrade h3 {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .upgrade-button {
+            background: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
             cursor: pointer;
             transition: background 0.3s;
         }
 
-        button:disabled {
+        .upgrade-button:disabled {
             background: #ccc;
-            cursor: not-allowed;
         }
 
-        button:hover:not(:disabled) {
+        .upgrade-button:hover:not(:disabled) {
             background: #004d40;
-        }
-
-        /* Прогресс бары */
-        .progress-bar {
-            background: #f0f0f0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-
-        .progress {
-            height: 10px;
-            background: #4caf50;
-            width: 0;
-            transition: width 0.5s;
-        }
-
-        /* Таблица лидеров */
-        .leaderboard {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            margin: 10px 0;
         }
 
         /* Уведомление о получении валюты */
@@ -145,29 +125,16 @@
             right: 20px;
             background: #4caf50;
             color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            z-index: 1000;
+            padding: 10px 15px;
+            border-radius: 5px;
+            z-index: 100;
             opacity: 0;
             transition: opacity 0.5s ease, transform 0.5s ease;
-            transform: translateY(-20px);
         }
 
         .notification.show {
             opacity: 1;
             transform: translateY(0);
-        }
-
-        /* Входные анимации */
-        @keyframes slideIn {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
         }
     </style>
 </head>
@@ -176,20 +143,19 @@
     <div class="nav">
         <a href="#" onclick="showPage('main')">🏠 Главная</a>
         <a href="#" onclick="showPage('upgrades')">⚡ Улучшения</a>
-        <a href="#" onclick="showPage('achievements')">🏆 Достижения</a>
+        <a href="#" onclick="showPage('achievements')">🏆 Трофеи</a>
         <a href="#" onclick="showPage('referral')">🤝 Рефералы</a>
         <a href="#" onclick="showPage('stats')">📊 Статистика</a>
         <a href="#" onclick="showPage('events')">🎉 События</a>
-        <a href="#" onclick="showPage('leaderboard')">🏆 Таблица лидеров</a>
+        <a href="#" onclick="showPage('leaderboard')">🏆 Лидеры</a>
     </div>
 
     <!-- Главная страница -->
     <div id="main" class="page active">
         <div class="container">
-            <h2>Добро пожаловать в игровое приложение!</h2>
-            <p>Здесь вы можете улучшать свои навыки, достигать успехов и получать призы!</p>
+            <h2>Игровое приложение</h2>
             <button class="click-button" onclick="earnCurrency()">💰 Кликни, чтобы заработать!</button>
-            <p>Валюта: <span id="currency">0</span> (Заработок за клик: <span id="earningsPerClick">1</span>)</p>
+            <div class="currency-display">Валюта: <span id="currency">0</span> (Заработок за клик: <span id="earningsPerClick">1</span>)</div>
         </div>
     </div>
 
@@ -214,12 +180,8 @@
         <div class="container">
             <h2>🤝 Пригласи друзей</h2>
             <div class="referral-box">
-                <input type="text" id="referralCode" placeholder="Введи код друга" style="width: calc(100% - 20px); padding: 10px;">
+                <input type="text" id="referralCode" placeholder="Введи код друга">
                 <button id="applyReferral">✅ Применить</button>
-                <div class="your-code">
-                    <span>Твой код:</span>
-                    <div class="code-box">📋 ${userReferralCode}</div>
-                </div>
             </div>
         </div>
     </div>
@@ -227,15 +189,11 @@
     <!-- Статистика -->
     <div id="stats" class="page">
         <div class="container">
-            <h2>📊 История успеха</h2>
+            <h2>📊 Статистика</h2>
             <div class="stats-grid">
                 <div class="stat-item">🕒 Время игры: <span id="playTime">0ч</span></div>
                 <div class="stat-item">🤑 Всего заработано: <span id="totalEarned">0</span></div>
                 <div class="stat-item">🚀 Макс. кликов/сек: <span id="maxCPS">0</span></div>
-            </div>
-            <h3>Прогресс игровых заданий</h3>
-            <div class="progress-bar">
-                <div class="progress" id="progressBar" style="width: 75%;"></div>
             </div>
         </div>
     </div>
@@ -253,7 +211,7 @@
     <!-- Таблица лидеров -->
     <div id="leaderboard" class="page">
         <div class="container">
-            <h2>🏆 Таблица лидеров</h2>
+            <h2>🏆 Лидеры</h2>
             <div class="leaderboard">
                 <p>1. Игрок1 - 50000 очков</p>
                 <p>2. Игрок2 - 45000 очков</p>
@@ -270,9 +228,6 @@
         let currency = 0; // Начальное количество валюты
         let earningsPerClick = 1; // Сколько валюты зарабатывается за один клик
         const userReferralCode = 'ABC123'; // пример кода
-        const totalPlayTime = 120; // пример времени
-        const totalEarned = 1000; // сумма
-        const maxCPS = 10; // пример макс кликов
         const upgrades = [
             { name: 'Увеличение кликов +1', price: 10, owned: 0, max: 10, type: 'click', effect: 1 },
             { name: 'Увеличение кликов +2', price: 30, owned: 0, max: 5, type: 'click', effect: 2 },
@@ -348,7 +303,6 @@
                 `${Math.floor(totalPlayTime / 60)}ч ${totalPlayTime % 60}м`;
             document.getElementById('totalEarned').textContent = totalEarned;
             document.getElementById('maxCPS').textContent = maxCPS;
-            document.getElementById('progressBar').style.width = '50%'; // Задайте актуальный % прогресса
         }
 
         function updateUpgradesUI() {
@@ -364,7 +318,7 @@
                         <p>📦 Куплено: ${upg.owned}/${upg.max}</p>
                         ${upg.effect ? `<p>↑ Заработок за клик: +${upg.effect}</p>` : ''}
                     </div>
-                    <button onclick="buyUpgrade(${i})" 
+                    <button class="upgrade-button" onclick="buyUpgrade(${i})" 
                             ${currency < upg.price || upg.owned >= upg.max ? 'disabled' : ''}>
                         🛒 Купить
                     </button>
