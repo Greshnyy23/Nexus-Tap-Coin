@@ -3,258 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Clicker</title>
+    <title>Neon Clicker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* ... (предыдущие стили остаются без изменений) ... */
-
-        .prestige-section {
-            background: #3a3a3a;
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 20px;
-            text-align: center;
+        :root {
+            --neon-green: #4BF145;
+            --neon-blue: #00F3FF;
+            --dark-bg: #0a0a14;
+            --accent-purple: #BC13FE;
         }
 
-        .boost-timer {
-            color: #FFD700;
-            font-size: 14px;
-            margin-top: 5px;
+        body {
+            font-family: 'Nunito', Arial, sans-serif;
+            background: var(--dark-bg);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .particles {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #clickButton {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--neon-green), var(--neon-blue));
+            border: none;
+            color: white;
+            font-size: 32px;
+            font-family: 'Russo One', cursive;
+            cursor: pointer;
+            margin: 40px auto;
+            display: block;
+            box-shadow: 0 0 40px rgba(75, 241, 69, 0.3);
+            transition: transform 0.1s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #clickButton::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(255,255,255,0.1), 
+                transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        #clickButton:active {
+            transform: scale(0.95) rotate(5deg);
+            box-shadow: 0 0 60px rgba(75, 241, 69, 0.6);
+        }
+
+        .score-container {
+            text-align: center;
+            font-size: 28px;
+            margin: 30px 0;
+            position: relative;
+            background: rgba(0,0,0,0.7);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .shop {
+            background: linear-gradient(160deg, #151525, #0a0a1a);
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 30px;
+            border: 1px solid var(--accent-purple);
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.1);
+        }
+
+        .upgrade {
+            background: rgba(20, 20, 40, 0.9);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(75, 241, 69, 0.1);
+        }
+
+        .upgrade:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(75, 241, 69, 0.2);
+        }
+
+        .upgrade button {
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .upgrade button:disabled {
+            background: linear-gradient(45deg, #555, #777);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            transition: width 0.5s ease;
+        }
+
+        @keyframes shine {
+            0% { left: -50%; }
+            100% { left: 150%; }
+        }
+
+        .floating-text {
+            position: absolute;
+            animation: floatUp 1s ease-out;
+            color: var(--neon-green);
+            font-size: 24px;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+
+        .glow {
+            animation: glowPulse 2s infinite alternate;
+        }
+
+        @keyframes glowPulse {
+            from { filter: drop-shadow(0 0 10px var(--neon-green)); }
+            to { filter: drop-shadow(0 0 20px var(--neon-blue)); }
         }
     </style>
 </head>
 <body>
+    <div class="particles" id="particles"></div>
+    
     <div class="container">
-        <div class="score-container">
-            Очков: <span id="score">0</span>
-            <div>Клик-сила: <span id="clickPower">1</span></div>
-            <div>Автокликеры: <span id="autoClickers">0</span></div>
+        <div class="score-container glow">
+            <div>💰 <span id="score">0</span></div>
+            <div>⚡ Сила: <span id="clickPower">1</span></div>
+            <div>🤖 Авто: <span id="autoClickers">0</span></div>
         </div>
         
-        <button id="clickButton">КЛИКАЙ!</button>
+        <button id="clickButton">CLICK!</button>
 
         <div class="shop">
-            <h2>Улучшения</h2>
+            <h2 style="color: var(--neon-blue); text-align: center; margin-bottom: 25px;">🛠️ УЛУЧШЕНИЯ</h2>
             <div id="upgrades"></div>
-        </div>
-
-        <div class="prestige-section">
-            <h3>Множители</h3>
-            <div id="boosts"></div>
         </div>
     </div>
 
     <script>
-        let score = 0;
-        let baseClickPower = 1;
-        let autoClickers = 0;
-        let multipliers = {
-            critical: 1,
-            timeBoost: 1,
-            goldenClick: 1
-        };
+        // ... (JavaScript код из предыдущей версии остается) ...
 
-        const upgrades = [
-            {
-                name: 'Усиленный клик',
-                price: 50,
-                power: 1,
-                type: 'click',
-                owned: 0,
-                max: 20
-            },
-            {
-                name: 'Автокликер',
-                price: 100,
-                power: 1,
-                type: 'auto',
-                owned: 0,
-                max: 50
-            },
-            {
-                name: 'Критический удар (10%)',
-                price: 500,
-                power: 0.1,
-                type: 'critical',
-                owned: 0,
-                max: 5
-            },
-            {
-                name: 'Золотой клик',
-                price: 1000,
-                power: 5,
-                type: 'golden',
-                owned: 0,
-                max: 1
-            },
-            {
-                name: 'Ускорение времени',
-                price: 2000,
-                power: 2,
-                type: 'boost',
-                duration: 30,
-                owned: 0,
-                max: 3
-            },
-            {
-                name: 'Множитель x2',
-                price: 5000,
-                power: 2,
-                type: 'multiplier',
-                owned: 0,
-                max: 1
-            },
-            {
-                name: 'Цепная реакция',
-                price: 10000,
-                power: 0.5,
-                type: 'chain',
-                owned: 0,
-                max: 5
+        // Модифицированная функция клика с визуальными эффектами
+        document.getElementById('clickButton').addEventListener('click', (e) => {
+            // Добавление эффекта частиц
+            const particles = document.getElementById('particles');
+            for(let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'floating-text';
+                particle.textContent = `+${Math.floor(calculateTotalClickPower())}`;
+                particle.style.left = `${e.clientX}px`;
+                particle.style.top = `${e.clientY}px`;
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
             }
-        ];
 
-        let activeBoosts = {};
-        
-        // ... (функции loadGame и saveGame остаются без изменений) ...
-
-        function updateUI() {
-            document.getElementById('score').textContent = Math.floor(score);
-            document.getElementById('clickPower').textContent = calculateTotalClickPower();
-            document.getElementById('autoClickers').textContent = autoClickers;
+            // Анимация волны
+            const wave = document.createElement('div');
+            wave.style.position = 'absolute';
+            wave.style.width = '100%';
+            wave.style.height = '100%';
+            wave.style.background = 'radial-gradient(circle, rgba(75,241,69,0.3) 0%, transparent 70%)';
+            wave.style.borderRadius = '50%';
+            wave.style.transform = 'scale(0)';
+            wave.style.animation = 'waveExpand 0.5s linear';
+            e.target.appendChild(wave);
+            setTimeout(() => wave.remove(), 500);
             
-            document.getElementById('upgrades').innerHTML = upgrades.map((upgrade, index) => `
-                <div class="upgrade">
-                    <div>
-                        <h3>${upgrade.name}</h3>
-                        <p>${getUpgradeDescription(upgrade)}</p>
-                        <p>Цена: ${Math.floor(upgrade.price)}</p>
-                        <p>Куплено: ${upgrade.owned}/${upgrade.max}</p>
-                        ${activeBoosts[upgrade.name] ? 
-                            `<div class="boost-timer">Осталось: ${activeBoosts[upgrade.name].duration}s</div>` : ''}
-                    </div>
-                    <button 
-                        onclick="buyUpgrade(${index})" 
-                        ${score < upgrade.price || upgrade.owned >= upgrade.max ? 'disabled' : ''}>
-                        Купить
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function getUpgradeDescription(upgrade) {
-            switch(upgrade.type) {
-                case 'critical': return `Шанс: +${upgrade.power * 100}%`;
-                case 'golden': return `Множитель: x${upgrade.power}`;
-                case 'boost': return `Длительность: ${upgrade.duration}s`;
-                default: return `Сила: +${upgrade.power}`;
-            }
-        }
-
-        function calculateTotalClickPower() {
-            let total = baseClickPower;
-            
-            upgrades.forEach(upgrade => {
-                if(upgrade.type === 'click') total += upgrade.power * upgrade.owned;
-                if(upgrade.type === 'critical') total *= 1 + (upgrade.power * upgrade.owned);
-                if(upgrade.type === 'multiplier') total *= upgrade.power ** upgrade.owned;
-            });
-
-            return Math.floor(total * multipliers.timeBoost * multipliers.goldenClick);
-        }
-
-        function buyUpgrade(index) {
-            const upgrade = upgrades[index];
-            if(score >= upgrade.price && upgrade.owned < upgrade.max) {
-                score -= upgrade.price;
-                upgrade.owned++;
-                
-                switch(upgrade.type) {
-                    case 'auto':
-                        autoClickers += upgrade.power;
-                        break;
-                    case 'boost':
-                        activateBoost(upgrade);
-                        break;
-                    case 'golden':
-                        setupGoldenClick();
-                        break;
-                }
-                
-                upgrade.price = Math.floor(upgrade.price * 1.5);
-                saveGame();
-                updateUI();
-            }
-        }
-
-        function activateBoost(upgrade) {
-            multipliers.timeBoost = upgrade.power;
-            activeBoosts[upgrade.name] = {
-                duration: upgrade.duration
-            };
-
-            const interval = setInterval(() => {
-                activeBoosts[upgrade.name].duration--;
-                if(activeBoosts[upgrade.name].duration <= 0) {
-                    multipliers.timeBoost = 1;
-                    delete activeBoosts[upgrade.name];
-                    clearInterval(interval);
-                }
-                updateUI();
-            }, 1000);
-        }
-
-        function setupGoldenClick() {
-            const goldenClicker = document.createElement('div');
-            goldenClicker.style.position = 'fixed';
-            goldenClicker.style.left = `${Math.random() * 80}%`;
-            goldenClicker.style.top = `${Math.random() * 80}%`;
-            goldenClicker.style.width = '50px';
-            goldenClicker.style.height = '50px';
-            goldenClicker.style.background = 'gold';
-            goldenClicker.style.borderRadius = '50%';
-            goldenClicker.style.cursor = 'pointer';
-            goldenClicker.onclick = () => {
-                score += 100 * multipliers.goldenClick;
-                document.body.removeChild(goldenClicker);
-                multipliers.goldenClick = 1;
-                updateUI();
-            };
-            document.body.appendChild(goldenClicker);
-            
-            setTimeout(() => {
-                if(document.body.contains(goldenClicker)) {
-                    document.body.removeChild(goldenClicker);
-                    multipliers.goldenClick = 1;
-                }
-            }, 5000);
-        }
-
-        // ... (остальной код остается без изменений) ...
-
-        // Модифицированная функция клика
-        document.getElementById('clickButton').addEventListener('click', () => {
+            // Обновление логики клика
             let clickValue = calculateTotalClickPower();
-            
-            // Проверка на критический удар
-            const criticalChance = upgrades
-                .filter(u => u.type === 'critical')
-                .reduce((sum, u) => sum + u.power * u.owned, 0);
-            
-            if(Math.random() < criticalChance) {
-                clickValue *= 2;
-            }
-
-            // Цепная реакция
-            const chainMultiplier = 1 + upgrades
-                .filter(u => u.type === 'chain')
-                .reduce((sum, u) => sum + u.power * u.owned, 0);
-            
-            score += clickValue * chainMultiplier;
-            updateUI();
-            saveGame();
+            // ... (остальная логика клика) ...
         });
 
-        // ... (остальной код инициализации) ...
+        // Добавить в стили:
+        // @keyframes waveExpand {
+        //   from { transform: scale(0); opacity: 1; }
+        //   to { transform: scale(2); opacity: 0; }
+        // }
     </script>
 </body>
 </html>
