@@ -18,8 +18,8 @@ clickButton.addEventListener('click', () => {
     score += level; // Очки зависят от уровня
     scoreDisplay.textContent = `Очки: ${score}`;
 
-    // Переход на следующий уровень
-    if (score >= level * 10) { // Увеличиваем уровень каждые 10 очков
+    // Проверка на новый уровень
+    if (score >= level * 10) {
         level++;
         levelDisplay.textContent = `Уровень: ${level}`;
         alert('Поздравляем! Вы достигли нового уровня!');
