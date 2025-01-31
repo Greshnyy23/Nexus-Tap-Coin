@@ -17,10 +17,14 @@
             <img id="circle" src="./assets/frog.png" alt="frog" />
             <div class="plus-one-container"></div>
         </div>
-        <div class="navigation">
-            <button id="toImprovements" class="nav-button">Улучшения</button>
-            <button id="toStatistics" class="nav-button">Статистика</button>
-            <button id="themeButton" class="nav-button">Сменить тему</button>
+        <div class="money-display">
+            <h3 id="moneyDisplay">Монеты: 0</h3>
+            <h3 id="levelDisplay">Уровень: 1</h3>
+        </div>
+        <div class="upgrades">
+            <h3>Улучшения:</h3>
+            <button id="upgradeButton">Двойные очки (50 монет)</button>
+            <button id="levelUpButton">Уровень выше (100 монет)</button>
         </div>
         <div class="progress">
             <div id="progressBar" class="progress-bar">
@@ -34,7 +38,5 @@
         </div>
     </div>
     <script src="app.js" defer></script>
-    <audio id="clickSound" src="./assets/click.mp3"></audio>
-    <audio id="levelUpSound" src="./assets/levelup.mp3"></audio>
 </body>
 </html>
