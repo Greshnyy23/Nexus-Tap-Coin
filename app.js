@@ -1,23 +1,26 @@
-const tg = window.Telegram.WebApp;
-tg.ready();
-
 const $circle = document.querySelector('#circle');
 const $money = document.querySelector('#money');
 const $levelDisplay = document.getElementById('levelDisplay');
 const $upgradeButton = document.getElementById('upgradeButton');
 const $levelUpButton = document.getElementById('levelUpButton');
-const $progressFill = document.getElementById('progressFill');
+const $autoClickerButton = document.getElementById('autoClickerButton');
+const $coinMultiplierButton = document.getElementById('coinMultiplierButton');
 const $achievementList = document.getElementById('achievementList');
-const $closeButton = document.getElementById('closeButton');
+const $resetButton = document.getElementById('resetButton');
 
 let money = 0;
 let level = 1;
 let upgradeActive = false;
-let achievements = [];
-
-// Звуковые эффекты
-const clickSound = new Audio('click.mp3');
-const levelUpSound = new Audio('level-up.mp3');
+let autoClickerActive = false;
+let coinMultiplierActive = false;
+const achievements = [
+    { name: 'Новичок', condition: () => money >= 100 },
+    { name: 'Опытный', condition: () => money >= 500 },
+    { name: 'Мастер', condition: () => money >= 1000 },
+    { name: 'Автокликер', condition: () => autoClickerActive },
+    { name: 'Множитель', condition: () => coinMultiplierActive }
+];
+const unlockedAchievements = new Set();
 
 // Инициализация
 function start() {
@@ -27,7 +30,7 @@ function start() {
     setMoney(money);
     setLevel(level);
     updateProgress();
-    showAchievements();
+    checkAchievements();
 }
 
 // Функции для работы с монетами и уровнем
@@ -35,13 +38,13 @@ function setMoney(newMoney) {
     money = newMoney;
     localStorage.setItem('money', money);
     $money.textContent = money;
+    checkAchievements();
 }
 
 function setLevel(newLevel) {
     level = newLevel;
     localStorage.setItem('level', level);
     $levelDisplay.textContent = `Уровень: ${level}`;
-    levelUpSound.play();
 }
 
 function updateProgress() {
@@ -83,15 +86,16 @@ $circle.addEventListener('click', (event) => {
     $circle.parentElement.appendChild(plusOne);
 
     addMoney(upgradeActive ? 2 : 1);
-    clickSound.play();
 
     setTimeout(() => plusOne.remove(), 2000);
 });
 
 // Добавление монет
 function addMoney(amount) {
+    if (coinMultiplierActive) {
+        amount *= 2; // Удваиваем монеты, если множитель активен
+    }
     setMoney(money + amount);
-    updateProgress();
 }
 
 // Улучшения
@@ -114,37 +118,58 @@ $levelUpButton.addEventListener('click', () => {
     if (money >= 100) {
         setMoney(money - 100);
         setLevel(level + 1);
-        addAchievement('Уровень повышен!');
     } else {
         alert('Недостаточно монет для повышения уровня!');
     }
 });
 
-// Достижения
-function addAchievement(name) {
-    if (!achievements.includes(name)) {
-        achievements.push(name);
-        const achievementItem = document.createElement('div');
-        achievementItem.textContent = name;
-        $achievementList.appendChild(achievementItem);
-    }
-}
-
-function showAchievements() {
-    if (achievements.length === 0) {
-        $achievementList.textContent = 'Нет достижений';
+$autoClickerButton.addEventListener('click', () => {
+    if (money >= 200) {
+        money -= 200;
+        updateMoneyDisplay();
+        autoClickerActive = true;
+        setInterval(() => {
+            if (autoClickerActive) {
+                addMoney(1);
+            }
+        }, 1000); // Авто-клик каждую секунду
     } else {
-        achievements.forEach(achievement => {
-            const achievementItem = document.createElement('div');
-            achievementItem.textContent = achievement;
-            $achievementList.appendChild(achievementItem);
-        });
+        alert('Недостаточно монет для улучшения!');
     }
+});
+
+$coinMultiplierButton.addEventListener('click', () => {
+    if (money >= 300) {
+        money -= 300;
+        updateMoneyDisplay();
+        coinMultiplierActive = true;
+        setTimeout(() => {
+            coinMultiplierActive = false;
+            alert('Множитель монет закончился!');
+        }, 10000); // Действует 10 секунд
+    } else {
+        alert('Недостаточно монет для улучшения!');
+    }
+});
+
+// Достижения
+function checkAchievements() {
+    achievements.forEach(achievement => {
+        if (achievement.condition() && !unlockedAchievements.has(achievement.name)) {
+            unlockedAchievements.add(achievement.name);
+            const achievementItem = document.createElement('div');
+            achievementItem.textContent = achievement.name;
+            $achievementList.appendChild(achievementItem);
+        }
+    });
 }
 
-// Закрытие приложения
-$closeButton.addEventListener('click', () => {
-    tg.close();
+// Сброс прогресса
+$resetButton.addEventListener('click', () => {
+    if (confirm('Вы уверены, что хотите сбросить прогресс?')) {
+        localStorage.clear();
+        location.reload();
+    }
 });
 
 // Инициализация
