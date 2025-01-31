@@ -1,53 +1,211 @@
-<!DOCTYPE html>
-<html lang="ru">
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #444, #333);
+    animation: gradientShift 10s infinite alternate;
+}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lizzard Clicker</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
 
-<body>
-    <div class="game">
-        <header class="header">
-            <img src="./assets/coin.png" alt="coin" />
-            <h2 class="money" id="money">0</h2>
-        </header>
-        <div class="circle">
-            <img id="circle" src="./assets/frog.png" alt="frog" />
-            <div class="plus-one-container"></div>
-        </div>
-        <div class="level-display">
-            <h3 id="levelDisplay">Уровень: 1</h3>
-        </div>
-        <div class="upgrades">
-            <h3>Улучшения:</h3>
-            <button id="upgradeButton" class="upgrade-button">Двойные монеты (50 монет)</button>
-            <button id="levelUpButton" class="upgrade-button">Уровень выше (100 монет)</button>
-            <button id="autoClickerButton" class="upgrade-button">Авто-кликер (200 монет)</button>
-            <button id="coinMultiplierButton" class="upgrade-button">Множитель монет (300 монет)</button>
-            <button id="bonusItemButton" class="upgrade-button">Бонус кусков (400 монет)</button>
-        </div>
-        <div class="progress">
-            <div id="progressBar" class="progress-bar">
-                <div id="progressFill" class="progress-fill"></div>
-            </div>
-        </div>
-        <div class="character-selection">
-            <h3>Выберите персонажа:</h3>
-            <button id="frogButton" class="character-button">Лягушка</button>
-            <button id="lizzardButton" class="character-button">Ящерица</button>
-        </div>
-        <div class="achievements">
-            <h3>Достижения:</h3>
-            <div id="achievementList"></div>
-        </div>
-        <button id="closeButton" class="close-button">Закрыть</button>
-    </div>
-    <script src="app.js" defer></script>
-</body>
+.game {
+    background: rgba(50, 50, 50, 0.8);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 450px;
+    margin-top: 60px; /* Добавленный отступ сверху */
+}
 
-</html>
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.header img {
+    width: 50px;
+    height: 50px;
+    margin-right: 14px;
+}
+
+.money {
+    color: #ffffff;
+    font-size: 36px;
+    font-weight: 600;
+}
+
+.circle {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.circle img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(50, 255, 0, 0.8);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.circle img:active {
+    animation: pulse 0.2s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.level-display {
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+.upgrades {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.upgrade-button {
+    padding: 12px 18px;
+    font-size: 16px;
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    font-weight: 600;
+    margin: 5px;
+}
+
+.upgrade-button:hover {
+    background: linear-gradient(90deg, #ff4b2b, #ff416c);
+    transform: scale(1.05);
+}
+
+.upgrade-button.active {
+    animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 10px #ff416c; }
+    100% { box-shadow: 0 0 20px #ff4b2b; }
+}
+
+.progress {
+    margin-top: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 20px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #28a745;
+    width: 0%;
+    transition: width 0.5s ease, background-color 0.5s ease;
+}
+
+.character-selection {
+    margin-top: 20px;
+}
+
+.character-button {
+    padding: 8px 15px;
+    font-size: 14px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin: 5px;
+}
+
+.character-button:hover {
+    background: #0056b3;
+}
+
+.plus-one {
+    position: absolute;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: 0px 0px 4px rgba(234, 182, 64, 0.8);
+    font-size: 28px;
+    font-weight: 600;
+    background: linear-gradient(180deg, #e8c547 0%, #ef882b 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    user-select: none;
+    animation: move-up 2s forwards;
+}
+
+@keyframes move-up {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-50px); }
+}
+
+.particle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: gold;
+    border-radius: 50%;
+    animation: fly 1s ease-out;
+}
+
+@keyframes fly {
+    0% { transform: translate(0, 0); opacity: 1; }
+    100% { transform: translate(random(-100, 100)px, random(-100, 100)px); opacity: 0; }
+}
+
+.achievements {
+    margin-top: 20px;
+    color: #ffffff;
+}
+
+.achievements h3 {
+    margin-bottom: 10px;
+}
+
+#achievementList {
+    max-height: 100px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.close-button {
+    padding: 10px 20px;
+    background: #ff416c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
