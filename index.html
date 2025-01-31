@@ -29,11 +29,33 @@
             min-height: 100vh;
         }
 
+        .nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .nav a {
+            background: var(--button-bg);
+            color: var(--neon-blue);
+            padding: 10px 15px;
+            margin: 0 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 20px; 
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .nav a:hover {
+            background: var(--accent-purple);
+            color: #fff;
+        }
+
         .container {
             max-width: 500px;
             width: 100%;
             text-align: center;
-            padding: 15px;
+            padding: 20px;
             border: 2px solid var(--border-color);
             border-radius: 15px;
             background: rgba(20, 20, 40, 0.9);
@@ -41,7 +63,7 @@
             margin-bottom: 20px;
         }
 
-        h1 {
+        h1, h2 {
             margin: 10px 0;
             text-shadow: 0 0 10px var(--neon-green);
         }
@@ -83,31 +105,49 @@
             box-shadow: 0 0 40px rgba(75, 241, 69, 0.6);
         }
 
-        /* Навигация */
-        .nav {
+        .score-container,
+        .stats-list {
+            margin: 15px 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .upgrade {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: rgba(20, 20, 40, 0.8);
             display: flex;
-            justify-content: center;
-            margin-top: auto; /* Перемещаем навигацию вниз */
-            margin-bottom: 20px;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .nav a {
-            background: var(--button-bg);
-            color: var(--neon-blue);
-            padding: 10px 15px;
-            margin: 0 10px;
+        .upgrade:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(75, 241, 69, 0.2);
+        }
+
+        .upgrade button {
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+            border: none;
+            color: white;
+            padding: 8px 15px;
             border-radius: 5px;
-            text-decoration: none;
-            font-size: 20px; 
-            transition: background 0.3s, color 0.3s;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
         }
 
-        .nav a:hover {
-            background: var(--accent-purple);
-            color: #fff;
+        .upgrade button:disabled {
+            background: rgba(85, 85, 85, 0.9);
+            cursor: not-allowed;
         }
 
-        /* Анимации текста */
         .floating-text {
             position: absolute;
             animation: floatUp 1s ease-out forwards;
@@ -182,6 +222,13 @@
             </div>
             <button id="resetStats">Сбросить статистику</button>
         </div>
+    </div>
+
+    <div class="nav">
+        <a href="#" onclick="showPage('main')">🏠</a>
+        <a href="#" onclick="showPage('upgrades')">⚙️</a>
+        <a href="#" onclick="showPage('referral')">🔗</a>
+        <a href="#" onclick="showPage('stats')">📊</a>
     </div>
 
     <script>
