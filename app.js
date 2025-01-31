@@ -1,15 +1,13 @@
 const $circle = document.querySelector('#circle');
-const $score = document.querySelector('#score');
+const $money = document.querySelector('#money');
 const $levelDisplay = document.getElementById('levelDisplay');
-const $moneyDisplay = document.getElementById('moneyDisplay');
 const $upgradeButton = document.getElementById('upgradeButton');
 const $levelUpButton = document.getElementById('levelUpButton');
 const $progressFill = document.getElementById('progressFill');
 const $achievementList = document.getElementById('achievementList');
 
-let score = 0;
-let level = 1;
 let money = 0;
+let level = 1;
 let upgradeActive = false;
 let achievements = [];
 
@@ -19,22 +17,20 @@ const levelUpSound = new Audio('level-up.mp3');
 
 // Инициализация
 function start() {
-    score = getScore();
-    level = getLevel();
     money = getMoney();
+    level = getLevel();
 
-    setScore(score);
+    setMoney(money);
     setLevel(level);
-    updateMoneyDisplay();
     updateProgress();
     showAchievements();
 }
 
-// Функции для работы с очками, уровнем и монетами
-function setScore(newScore) {
-    score = newScore;
-    localStorage.setItem('score', score);
-    $score.textContent = score;
+// Функции для работы с монетами и уровнем
+function setMoney(newMoney) {
+    money = newMoney;
+    localStorage.setItem('money', money);
+    $money.textContent = money;
 }
 
 function setLevel(newLevel) {
@@ -44,62 +40,18 @@ function setLevel(newLevel) {
     levelUpSound.play();
 }
 
-function updateMoneyDisplay() {
-    $moneyDisplay.textContent = `Монеты: ${money}`;
-}
-
 function updateProgress() {
-    const progressPercentage = (score / 100) * 100;
+    const progressPercentage = (money / 100) * 100;
     $progressFill.style.width = `${progressPercentage}%`;
-}
-
-function getScore() {
-    return Number(localStorage.getItem('score')) || 0;
-}
-
-function getLevel() {
-    return Number(localStorage.getItem('level')) || 1;
 }
 
 function getMoney() {
     return Number(localStorage.getItem('money')) || 0;
 }
 
-// Очки и валюта
-function addOne() {
-    setScore(score + (upgradeActive ? 2 : 1));
-    money += 1;
-    updateMoneyDisplay();
-    clickSound.play();
+function getLevel() {
+    return Number(localStorage.getItem('level')) || 1;
 }
-
-// Улучшения
-$upgradeButton.addEventListener('click', () => {
-    if (money >= 50) {
-        upgradeActive = true;
-        money -= 50;
-        updateMoneyDisplay();
-        $upgradeButton.classList.add('active');
-        setTimeout(() => {
-            upgradeActive = false;
-            $upgradeButton.classList.remove('active');
-            alert('Двойные очки закончились!');
-        }, 10000);
-    } else {
-        alert('Недостаточно монет для улучшения!');
-    }
-});
-
-$levelUpButton.addEventListener('click', () => {
-    if (money >= 100) {
-        money -= 100;
-        setLevel(level + 1);
-        updateMoneyDisplay();
-        addAchievement('Уровень повышен!');
-    } else {
-        alert('Недостаточно монет для повышения уровня!');
-    }
-});
 
 // Логика клика по кружку
 $circle.addEventListener('click', (event) => {
@@ -126,9 +78,42 @@ $circle.addEventListener('click', (event) => {
     plusOne.style.top = `${event.clientY - rect.top}px`;
     $circle.parentElement.appendChild(plusOne);
 
-    addOne();
+    addMoney(upgradeActive ? 2 : 1);
+    clickSound.play();
 
     setTimeout(() => plusOne.remove(), 2000);
+});
+
+// Добавление монет
+function addMoney(amount) {
+    setMoney(money + amount);
+    updateProgress();
+}
+
+// Улучшения
+$upgradeButton.addEventListener('click', () => {
+    if (money >= 50) {
+        upgradeActive = true;
+        setMoney(money - 50);
+        $upgradeButton.classList.add('active');
+        setTimeout(() => {
+            upgradeActive = false;
+            $upgradeButton.classList.remove('active');
+            alert('Двойные монеты закончились!');
+        }, 10000);
+    } else {
+        alert('Недостаточно монет для улучшения!');
+    }
+});
+
+$levelUpButton.addEventListener('click', () => {
+    if (money >= 100) {
+        setMoney(money - 100);
+        setLevel(level + 1);
+        addAchievement('Уровень повышен!');
+    } else {
+        alert('Недостаточно монет для повышения уровня!');
+    }
 });
 
 // Достижения
