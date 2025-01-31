@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Получаем элементы
     const $circle = document.querySelector('#circle');
     const $score = document.querySelector('#score');
     const $highScore = document.getElementById('highscore');
@@ -7,21 +6,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const $moneyDisplay = document.getElementById('moneyDisplay');
     const $upgradeButton = document.getElementById('upgradeButton');
     const $levelUpButton = document.getElementById('levelUpButton');
+    const $timerDisplay = document.getElementById('timer');
 
     let score = 0;
     let level = 1;
     let money = 0; // Игровая валюта
     let upgradeActive = false;
 
-    // Переключение между страницами
-    function navigateTo(page) {
-        window.location.href = page;
-    }
-
     // Инициализация
-    function start() {
-        setScore(0);
+    function initialize() {
+        score = getScore();
+        level = getLevel();
+        money = getMoney();
+
+        setScore(score);
         setHighScore(getHighScore());
+        setLevel(level);
+        updateMoneyDisplay();
         setImage();
     }
 
@@ -29,15 +30,21 @@ document.addEventListener("DOMContentLoaded", () => {
     function setScore(newScore) {
         score = newScore;
         localStorage.setItem('score', score);
-        if ($score) $score.textContent = score;
+        $score.textContent = score;
     }
 
     function setHighScore(score) {
         const currentHighScore = getHighScore();
         if (score > currentHighScore) {
             localStorage.setItem('highscore', score);
-            if ($highScore) $highScore.textContent = score;
+            $highScore.textContent = score;
         }
+    }
+
+    function setLevel(newLevel) {
+        level = newLevel;
+        localStorage.setItem('level', level);
+        $levelDisplay.textContent = `Уровень: ${level}`;
     }
 
     function getScore() {
@@ -48,24 +55,31 @@ document.addEventListener("DOMContentLoaded", () => {
         return Number(localStorage.getItem('highscore')) || 0;
     }
 
+    function getLevel() {
+        return Number(localStorage.getItem('level')) || 1;
+    }
+
+    function getMoney() {
+        return Number(localStorage.getItem('money')) || 0;
+    }
+
     // Обновление валюты (монет)
-    function addCurrency(amount) {
-        money += amount; // Увеличиваем валюту
-        $moneyDisplay.textContent = `Монеты: ${money}`; // Обновляем отображение
+    function updateMoneyDisplay() {
+        $moneyDisplay.textContent = `Монеты: ${money}`;
     }
 
     // Добавление очков и валюты
     function addOne() {
-        const pointsToAdd = upgradeActive ? 2 : 1; // Учитывает активные улучшения для очков
-        setScore(score + pointsToAdd);
-        addCurrency(1); // Каждое нажатие добавляет 1 монету
+        setScore(score + (upgradeActive ? 2 : 1)); // Учитывает активные улучшения для очков
+        money += 1; // Каждое нажатие добавляет 1 монету
+        updateMoneyDisplay(); // Обновляем отображение
     }
 
     function upgrade() {
         if (money >= 50) {
             upgradeActive = true;
             money -= 50;
-            $moneyDisplay.textContent = `Монеты: ${money}`;
+            updateMoneyDisplay();
             alert('Двойные очки активированы!');
 
             setTimeout(() => {
@@ -80,19 +94,38 @@ document.addEventListener("DOMContentLoaded", () => {
     function levelUp() {
         if (money >= 100) {
             money -= 100;
-            level++;
-            $levelDisplay.textContent = `Уровень: ${level}`;
-            $moneyDisplay.textContent = `Монеты: ${money}`;
+            setLevel(level + 1);
+            updateMoneyDisplay();
             alert('Уровень повышен!');
         } else {
             alert('Недостаточно монет для повышения уровня!');
         }
     }
 
+    // Переключение персонажа
+    function selectCharacter(character) {
+        if (character === 'frog') {
+            $circle.setAttribute('src', './assets/frog.png');
+        } else if (character === 'lizzard') {
+            $circle.setAttribute('src', './assets/lizzard.png');
+        }
+    }
+
+    // Обработчики событий для кнопок выбора персонажей
+    const frogButton = document.getElementById('frogButton');
+    const lizzardButton = document.getElementById('lizzardButton');
+    if (frogButton) {
+        frogButton.addEventListener('click', () => selectCharacter('frog'));
+    }
+    if (lizzardButton) {
+        lizzardButton.addEventListener('click', () => selectCharacter('lizzard'));
+    }
+
     // Основная логика клика
     if ($circle) {
         $circle.addEventListener('click', (event) => {
             const rect = $circle.getBoundingClientRect();
+
             const offsetX = event.clientX - rect.left - rect.width / 2;
             const offsetY = event.clientY - rect.top - rect.height / 2;
 
@@ -116,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             $circle.parentElement.appendChild(plusOne);
 
-            addOne(); // Добавление очка и валюты
+            addOne();
 
             setTimeout(() => {
                 plusOne.remove();
@@ -125,18 +158,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Навигация
-    document.getElementById('toImprovements')?.addEventListener('click', () => {
-        navigateTo('improvements.html');
-    });
+    const toImprovements = document.getElementById('toImprovements');
+    const toStatistics = document.getElementById('toStatistics');
+    const toMain = document.getElementById('toMain');
 
-    document.getElementById('toStatistics')?.addEventListener('click', () => {
-        navigateTo('statistics.html');
-    });
+    if (toImprovements) {
+        toImprovements.addEventListener('click', () => {
+            navigateTo('improvements.html');
+        });
+    }
 
-    document.getElementById('toMain')?.addEventListener('click', () => {
-        navigateTo('index.html');
-    });
+    if (toStatistics) {
+        toStatistics.addEventListener('click', () => {
+            navigateTo('statistics.html');
+        });
+    }
+
+    if (toMain) {
+        toMain.addEventListener('click', () => {
+            window.location.href = 'index.html'; 
+        });
+    }
+
+    // Переключение страниц
+    function navigateTo(page) {
+        localStorage.setItem('score', score); // Сохраняем текущий счет при переходе
+        localStorage.setItem('money', money); // Сохраняем текущую валюту
+        localStorage.setItem('level', level); // Сохраняем текущий уровень
+        window.location.href = page; // Переход на выбранную страницу
+    }
 
     // Инициализация
-    start();
+    initialize(); 
 });
