@@ -11,6 +11,7 @@
             padding: 0;
             background-color: #f4f4f4;
             color: #333;
+            transition: background 0.3s;
         }
 
         .nav {
@@ -37,6 +38,12 @@
 
         .active {
             display: block;
+            animation: fade 0.5s ease-in-out;
+        }
+
+        @keyframes fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .container {
@@ -98,17 +105,52 @@
         button:hover:not(:disabled) {
             background: #218838;
         }
+
+        /* Прогресс бары */
+        .progress-bar {
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress {
+            height: 10px;
+            background: #4caf50;
+            width: 0;
+            transition: width 0.5s;
+        }
+
+        /* Таблица лидеров */
+        .leaderboard {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+        }
+
+        /* Опрос и обратная связь */
+        .feedback-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none;
+        }
     </style>
 </head>
 <body>
     <!-- Навигация -->
     <div class="nav">
-        <a href="#" onclick="showPage('main')">🏠</a>
-        <a href="#" onclick="showPage('upgrades')">⚡</a>
-        <a href="#" onclick="showPage('achievements')">🏆</a>
-        <a href="#" onclick="showPage('referral')">🤝</a>
-        <a href="#" onclick="showPage('stats')">📊</a>
-        <a href="#" onclick="showPage('events')">🎉</a>
+        <a href="#" onclick="showPage('main')">🏠 Главная</a>
+        <a href="#" onclick="showPage('upgrades')">⚡ Улучшения</a>
+        <a href="#" onclick="showPage('achievements')">🏆 Достижения</a>
+        <a href="#" onclick="showPage('referral')">🤝 Рефералы</a>
+        <a href="#" onclick="showPage('stats')">📊 Статистика</a>
+        <a href="#" onclick="showPage('events')">🎉 События</a>
+        <a href="#" onclick="showPage('leaderboard')">🏆 Таблица лидеров</a>
+        <a href="#" onclick="showPage('feedback')">💬 Обратная связь</a>
     </div>
 
     <!-- Главная страница -->
@@ -159,6 +201,10 @@
                 <div class="stat-item">🤑 Всего заработано: <span id="totalEarned">0</span></div>
                 <div class="stat-item">🚀 Макс. кликов/сек: <span id="maxCPS">0</span></div>
             </div>
+            <h3>Прогресс игровых заданий</h3>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar" style="width: 75%;"></div>
+            </div>
         </div>
     </div>
 
@@ -168,6 +214,29 @@
             <h2>🎉 Активные бонусы</h2>
             <div class="events-list" id="activeEvents">
                 <div class="event-item">🎁 Двойные монеты: <span class="timer">00:00</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Таблица лидеров -->
+    <div id="leaderboard" class="page">
+        <div class="container">
+            <h2>🏆 Таблица лидеров</h2>
+            <div class="leaderboard">
+                <p>1. Игрок1 - 50000 очков</p>
+                <p>2. Игрок2 - 45000 очков</p>
+                <p>3. Игрок3 - 40000 очков</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Обратная связь -->
+    <div id="feedback" class="page">
+        <div class="container">
+            <h2>💬 Обратная связь</h2>
+            <div class="feedback-box">
+                <textarea id="feedbackText" placeholder="Ваши идеи или комментарии..." rows="5" style="width: 100%;"></textarea>
+                <button onclick="submitFeedback()">Отправить</button>
             </div>
         </div>
     </div>
@@ -182,7 +251,6 @@
             document.getElementById(pageId).classList.add('active');
         }
 
-        // Временно используемые переменные для демонстрации
         const userReferralCode = 'ABC123'; // пример кода
         const totalPlayTime = 120; // пример времени
         const totalEarned = 1000; // сумма
@@ -203,6 +271,7 @@
                 `${Math.floor(totalPlayTime / 60)}ч ${totalPlayTime % 60}м`;
             document.getElementById('totalEarned').textContent = totalEarned;
             document.getElementById('maxCPS').textContent = maxCPS;
+            document.getElementById('progressBar').style.width = '50%'; // Задайте актуальный % прогресса
         }
 
         function updateUpgradesUI() {
@@ -227,7 +296,19 @@
 
         function buyUpgrade(index) {
             const upgrade = upgrades[index];
-            // Добавьте логику покупки
+            // Логика покупки будет добавлена здесь
+            console.log(`Куплено улучшение: ${upgrade.name}`);
+        }
+
+        function submitFeedback() {
+            const feedback = document.getElementById('feedbackText').value;
+            if (feedback) {
+                console.log('Ваш отзыв:', feedback);
+                alert('Спасибо за ваш отзыв!');
+                document.getElementById('feedbackText').value = ''; // Очистка поля
+            } else {
+                alert('Пожалуйста, введите ваш отзыв.');
+            }
         }
 
         function getUpgradeEmoji(type) {
