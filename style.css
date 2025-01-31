@@ -1,188 +1,112 @@
+/* Общие стили для страницы */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom right, #0a0a0a, #1d3557);
-    color: #00d4d4;
-    overflow: hidden;
-    box-sizing: border-box;
-}
-
-.nav {
-    background: rgba(0, 0, 0, 0.7);
-    padding: 15px;
+    background: #121212;
+    color: #fff;
     display: flex;
-    justify-content: space-around;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
 }
 
-.nav a {
-    color: #00d4d4;
-    text-decoration: none;
-    font-size: 18px;
-    padding: 10px 15px;
-    transition: background 0.3s, transform 0.3s;
-    border-radius: 5px;
-    position: relative;
-    overflow: hidden;
+/* Контейнеры */
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    text-align: center;
 }
 
-.nav a::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 0;
-    height: 2px;
-    background: #ff007f;
-    transition: width 0.4s ease, left 0.4s ease;
+/* Заголовки */
+h2 {
+    font-size: 2rem;
+    color: #00ff99;
 }
 
-.nav a:hover::before {
-    width: 100%;
-    left: 0;
+/* Главная кнопка */
+.click-button {
+    font-size: 2rem;
+    background-color: #00ff99;
+    color: #121212;
+    border: none;
+    padding: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.click-button:hover {
+    background-color: #00cc7f;
+}
+
+/* Валюта и другие тексты */
+.currency-display {
+    margin-top: 20px;
+    font-size: 1.2rem;
 }
 
 .page {
     display: none;
-    padding: 20px;
-    animation: fadeIn 0.5s ease-in-out;
 }
 
-.active {
+.page.active {
     display: block;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 30px;
-    background: rgba(0, 0, 0, 0.9);
-    border-radius: 15px;
-    box-shadow: 0 4px 25px rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid #444;
-}
-
-h2 {
-    color: #ff007f;
-    text-align: center;
-    font-size: 2.2em;
-    text-shadow: 0 0 10px #00d4d4;
-    margin-bottom: 20px;
-}
-
-.click-button {
-    background: #ff007f;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    padding: 30px;
-    font-size: 40px;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    width: 120px;
-    height: 120px;
-    box-shadow: 0 4px 15px rgba(255, 0, 124, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin: 20px auto;
-}
-
-.click-button:hover {
-    background: #e60057;
-    transform: scale(1.1);
-}
-
-.currency-display {
-    font-size: 24px;
-    text-align: center;
-    margin: 15px 0;
-    text-shadow: 0 0 5px #00d4d4;
-}
-
+/* Стиль для улучшений */
 .upgrades-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
     margin-top: 20px;
 }
 
-.upgrade {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
-    transition: transform 0.2s, background 0.3s;
-}
-
-.upgrade:hover {
-    transform: scale(1.05);
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.upgrade h3 {
-    margin: 10px 0;
-    font-size: 18px;
-    color: #ff007f;
-}
-
-.upgrade-button {
-    background: #00d4d4;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    padding: 12px;
+.upgrade-item {
+    background-color: #1e1e1e;
+    border: 2px solid #00ff99;
+    padding: 15px;
     cursor: pointer;
-    transition: background 0.3s;
-    width: 100%; 
+    text-align: center;
+    transition: background-color 0.3s;
 }
 
-.upgrade-button:disabled {
-    background: #ccc;
+.upgrade-item:hover {
+    background-color: #00cc7f;
 }
 
-.upgrade-button:hover:not(:disabled) {
-    background: #00b3b3;
-}
-
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #4caf50;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    z-index: 100;
-    opacity: 0;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.notification.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
+/* Статистика */
 .stats-grid {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
 }
 
 .stat-item {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    margin: 10px;
+}
+
+/* Уведомления */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 255, 153, 0.8);
+    color: #121212;
     padding: 10px;
+    border-radius: 5px;
+    display: none;
+    font-size: 1.2rem;
+}
+
+/* Стиль достижений */
+.achievements-section {
+    background-color: #1e1e1e;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 10px;
     text-align: center;
-    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
 }
