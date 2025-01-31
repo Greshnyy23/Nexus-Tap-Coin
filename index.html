@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,42 +9,62 @@
 
 <body>
     <div id="app">
-        <header>
-            <h1>Киберпанк Кликер 2050</h1>
-            <div class="currency-display">
-                <span id="currency">0</span> <span class="currency-label">Кредитов</span>
-                <div class="earnings">
-                    Заработок за клик: <span id="earningsPerClick">1</span>
-                    <div class="earnings-per-second">Заработок в секунду: <span id="earningsPerSecond">0</span></div>
+        <nav class="nav">
+            <a href="#" onclick="showPage('main')">🏠 Главная</a>
+            <a href="#" onclick="showPage('upgrades')">⚡ Улучшения</a>
+            <a href="#" onclick="showPage('stats')">📊 Статистика</a>
+            <a href="#" onclick="showPage('achievements')">🏆 Достижения</a>
+        </nav>
+
+        <!-- Главная страница -->
+        <div id="main" class="page active">
+            <header>
+                <h1>Киберпанк Кликер 2050</h1>
+                <div class="currency-display">
+                    <span id="currency">0</span> <span class="currency-label">Кредитов</span>
+                    <div class="earnings">
+                        Заработок за клик: <span id="earningsPerClick">1</span>
+                        <div class="earnings-per-second">Заработок в секунду: <span id="earningsPerSecond">0</span></div>
+                    </div>
                 </div>
-            </div>
-        </header>
-        <main>
+            </header>
             <section class="main-action">
                 <button class="click-button" onclick="earnCurrency()">
-                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5l10-5l-10-5m0 2.8L18.4 7L12 10.2L5.6 7L12 4.8M2 17v3h20v-3l-2 1.2V12l-3 1.8v3.4L12 17l-6 3.6v-7.5L2 12v5z"/></svg>
+                    💰 Заработать монеты
                 </button>
             </section>
-            <section class="upgrades-section">
-                <h2>Улучшения</h2>
-                <div class="upgrades-grid" id="upgradesList"></div>
-            </section>
-        </main>
+        </div>
 
-        <footer>
-            <div class="stats-grid">
-                <div class="stat-item">🕒 Время игры: <span id="playTime">0ч 0м 0с</span></div>
-                <div class="stat-item">🤑 Всего заработано: <span id="totalEarned">0</span></div>
-                <div class="stat-item">🚀 Макс. кликов/сек: <span id="maxCPS">0</span></div>
+        <!-- Страница улучшений -->
+        <div id="upgrades" class="page">
+            <div class="container">
+                <h2>⚡ Улучшения</h2>
+                <div class="upgrades-grid" id="upgradesList"></div>
             </div>
-            <div id="achievements-section" class="achievements-section">
+        </div>
+
+        <!-- Статистика -->
+        <div id="stats" class="page">
+            <div class="container">
+                <h2>📊 Статистика</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">🕒 Время игры: <span id="playTime">0ч 0м 0с</span></div>
+                    <div class="stat-item">🤑 Всего заработано: <span id="totalEarned">0</span></div>
+                    <div class="stat-item">🚀 Макс. кликов/сек: <span id="maxCPS">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Достижения -->
+        <div id="achievements" class="page">
+            <div class="container">
                 <h2>🏆 Достижения</h2>
                 <div id="achievements-list"></div>
             </div>
-        </footer>
+        </div>
+
         <div id="notification" class="notification"></div>
     </div>
     <script src="script.js"></script>
 </body>
-
 </html>
