@@ -1,73 +1,109 @@
 html,
 body {
-  margin: 0;
-  height: 100%;
-  padding: 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #1c1f24;
+    margin: 0;
+    height: 100%;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1c1f24;
+    font-family: 'Poppins', sans-serif;
+}
+
+.game {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.5);
 }
 
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .header img {
-  width: 50px;
-  height: 50px;
-  margin-right: 14px;
+    width: 50px;
+    height: 50px;
+    margin-right: 14px;
 }
 
 .score {
-  color: #fff;
-  text-align: center;
-  font-size: 36px;
-  font-weight: 800;
-  user-select: none;
+    color: #fff;
+    font-size: 36px;
+    font-weight: 800;
+    user-select: none;
 }
 
 .circle {
-  position: relative;
+    position: relative;
+    margin: 20px 0;
 }
 
 .circle img {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  box-shadow: 0px 0px 16px 0px rgba(138, 143, 254, 0.05);
-  transition: transform 0.2s ease;
-  --tiltX: 0deg;
-  --tiltY: 0deg;
-  transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 16px 0px rgba(138, 143, 254, 0.15);
+    transition: transform 0.2s ease;
+    --tiltX: 0deg;
+    --tiltY: 0deg;
+    transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
 }
 
 .plus-one {
-  position: absolute;
-  font-family: Inter;
-  text-shadow: 0px 0px 4px rgba(234, 182, 64, 0.25);
-  font-size: 24px;
-  font-weight: 800;
-  background: linear-gradient(180deg, #e8c547 0%, #ef882b 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  pointer-events: none;
-  user-select: none;
-  animation: move-up 2s forwards;
+    position: absolute;
+    font-family: 'Inter', sans-serif;
+    text-shadow: 0px 0px 4px rgba(234, 182, 64, 0.25);
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(180deg, #e8c547 0%, #ef882b 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    user-select: none;
+    animation: move-up 2s forwards;
+}
+
+.upgrades, .statistics {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+.upgradeButton, .statistics p {
+    color: #ffffff;
+    font-size: 18px;
+    margin: 10px 0;
+}
+ 
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #28a745; /* Зеленый фон для кнопки улучшения */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #218838; /* Темный зеленый при наведении */
 }
 
 @keyframes move-up {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(-50px);
-  }
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
 }
