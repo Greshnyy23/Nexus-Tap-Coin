@@ -6,11 +6,13 @@ const $moneyDisplay = document.getElementById('moneyDisplay');
 const $upgradeButton = document.getElementById('upgradeButton');
 const $levelUpButton = document.getElementById('levelUpButton');
 const $progressFill = document.getElementById('progressFill');
+const $achievementList = document.getElementById('achievementList');
 
 let score = 0;
 let level = 1;
 let money = 0; // Игровая валюта
 let upgradeActive = false;
+let achievements = [];
 
 // Инициализация
 function start() {
@@ -22,14 +24,15 @@ function start() {
     setHighScore(getHighScore());
     setLevel(level);
     updateMoneyDisplay();
+    updateProgress();
+    showAchievements();
 }
 
-// Сохранение данных
+// Функции для работы с очками, уровнем и монетами
 function setScore(newScore) {
     score = newScore;
     localStorage.setItem('score', score);
     $score.textContent = score;
-    updateProgress(); // Обновление индикатора прогресса
 }
 
 function setHighScore(score) {
@@ -37,6 +40,7 @@ function setHighScore(score) {
     if (score > currentHighScore) {
         localStorage.setItem('highscore', score);
         $highScore.textContent = score;
+        addAchievement("Новый рекорд!");
     }
 }
 
@@ -46,18 +50,15 @@ function setLevel(newLevel) {
     $levelDisplay.textContent = `Уровень: ${level}`;
 }
 
-// Обновление валюты (монет)
 function updateMoneyDisplay() {
     $moneyDisplay.textContent = `Монеты: ${money}`;
 }
 
-// Обновление прогресса
 function updateProgress() {
-    const progressPercentage = (score / 100) * 100; // Пример: 100 - максимальный счет
+    const progressPercentage = (score / 100) * 100; // Замените 100 на желаемый максимум
     $progressFill.style.width = `${progressPercentage}%`;
 }
 
-// Получение данных из localStorage
 function getScore() {
     return Number(localStorage.getItem('score')) || 0;
 }
@@ -74,11 +75,11 @@ function getMoney() {
     return Number(localStorage.getItem('money')) || 0;
 }
 
-// Добавление очков и валюты
+// Очки и валюта
 function addOne() {
-    setScore(score + (upgradeActive ? 2 : 1)); // Учитывает активные улучшения для очков
-    money += 1; // Каждое нажатие добавляет 1 монету
-    updateMoneyDisplay(); // Обновляем отображение
+    setScore(score + (upgradeActive ? 2 : 1)); // Учитывает улучшения
+    money += 1; // Добавляем монету
+    updateMoneyDisplay(); // Обновляем отображение денег
 }
 
 // Улучшения
@@ -89,9 +90,9 @@ $upgradeButton.addEventListener('click', () => {
         updateMoneyDisplay();
         
         setTimeout(() => {
-            upgradeActive = false; // Прекращение действия улучшения
+            upgradeActive = false; // Завершение действия улучшения
             alert('Двойные очки закончились!');
-        }, 10000); // Действие длится 10 секунд
+        }, 10000); // Длительность 10 секунд
         
         alert('Двойные очки активированы!');
     } else {
@@ -104,7 +105,7 @@ $levelUpButton.addEventListener('click', () => {
         money -= 100; // Вычитаем стоимость повышения уровня
         setLevel(level + 1);
         updateMoneyDisplay();
-        alert('Уровень повышен!');
+        addAchievement('Уровень повышен!');
     } else {
         alert('Недостаточно монет для повышения уровня!');
     }
@@ -143,6 +144,28 @@ $circle.addEventListener('click', (event) => {
         plusOne.remove();
     }, 2000);
 });
+
+// Достижения
+function addAchievement(name) {
+    if (!achievements.includes(name)) {
+        achievements.push(name);
+        const achievementItem = document.createElement('div');
+        achievementItem.textContent = name;
+        $achievementList.appendChild(achievementItem);
+    }
+}
+
+function showAchievements() {
+    if (achievements.length === 0) {
+        $achievementList.textContent = 'Нет достижений';
+    } else {
+        achievements.forEach(achievement => {
+            const achievementItem = document.createElement('div');
+            achievementItem.textContent = achievement;
+            $achievementList.appendChild(achievementItem);
+        });
+    }
+}
 
 // Инициализация
 start();
