@@ -2,18 +2,23 @@ const $circle = document.querySelector('#circle');
 const $score = document.querySelector('#score');
 const $highScore = document.getElementById('highscore');
 const $levelDisplay = document.getElementById('levelDisplay');
+const $moneyDisplay = document.getElementById('moneyDisplay');
 const $upgradeButton = document.getElementById('upgradeButton');
 const $levelUpButton = document.getElementById('levelUpButton');
 const $timerDisplay = document.getElementById('timer');
+const $achievementList = document.getElementById('achievementList');
 
 let score = 0;
 let level = 1;
+let money = 0; // Внутриигровая валюта
 let upgradeActive = false;
 let timer = 10;
 let timerInterval;
 
+const achievements = [];
+
 function start() {
-    setScore(getScore());
+    setScore(0);
     setHighScore(getHighScore());
     setImage();
     startTimer();
@@ -51,16 +56,19 @@ function addOne() {
     setScore(score + (upgradeActive ? 2 : 1));
     setHighScore(getScore());
     setImage();
+    money += 1; // Каждое нажатие добавляет 1 монету
+    $moneyDisplay.textContent = `Монеты: ${money}`;
 }
 
 function upgrade() {
-    if (getScore() >= 50) {
+    if (money >= 50) {
         upgradeActive = true;
-        setScore(getScore() - 50);
-        $upgradeButton.disabled = true; // Отключить кнопку
+        money -= 50;
+        $moneyDisplay.textContent = `Монеты: ${money}`;
+        alert('Двойные очки активированы!');
         setTimeout(() => {
             upgradeActive = false;
-            $upgradeButton.disabled = false; // Включить кнопку обратно
+            alert('Двойные очки закончились!');
         }, 10000); // Действие длится 10 секунд
     } else {
         alert('Недостаточно монет для улучшения!');
@@ -68,14 +76,12 @@ function upgrade() {
 }
 
 function levelUp() {
-    if (getScore() >= 100) {
-        setScore(getScore() - 100);
+    if (money >= 100) {
+        money -= 100;
         level++;
         $levelDisplay.textContent = `Уровень: ${level}`;
-        $levelUpButton.disabled = true; // Отключить кнопку
-        setTimeout(() => {
-            $levelUpButton.disabled = false; // Включить кнопку обратно
-        }, 10000); // Действие длится 10 секунд
+        $moneyDisplay.textContent = `Монеты: ${money}`;
+        alert('Уровень повышен!');
     } else {
         alert('Недостаточно монет для повышения уровня!');
     }
