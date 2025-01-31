@@ -8,13 +8,8 @@ body {
     justify-content: center;
     align-items: center;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #444, #333);
-    animation: gradientShift 10s infinite alternate;
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
+    background: url('./assets/background.jpg') no-repeat center center fixed;
+    background-size: cover;
 }
 
 .game {
@@ -25,6 +20,7 @@ body {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
     width: 90%;
     max-width: 450px;
+    margin-top: 60px;
 }
 
 .header {
