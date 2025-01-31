@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Lizzard Clicker</title>
+    <title>Stalker Clicker</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -16,11 +16,11 @@
 
     <div class="game">
         <header class="header">
-            <img src="./assets/coin.png" alt="coin" />
+            <img src="./assets/artifact.png" alt="artifact" />
             <h2 class="money" id="money">0</h2>
         </header>
         <div class="circle">
-            <img id="circle" src="./assets/frog.png" alt="frog" />
+            <img id="circle" src="./assets/stalker.png" alt="stalker" />
             <div class="plus-one-container"></div>
             <div id="click-wave"></div> <!-- Контейнер для волны -->
         </div>
@@ -33,7 +33,7 @@
             <button class="tab-button active" data-tab="upgrades">🛠️</button>
             <button class="tab-button" data-tab="achievements">🏆</button>
             <button class="tab-button" data-tab="settings">⚙️</button>
-            <button class="tab-button" data-tab="characters">🐸</button>
+            <button class="tab-button" data-tab="characters">🧑‍🔧</button>
             <button class="tab-button" data-tab="crafting">🔨</button>
             <button class="tab-button" data-tab="minigame">🎮</button>
         </div>
@@ -41,10 +41,10 @@
         <!-- Контент вкладок -->
         <div class="tab-content" id="upgrades">
             <h3>Улучшения:</h3>
-            <button id="upgradeButton" class="upgrade-button">Двойные монеты (50 монет)</button>
-            <button id="levelUpButton" class="upgrade-button">Уровень выше (100 монет)</button>
-            <button id="autoClickerButton" class="upgrade-button">Авто-кликер (200 монет)</button>
-            <button id="coinMultiplierButton" class="upgrade-button">Множитель монет (300 монет)</button>
+            <button id="upgradeButton" class="upgrade-button">Двойные артефакты (50 артефактов)</button>
+            <button id="levelUpButton" class="upgrade-button">Уровень выше (100 артефактов)</button>
+            <button id="autoClickerButton" class="upgrade-button">Авто-сборщик (200 артефактов)</button>
+            <button id="coinMultiplierButton" class="upgrade-button">Множитель артефактов (300 артефактов)</button>
         </div>
 
         <div class="tab-content" id="achievements" style="display: none;">
@@ -58,6 +58,7 @@
             <select id="languageSelect">
                 <option value="ru">Русский</option>
                 <option value="en">English</option>
+                <option value="uk">Українська</option>
             </select>
             <button id="resetButton">Сбросить прогресс</button>
             <button id="prestigeButton">Престиж</button>
@@ -65,20 +66,20 @@
 
         <div class="tab-content" id="characters" style="display: none;">
             <h3>Персонажи:</h3>
-            <button id="frogButton" class="character-button">Лягушка (+1 монета за клик)</button>
-            <button id="snakeButton" class="character-button">Змея (+2 монеты за клик, медленный авто-кликер)</button>
-            <button id="lizardButton" class="character-button">Ящерица (быстрый авто-кликер)</button>
+            <button id="frogButton" class="character-button">Сталкер (+1 артефакт за клик)</button>
+            <button id="snakeButton" class="character-button">Наемник (+2 артефакта за клик, медленный авто-сборщик)</button>
+            <button id="lizardButton" class="character-button">Ученый (быстрый авто-сборщик)</button>
         </div>
 
         <div class="tab-content" id="crafting" style="display: none;">
             <h3>Крафт:</h3>
-            <button id="superClickerButton" class="craft-button">Создать Супер-кликер (Двойные монеты + Авто-кликер)</button>
+            <button id="superClickerButton" class="craft-button">Создать Супер-сборщик (Двойные артефакты + Авто-сборщик)</button>
         </div>
 
         <div class="tab-content" id="minigame" style="display: none;">
-            <h3>Мини-игра: Поймай монету</h3>
+            <h3>Мини-игра: Найди артефакт</h3>
             <div id="minigameArea">
-                <div id="coin" class="falling-coin"></div>
+                <div id="artifact" class="falling-artifact"></div>
             </div>
             <p id="minigameScore">Счет: 0</p>
         </div>
