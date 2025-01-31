@@ -50,6 +50,10 @@ body {
 .circle {
     position: relative;
     margin-bottom: 20px;
+    --tiltX: 0deg;
+    --tiltY: 0deg;
+    transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
+    transition: transform 0.3s ease;
 }
 
 .circle img {
@@ -57,7 +61,6 @@ body {
     height: 200px;
     border-radius: 50%;
     box-shadow: 0 0 30px rgba(50, 255, 0, 0.8);
-    transition: transform 0.2s ease;
     cursor: pointer;
 }
 
@@ -76,13 +79,6 @@ body {
     color: #ffffff;
 }
 
-.upgrades {
-    margin-top: 20px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-}
-
 .upgrade-button {
     padding: 12px 18px;
     font-size: 16px;
@@ -99,54 +95,6 @@ body {
 .upgrade-button:hover {
     background: linear-gradient(90deg, #ff4b2b, #ff416c);
     transform: scale(1.05);
-}
-
-.upgrade-button.active {
-    animation: glow 1s infinite alternate;
-}
-
-@keyframes glow {
-    0% { box-shadow: 0 0 10px #ff416c; }
-    100% { box-shadow: 0 0 20px #ff4b2b; }
-}
-
-.progress {
-    margin-top: 20px;
-}
-
-.progress-bar {
-    width: 100%;
-    background-color: #ddd;
-    border-radius: 5px;
-    overflow: hidden;
-    height: 20px;
-}
-
-.progress-fill {
-    height: 100%;
-    background-color: #28a745;
-    width: 0%;
-    transition: width 0.5s ease, background-color 0.5s ease;
-}
-
-.character-selection {
-    margin-top: 20px;
-}
-
-.character-button {
-    padding: 8px 15px;
-    font-size: 14px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin: 5px;
-}
-
-.character-button:hover {
-    background: #0056b3;
 }
 
 .plus-one {
@@ -169,46 +117,29 @@ body {
     100% { opacity: 0; transform: translateY(-50px); }
 }
 
-.particle {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: gold;
-    border-radius: 50%;
-    animation: fly 1s ease-out;
-}
-
-@keyframes fly {
-    0% { transform: translate(0, 0); opacity: 1; }
-    100% { transform: translate(random(-100, 100)px, random(-100, 100)px); opacity: 0; }
-}
-
-.achievements {
-    margin-top: 20px;
-    color: #ffffff;
-}
-
-.achievements h3 {
-    margin-bottom: 10px;
-}
-
-#achievementList {
-    max-height: 100px;
-    overflow-y: auto;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-}
-
-.settings {
+.tabs {
+    display: flex;
+    justify-content: space-around;
     margin-top: 20px;
 }
 
-.settings button {
+.tab-button {
     padding: 10px 20px;
-    background: #ff416c;
+    background: #007bff;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 5px 5px 0 0;
     cursor: pointer;
+    transition: background 0.3s;
+}
+
+.tab-button.active {
+    background: #0056b3;
+}
+
+.tab-content {
+    margin-top: 10px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 10px 10px;
 }
