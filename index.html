@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Киберпанк Кликер 2077</title>
+    <title>Киберпанк Кликер 2050</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div id="app">
         <header>
-            <h1>Киберпанк Кликер 2077</h1>
+            <h1>Киберпанк Кликер 2050</h1>
             <div class="currency-display">
                 <span id="currency">0</span> <span class="currency-label">Кредитов</span>
-                <span class="cps-label">Заработок в секунду: <span id="earningsPerSecond">0</span></span>
+                <div class="earnings">
+                    Заработок за клик: <span id="earningsPerClick">1</span>
+                    <div class="earnings-per-second">Заработок в секунду: <span id="earningsPerSecond">0</span></div>
+                </div>
             </div>
         </header>
         <main>
             <section class="main-action">
                 <button class="click-button" onclick="earnCurrency()">
-                    💰 Заработать монеты
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5l10-5l-10-5m0 2.8L18.4 7L12 10.2L5.6 7L12 4.8M2 17v3h20v-3l-2 1.2V12l-3 1.8v3.4L12 17l-6 3.6v-7.5L2 12v5z"/></svg>
                 </button>
             </section>
             <section class="upgrades-section">
@@ -29,7 +34,7 @@
 
         <footer>
             <div class="stats-grid">
-                <div class="stat-item">🕒 Время игры: <span id="playTime">0ч</span></div>
+                <div class="stat-item">🕒 Время игры: <span id="playTime">0ч 0м 0с</span></div>
                 <div class="stat-item">🤑 Всего заработано: <span id="totalEarned">0</span></div>
                 <div class="stat-item">🚀 Макс. кликов/сек: <span id="maxCPS">0</span></div>
             </div>
@@ -39,8 +44,8 @@
             </div>
         </footer>
         <div id="notification" class="notification"></div>
-        <div class="overlay" id="overlay"></div>
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>
