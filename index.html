@@ -1,10 +1,52 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <!-- ... (стили остаются без изменений) ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кликер Игра</title>
+    <style>
+        /* Ваши стили остаются без изменений здесь */
+        :root {
+            --neon-green: #4BF145;
+            --neon-blue: #00F3FF;
+            --dark-bg: #0a0a14;
+            --accent-purple: #BC13FE;
+            --gold: #FFD700;
+            --critical-red: #FF4136;
+        }
+
+        body {
+            font-family: 'Nunito', Arial, sans-serif;
+            background: var(--dark-bg);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Прочие ваши стили... */
+    </style>
 </head>
 <body>
-    <!-- ... (HTML структура остается без изменений) ... -->
+    <div class="container">
+        <h1>Кликер Игра</h1>
+        <div id="score" class="score-container">0</div>
+        <button id="clickButton">Клик!</button>
+        <div id="clickPower">Сила клика: 1</div>
+        <div id="autoClickers">Автокликеры: 0</div>
+        <div id="upgrades" class="shop"></div>
+    </div>
 
     <script>
         let score = 0;
@@ -17,66 +59,15 @@
         };
 
         const upgrades = [
-            {
-                name: 'Усиленный клик',
-                price: 50,
-                power: 1,
-                type: 'click',
-                owned: 0,
-                max: 20
-            },
-            {
-                name: 'Автокликер',
-                price: 100,
-                power: 1,
-                type: 'auto',
-                owned: 0,
-                max: 50
-            },
-            {
-                name: 'Критический удар (10%)',
-                price: 500,
-                power: 0.1,
-                type: 'critical',
-                owned: 0,
-                max: 5
-            },
-            {
-                name: 'Золотой клик',
-                price: 1000,
-                power: 5,
-                type: 'golden',
-                owned: 0,
-                max: 1
-            },
-            {
-                name: 'Ускорение времени',
-                price: 2000,
-                power: 2,
-                type: 'boost',
-                duration: 30,
-                owned: 0,
-                max: 3
-            },
-            {
-                name: 'Множитель x2',
-                price: 5000,
-                power: 2,
-                type: 'multiplier',
-                owned: 0,
-                max: 1
-            },
-            {
-                name: 'Цепная реакция',
-                price: 10000,
-                power: 0.5,
-                type: 'chain',
-                owned: 0,
-                max: 5
-            }
+            { name: 'Усиленный клик', price: 50, power: 1, type: 'click', owned: 0, max: 20 },
+            { name: 'Автокликер', price: 100, power: 1, type: 'auto', owned: 0, max: 50 },
+            { name: 'Критический удар (10%)', price: 500, power: 0.1, type: 'critical', owned: 0, max: 5 },
+            { name: 'Золотой клик', price: 1000, power: 5, type: 'golden', owned: 0, max: 1 },
+            { name: 'Ускорение времени', price: 2000, power: 2, type: 'boost', duration: 30, owned: 0, max: 3 },
+            { name: 'Множитель x2', price: 5000, power: 2, type: 'multiplier', owned: 0, max: 1 },
+            { name: 'Цепная реакция', price: 10000, power: 0.5, type: 'chain', owned: 0, max: 5 }
         ];
 
-        // Загрузка сохранений
         function loadGame() {
             const saved = localStorage.getItem('clickerSave');
             if (saved) {
@@ -95,7 +86,6 @@
             updateUI();
         }
 
-        // Сохранение игры
         function saveGame() {
             const data = {
                 score,
@@ -110,26 +100,20 @@
             localStorage.setItem('clickerSave', JSON.stringify(data));
         }
 
-        // Исправленная функция расчета силы клика
         function calculateTotalClickPower() {
             let total = baseClickPower;
-            
-            // Базовые улучшения клика
             total += upgrades
                 .filter(u => u.type === 'click')
                 .reduce((sum, u) => sum + (u.power * u.owned), 0);
-            
-            // Множители
+
             const multiplier = upgrades
                 .filter(u => u.type === 'multiplier')
                 .reduce((sum, u) => sum * (u.power ** u.owned), 1);
-            
-            // Критический шанс (учитывается при клике)
+
             const criticalMultiplier = 1 + upgrades
                 .filter(u => u.type === 'critical')
                 .reduce((sum, u) => sum + (u.power * u.owned), 0);
-
-            // Цепная реакция
+            
             const chainMultiplier = 1 + upgrades
                 .filter(u => u.type === 'chain')
                 .reduce((sum, u) => sum + (u.power * u.owned), 0);
@@ -137,13 +121,12 @@
             return total * multiplier * chainMultiplier * criticalMultiplier * multipliers.timeBoost * multipliers.goldenClick;
         }
 
-        // Исправленная функция покупки улучшений
         function buyUpgrade(index) {
             const upgrade = upgrades[index];
             if (score >= upgrade.price && upgrade.owned < upgrade.max) {
                 score -= upgrade.price;
                 upgrade.owned++;
-                
+
                 switch (upgrade.type) {
                     case 'auto':
                         autoClickers += upgrade.power;
@@ -155,8 +138,7 @@
                         setupGoldenClick();
                         break;
                 }
-                
-                // Корректное увеличение цены
+
                 upgrade.price = Math.floor(upgrade.price * 1.5);
                 saveGame();
                 updateUI();
@@ -165,15 +147,13 @@
             return false;
         }
 
-        // Исправленный обработчик клика
         document.getElementById('clickButton').addEventListener('click', (e) => {
             let clickValue = calculateTotalClickPower();
-            
-            // Критический удар
+
             const criticalChance = upgrades
                 .filter(u => u.type === 'critical')
                 .reduce((sum, u) => sum + (u.power * u.owned), 0);
-            
+
             if (Math.random() < criticalChance) {
                 clickValue *= 2;
                 showCriticalEffect(e);
@@ -185,7 +165,6 @@
             showClickEffect(e, clickValue);
         });
 
-        // Новые функции для визуальных эффектов
         function showClickEffect(event, value) {
             const effect = document.createElement('div');
             effect.className = 'floating-text';
@@ -206,7 +185,6 @@
             setTimeout(() => effect.remove(), 1500);
         }
 
-        // Автоклики
         function autoClick() {
             if (autoClickers > 0) {
                 score += autoClickers * calculateTotalClickPower();
@@ -215,19 +193,17 @@
             }
         }
 
-        // Инициализация
         function init() {
             loadGame();
             setInterval(autoClick, 1000);
             updateUI();
         }
 
-        // Обновление интерфейса
         function updateUI() {
             document.getElementById('score').textContent = Math.floor(score);
             document.getElementById('clickPower').textContent = calculateTotalClickPower();
             document.getElementById('autoClickers').textContent = autoClickers;
-            
+
             const upgradesDiv = document.getElementById('upgrades');
             upgradesDiv.innerHTML = upgrades.map((upgrade, index) => `
                 <div class="upgrade">
@@ -255,7 +231,6 @@
             }
         }
 
-        // Запуск игры
         init();
     </script>
 </body>
