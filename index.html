@@ -28,6 +28,9 @@
             <button class="tab-button active" data-tab="upgrades">Улучшения</button>
             <button class="tab-button" data-tab="achievements">Достижения</button>
             <button class="tab-button" data-tab="settings">Настройки</button>
+            <button class="tab-button" data-tab="characters">Персонажи</button>
+            <button class="tab-button" data-tab="crafting">Крафт</button>
+            <button class="tab-button" data-tab="minigame">Мини-игра</button>
         </div>
 
         <!-- Контент вкладок -->
@@ -52,6 +55,27 @@
                 <option value="en">English</option>
             </select>
             <button id="resetButton">Сбросить прогресс</button>
+            <button id="prestigeButton">Престиж</button>
+        </div>
+
+        <div class="tab-content" id="characters" style="display: none;">
+            <h3>Персонажи:</h3>
+            <button id="frogButton" class="character-button">Лягушка (+1 монета за клик)</button>
+            <button id="snakeButton" class="character-button">Змея (+2 монеты за клик, медленный авто-кликер)</button>
+            <button id="lizardButton" class="character-button">Ящерица (быстрый авто-кликер)</button>
+        </div>
+
+        <div class="tab-content" id="crafting" style="display: none;">
+            <h3>Крафт:</h3>
+            <button id="superClickerButton" class="craft-button">Создать Супер-кликер (Двойные монеты + Авто-кликер)</button>
+        </div>
+
+        <div class="tab-content" id="minigame" style="display: none;">
+            <h3>Мини-игра: Поймай монету</h3>
+            <div id="minigameArea">
+                <div id="coin" class="falling-coin"></div>
+            </div>
+            <p id="minigameScore">Счет: 0</p>
         </div>
     </div>
 
