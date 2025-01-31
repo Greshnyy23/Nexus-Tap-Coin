@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сибирский Трэп Плеер</title>
+    <title>Telegram Clicker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,313 +14,197 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            touch-action: manipulation;
         }
 
-        .player {
-            background: #2a2a2a;
-            border-radius: 15px;
-            padding: 20px;
-            width: 100%;
+        .container {
             max-width: 400px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            width: 100%;
         }
 
-        .cover-art {
+        #clickButton {
             width: 200px;
             height: 200px;
-            border-radius: 10px;
-            margin: 0 auto 20px;
-            background: #333;
-            overflow: hidden;
-        }
-
-        #visualizer {
-            width: 100%;
-            height: 100%;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        button {
+            border-radius: 50%;
             background: #4CAF50;
             border: none;
             color: white;
-            padding: 12px;
-            border-radius: 50%;
+            font-size: 24px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: transform 0.1s;
+            margin: 20px auto;
+            display: block;
+            touch-action: manipulation;
         }
 
-        button:hover {
-            background: #45a049;
+        #clickButton:active {
+            transform: scale(0.95);
         }
 
-        .progress-container {
-            width: 100%;
-            height: 5px;
-            background: #404040;
-            border-radius: 5px;
-            margin: 10px 0;
-            cursor: pointer;
+        .score-container {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
         }
 
-        #progress {
-            height: 100%;
-            background: #4CAF50;
-            border-radius: 5px;
-            width: 0%;
-        }
-
-        .time {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8em;
-            color: #888;
-        }
-
-        .playlist {
-            width: 100%;
+        .shop {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 15px;
             margin-top: 20px;
         }
 
-        .track {
-            padding: 10px;
+        .upgrade {
             background: #333;
-            margin-bottom: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .track:hover {
-            background: #404040;
-        }
-
-        .playlist-selector {
-            margin-bottom: 20px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .playlist-btn {
+        .upgrade button {
             background: #4CAF50;
             border: none;
             color: white;
             padding: 8px 15px;
-            border-radius: 15px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
-        .youtube-link {
-            background: #FF0000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px;
-            text-decoration: none;
-            color: white;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        .youtube-link img {
-            width: 24px;
-            height: 24px;
+        .upgrade button:disabled {
+            background: #666;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
-    <div class="player">
-        <div class="playlist-selector">
-            <button class="playlist-btn" onclick="selectPlaylist('main')">Основное</button>
-            <button class="playlist-btn" onclick="selectPlaylist('siberian_trap')">Сибирский Трэп</button>
-        </div>
-
-        <div class="cover-art">
-            <canvas id="visualizer"></canvas>
+    <div class="container">
+        <div class="score-container">
+            Очков: <span id="score">0</span>
         </div>
         
-        <div class="controls">
-            <button id="prevBtn">⏮</button>
-            <button id="playPauseBtn">▶</button>
-            <button id="nextBtn">⏭</button>
-        </div>
+        <button id="clickButton">КЛИКАЙ!</button>
 
-        <div class="progress-container">
-            <div id="progress"></div>
+        <div class="shop">
+            <h2>Улучшения</h2>
+            <div id="upgrades"></div>
         </div>
-
-        <div class="time">
-            <span id="currentTime">0:00</span>
-            <span id="duration">0:00</span>
-        </div>
-
-        <a href="https://music.youtube.com/playlist?list=PLcgcJj2r8RqTsVQHYXq8p4XUyL8yqSxrY" 
-           target="_blank" 
-           class="youtube-link">
-            <img src="https://www.youtube.com/s/desktop/d6e70e1a/img/favicon_48.png" alt="YT Music">
-            Открыть в YouTube Music
-        </a>
     </div>
 
-    <div class="playlist" id="playlist"></div>
-
     <script>
-        const audio = new Audio();
-        const playlists = {
-            main: [
-                {
-                    title: "Трек 1",
-                    artist: "Исполнитель",
-                    url: "https://example.com/track1.mp3"
-                },
-                {
-                    title: "Трек 2",
-                    artist: "Другой исполнитель",
-                    url: "https://example.com/track2.mp3"
-                }
-            ],
-            
-            siberian_trap: [
-                {
-                    title: "SIBERIAN TRAP MIX 2024",
-                    type: "youtube",
-                    url: "https://music.youtube.com/playlist?list=PLcgcJj2r8RqTsVQHYXq8p4XUyL8yqSxrY"
-                },
-                {
-                    title: "Лучшие трэп хиты",
-                    type: "youtube",
-                    url: "https://music.youtube.com/playlist?list=PLcgcJj2r8RqTsVQHYXq8p4XUyL8yqSxrY"
-                }
-            ]
-        };
+        let score = 0;
+        let clickPower = 1;
+        let autoClickers = 0;
+        let upgrades = [
+            {
+                name: 'Усиленный клик',
+                price: 50,
+                power: 2,
+                owned: 0,
+                max: 5
+            },
+            {
+                name: 'Автокликер',
+                price: 100,
+                power: 0,
+                owned: 0,
+                max: 10
+            },
+            {
+                name: 'Мега клик',
+                price: 500,
+                power: 10,
+                owned: 0,
+                max: 3
+            }
+        ];
 
-        let currentPlaylist = 'main';
-        let currentTrack = 0;
-        let isPlaying = false;
-        const canvas = document.getElementById('visualizer');
-        const ctx = canvas.getContext('2d');
-
-        // Инициализация визуализатора
-        canvas.width = 200;
-        canvas.height = 200;
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const analyser = audioContext.createAnalyser();
-        const source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        analyser.fftSize = 256;
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-
-        function updateVisualizer() {
-            requestAnimationFrame(updateVisualizer);
-            analyser.getByteFrequencyData(dataArray);
-            
-            ctx.fillStyle = '#333';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            const barWidth = (canvas.width / bufferLength) * 2.5;
-            let x = 0;
-
-            for(let i = 0; i < bufferLength; i++) {
-                const barHeight = dataArray[i] / 2;
-                ctx.fillStyle = `hsl(${i * 2}, 100%, 50%)`;
-                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-                x += barWidth + 1;
+        // Загрузка сохранений
+        function loadGame() {
+            const saved = localStorage.getItem('clickerSave');
+            if(saved) {
+                const data = JSON.parse(saved);
+                score = data.score;
+                clickPower = data.clickPower;
+                autoClickers = data.autoClickers;
+                upgrades = data.upgrades;
             }
         }
 
-        function selectPlaylist(playlistId) {
-            currentPlaylist = playlistId;
-            currentTrack = 0;
-            updatePlaylist();
-            loadTrack(0);
+        // Сохранение игры
+        function saveGame() {
+            const data = {
+                score,
+                clickPower,
+                autoClickers,
+                upgrades
+            };
+            localStorage.setItem('clickerSave', JSON.stringify(data));
         }
 
-        function loadTrack(trackIndex) {
-            const track = playlists[currentPlaylist][trackIndex];
-            
-            if(track.type === 'youtube') {
-                window.open(track.url, '_blank');
-                return;
-            }
-
-            currentTrack = trackIndex;
-            audio.src = track.url;
-            audio.load();
-            if(isPlaying) audio.play();
-            updatePlaylist();
-        }
-
-        function updatePlaylist() {
-            const playlistDiv = document.getElementById('playlist');
-            playlistDiv.innerHTML = playlists[currentPlaylist].map((track, index) => `
-                <div class="track" onclick="loadTrack(${index})">
-                    ${index + 1}. ${track.title}${track.artist ? ' - ' + track.artist : ''}
-                    ${index === currentTrack ? '▶' : ''}
-                    ${track.type === 'youtube' ? ' (YouTube)' : ''}
+        // Обновление интерфейса
+        function updateUI() {
+            document.getElementById('score').textContent = Math.floor(score);
+            document.getElementById('upgrades').innerHTML = upgrades.map((upgrade, index) => `
+                <div class="upgrade">
+                    <div>
+                        <h3>${upgrade.name}</h3>
+                        <p>Цена: ${upgrade.price}</p>
+                        <p>Куплено: ${upgrade.owned}/${upgrade.max}</p>
+                    </div>
+                    <button 
+                        onclick="buyUpgrade(${index})" 
+                        ${score < upgrade.price || upgrade.owned >= upgrade.max ? 'disabled' : ''}>
+                        Купить
+                    </button>
                 </div>
             `).join('');
         }
 
-        function updateProgress() {
-            const progress = document.getElementById('progress');
-            const currentTime = document.getElementById('currentTime');
-            const duration = document.getElementById('duration');
-
-            progress.style.width = (audio.currentTime / audio.duration) * 100 + '%';
-            currentTime.textContent = formatTime(audio.currentTime);
-            duration.textContent = formatTime(audio.duration);
-        }
-
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            seconds = Math.floor(seconds % 60);
-            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        // Обработчики событий
-        document.getElementById('playPauseBtn').addEventListener('click', () => {
-            if (isPlaying) {
-                audio.pause();
-            } else {
-                audio.play();
-                updateVisualizer();
+        // Покупка улучшения
+        function buyUpgrade(index) {
+            const upgrade = upgrades[index];
+            if(score >= upgrade.price && upgrade.owned < upgrade.max) {
+                score -= upgrade.price;
+                upgrade.owned++;
+                
+                if(upgrade.name === 'Автокликер') {
+                    autoClickers++;
+                } else {
+                    clickPower += upgrade.power;
+                }
+                
+                upgrade.price = Math.floor(upgrade.price * 1.5);
+                saveGame();
+                updateUI();
             }
-            isPlaying = !isPlaying;
-            document.getElementById('playPauseBtn').textContent = isPlaying ? '⏸' : '▶';
-        });
+        }
 
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            currentTrack = (currentTrack + 1) % playlists[currentPlaylist].length;
-            loadTrack(currentTrack);
-        });
-
-        document.getElementById('prevBtn').addEventListener('click', () => {
-            currentTrack = (currentTrack - 1 + playlists[currentPlaylist].length) % playlists[currentPlaylist].length;
-            loadTrack(currentTrack);
-        });
-
-        document.querySelector('.progress-container').addEventListener('click', (e) => {
-            const rect = e.target.getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = pos * audio.duration;
-        });
-
-        audio.addEventListener('timeupdate', updateProgress);
-        audio.addEventListener('ended', () => {
-            currentTrack = (currentTrack + 1) % playlists[currentPlaylist].length;
-            loadTrack(currentTrack);
-        });
+        // Автоклики
+        function autoClick() {
+            score += autoClickers;
+            updateUI();
+            saveGame();
+        }
 
         // Инициализация
-        selectPlaylist('main');
+        document.getElementById('clickButton').addEventListener('click', () => {
+            score += clickPower;
+            updateUI();
+            saveGame();
+        });
+
+        // Запуск авто-кликов
+        setInterval(autoClick, 1000);
+        
+        // Загрузка игры при старте
+        loadGame();
+        updateUI();
+        
+        // Сохранение при закрытии
+        window.addEventListener('beforeunload', saveGame);
     </script>
 </body>
 </html>
