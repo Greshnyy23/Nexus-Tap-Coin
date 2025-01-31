@@ -45,11 +45,17 @@ function getHighScore() {
     return Number(localStorage.getItem('highscore')) || 0;
 }
 
-// Добавление очков
+// Обновление валюты (монет)
+function addCurrency(amount) {
+    money += amount; // Увеличиваем валюту
+    $moneyDisplay.textContent = `Монеты: ${money}`; // Обновляем отображение
+}
+
+// Добавление очков и валюты
 function addOne() {
-    setScore(score + (upgradeActive ? 2 : 1)); // Учитывает активные улучшения для очков
-    money += 1; // Каждое нажатие добавляет 1 монету
-    $moneyDisplay.textContent = `Монеты: ${money}`;
+    const pointsToAdd = upgradeActive ? 2 : 1; // Учитываем активные улучшения для очков
+    setScore(score + pointsToAdd);
+    addCurrency(1); // Каждое нажатие добавляет 1 монету
 }
 
 // Улучшение для двойных очков
@@ -91,7 +97,7 @@ function selectCharacter(character) {
     }
 }
 
-// Обработчики событий для выбора персонажа
+// Обработчики событий для кнопок выбора персонажа
 document.getElementById('frogButton').addEventListener('click', () => selectCharacter('frog'));
 document.getElementById('lizzardButton').addEventListener('click', () => selectCharacter('lizzard'));
 
@@ -122,7 +128,7 @@ $circle.addEventListener('click', (event) => {
 
     $circle.parentElement.appendChild(plusOne);
 
-    addOne();
+    addOne(); // Добавление очка и валюты
 
     setTimeout(() => {
         plusOne.remove();
