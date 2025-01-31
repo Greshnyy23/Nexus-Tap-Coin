@@ -68,6 +68,9 @@ function start() {
     checkAchievements();
     updateTexts();
     languageSelect.value = currentLanguage;
+
+    // Показываем первую вкладку по умолчанию
+    document.querySelector('.tab-button.active').click();
 }
 
 // Функции для работы с монетами и уровнем
@@ -263,6 +266,32 @@ $resetButton.addEventListener('click', () => {
         checkAchievements();
         updateTexts();
     }
+});
+
+// Переключение вкладок
+const tabButtons = document.querySelectorAll('.tab-button');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const tabName = button.getAttribute('data-tab');
+
+        // Скрыть все вкладки
+        tabContents.forEach(content => {
+            content.style.display = 'none';
+        });
+
+        // Показать выбранную вкладку
+        document.getElementById(tabName).style.display = 'block';
+
+        // Убрать активный класс у всех кнопок
+        tabButtons.forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Добавить активный класс к текущей кнопке
+        button.classList.add('active');
+    });
 });
 
 // Инициализация при загрузке страницы
