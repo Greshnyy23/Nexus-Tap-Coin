@@ -12,6 +12,7 @@
             --accent-purple: #BC13FE;
             --gold: #FFD700;
             --critical-red: #FF4136;
+            --button-bg: rgba(255, 255, 255, 0.2);
         }
 
         body {
@@ -76,7 +77,7 @@
             height: 200%;
             background: linear-gradient(45deg, 
                 transparent, 
-                rgba(255, 255, 255, 0.1), 
+                rgba(255,255,255,0.1), 
                 transparent);
             transform: rotate(45deg);
             animation: shine 3s infinite;
@@ -146,7 +147,7 @@
             left: 50%;
             width: 300%;
             height: 300%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10.01%);
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10.01%);
             transform: translate(-50%, -50%) scale(0);
             transition: transform 0.5s;
         }
@@ -204,15 +205,19 @@
         }
 
         .nav a {
+            background: var(--button-bg);
             color: var(--neon-blue);
+            padding: 10px 15px;
+            margin: 0 10px;
+            border-radius: 5px;
             text-decoration: none;
-            margin: 0 15px;
-            font-size: 20px;
-            transition: color 0.3s;
+            font-size: 18px;
+            transition: background 0.3s, color 0.3s;
         }
 
         .nav a:hover {
-            color: var(--neon-green);
+            background: var(--accent-purple);
+            color: #fff;
         }
 
         .page {
@@ -290,7 +295,7 @@
     <div id="stats" class="page">
         <div class="container">
             <h2>Статистика</h2>
-            <div class="stats-list">
+            <div class="stats-list" id="statsList">
                 <p id="totalCoins">Собрано монет: 0</p>
                 <p id="totalUpgrades">Всего улучшений: 0</p>
                 <p id="invitedPeople">Приглашённых людей: 0</p>
@@ -337,7 +342,7 @@
             if (score >= upgrade.price && upgrade.owned < upgrade.max) {
                 score -= upgrade.price;
                 upgrade.owned++;
-                totalUpgrades++; // Общее количество улучшений увеличивается
+                totalUpgrades++; // Увеличиваем общее количество улучшений
                 upgrade.price = Math.floor(upgrade.price * 1.5);
                 saveGame();
                 updateUI();
