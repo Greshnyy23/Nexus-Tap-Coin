@@ -55,7 +55,7 @@ html, body {
     cursor: pointer;
 }
 
-.upgrades, .statistics {
+.upgrades, .statistics, .achievements {
     margin-top: 20px;
     padding: 10px;
     background: rgba(255, 255, 255, 0.1);
