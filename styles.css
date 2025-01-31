@@ -9,6 +9,12 @@ body {
     align-items: center;
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #444, #333);
+    animation: gradientShift 10s infinite alternate;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
 }
 
 .game {
@@ -51,6 +57,17 @@ body {
     border-radius: 50%;
     box-shadow: 0 0 30px rgba(50, 255, 0, 0.8);
     transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.circle img:active {
+    animation: pulse 0.2s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
 
 .money-display {
@@ -66,7 +83,7 @@ body {
 }
 
 .upgrade-button {
-    padding: 12px 18px; /* Увеличенные отступы для лучшего удобства */
+    padding: 12px 18px;
     font-size: 16px;
     background: linear-gradient(90deg, #ff416c, #ff4b2b);
     color: white;
@@ -75,12 +92,21 @@ body {
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
     font-weight: 600;
-    margin: 5px; /* Отступы между кнопками */
+    margin: 5px;
 }
 
 .upgrade-button:hover {
     background: linear-gradient(90deg, #ff4b2b, #ff416c);
-    transform: scale(1.05); /* Увеличиваем размер при наведении */
+    transform: scale(1.05);
+}
+
+.upgrade-button.active {
+    animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 10px #ff416c; }
+    100% { box-shadow: 0 0 20px #ff4b2b; }
 }
 
 .progress {
@@ -97,9 +123,9 @@ body {
 
 .progress-fill {
     height: 100%;
-    background-color: #28a745; /* Цвет заполнения прогресса */
-    width: 0%; /* Начальная ширина нулевая */
-    transition: width 0.5s ease;
+    background-color: #28a745;
+    width: 0%;
+    transition: width 0.5s ease, background-color 0.5s ease;
 }
 
 .character-selection {
@@ -107,19 +133,19 @@ body {
 }
 
 .character-button {
-    padding: 8px 15px; /* Уменьшенные отступы для компактности */
+    padding: 8px 15px;
     font-size: 14px;
-    background: #007bff; /* Синий фон для кнопок выбора */
+    background: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
-    margin: 5px; /* Отступы между кнопками */
+    margin: 5px;
 }
 
 .character-button:hover {
-    background: #0056b3; /* Темно-синий при наведении */
+    background: #0056b3;
 }
 
 .plus-one {
@@ -138,12 +164,37 @@ body {
 }
 
 @keyframes move-up {
-    0% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-50px); }
+}
+
+.particle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: gold;
+    border-radius: 50%;
+    animation: fly 1s ease-out;
+}
+
+@keyframes fly {
+    0% { transform: translate(0, 0); opacity: 1; }
+    100% { transform: translate(random(-100, 100)px, random(-100, 100)px); opacity: 0; }
+}
+
+.achievements {
+    margin-top: 20px;
+    color: #ffffff;
+}
+
+.achievements h3 {
+    margin-bottom: 10px;
+}
+
+#achievementList {
+    max-height: 100px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
 }
