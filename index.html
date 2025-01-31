@@ -1,21 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="ru">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lizzard Clicker</title>
     <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
+</head>
+<body>
     <div class="game">
-      <div class="header">
-        <img src="./assets/coin.png" alt="coin" />
-        <h2 class="score" id="score">42</h2>
-      </div>
-      <div class="circle">
-        <img id="circle" src="./assets/frog.png" alt="frog" />
-      </div>
+        <div class="header">
+            <img src="./assets/coin.png" alt="coin" />
+            <h2 class="score" id="score">0</h2>
+        </div>
+        <div class="circle">
+            <img id="circle" src="./assets/frog.png" alt="frog" />
+        </div>
+        <div class="upgrades">
+            <h3>Улучшения</h3>
+            <button id="upgradeButton">Улучшить (50 монет)</button>
+        </div>
+        <div class="statistics">
+            <h3>Статистика</h3>
+            <p id="highscore">Рекорд: 0</p>
+        </div>
     </div>
     <script src="app.js" defer></script>
-  </body>
+</body>
 </html>
