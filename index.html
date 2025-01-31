@@ -20,8 +20,21 @@
         <div class="navigation">
             <button id="toImprovements" class="nav-button">Улучшения</button>
             <button id="toStatistics" class="nav-button">Статистика</button>
+            <button id="themeButton" class="nav-button">Сменить тему</button>
+        </div>
+        <div class="progress">
+            <div id="progressBar" class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+        </div>
+        <div class="character-selection">
+            <h3>Выберите персонажа:</h3>
+            <button id="frogButton" class="character-button">Лягушка</button>
+            <button id="lizzardButton" class="character-button">Ящерица</button>
         </div>
     </div>
     <script src="app.js" defer></script>
+    <audio id="clickSound" src="./assets/click.mp3"></audio>
+    <audio id="levelUpSound" src="./assets/levelup.mp3"></audio>
 </body>
 </html>
