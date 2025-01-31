@@ -1,7 +1,104 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <!-- ... (стили остаются без изменений) ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игровое приложение</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .nav {
+            background: #333;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+        }
+
+        .nav a:hover {
+            opacity: 0.7;
+        }
+
+        .page {
+            display: none;
+            padding: 20px;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .upgrades-grid, .achievements-grid, .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement-card, .event-item, .stat-item, .upgrade {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .achievement-card.locked {
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        .referral-box {
+            background: rgba(188, 19, 254, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #bc13fe;
+            text-align: center;
+        }
+
+        .code-box {
+            background: rgba(255,255,255,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
+            background: #218838;
+        }
+    </style>
 </head>
 <body>
     <!-- Навигация -->
@@ -17,7 +114,8 @@
     <!-- Главная страница -->
     <div id="main" class="page active">
         <div class="container">
-            <!-- ... (прежнее содержимое) ... -->
+            <h2>Добро пожаловать в игровое приложение!</h2>
+            <p>Здесь вы можете улучшать свои навыки, достигать успехов и получать призы!</p>
         </div>
     </div>
 
@@ -42,7 +140,7 @@
         <div class="container">
             <h2>🤝 Пригласи друзей</h2>
             <div class="referral-box">
-                <input type="text" id="referralCode" placeholder="Введи код друга">
+                <input type="text" id="referralCode" placeholder="Введи код друга" style="width: calc(100% - 20px); padding: 10px;">
                 <button id="applyReferral">✅ Применить</button>
                 <div class="your-code">
                     <span>Твой код:</span>
@@ -74,89 +172,32 @@
         </div>
     </div>
 
-    <style>
-        /* Новые стили для страниц */
-        .upgrades-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-        }
-
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-        }
-
-        .achievement-card {
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid var(--gold);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .achievement-card.locked {
-            filter: grayscale(1);
-            opacity: 0.5;
-        }
-
-        .referral-box {
-            background: rgba(188, 19, 254, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid var(--accent-purple);
-        }
-
-        .code-box {
-            background: rgba(255,255,255,0.1);
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-family: monospace;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-        }
-
-        .stat-item {
-            background: rgba(0, 243, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .event-item {
-            background: rgba(75, 241, 69, 0.1);
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    </style>
-
     <script>
-        // Обновленная функция отображения достижений
+        // Показывать выбранную страницу
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Временно используемые переменные для демонстрации
+        const userReferralCode = 'ABC123'; // пример кода
+        const totalPlayTime = 120; // пример времени
+        const totalEarned = 1000; // сумма
+        const maxCPS = 10; // пример макс кликов
+        const upgrades = [
+            { name: 'Увеличение кликов', price: 10, owned: 0, max: 5, type: 'click' },
+            { name: 'Автоматический кликер', price: 50, owned: 0, max: 2, type: 'auto' }
+        ];
+
+        // Пример обновления интерфейса
         function updateAchievementsUI() {
             const container = document.getElementById('achievementsList');
-            container.innerHTML = achievements.map(ach => `
-                <div class="achievement-card ${ach.completed ? '' : 'locked'}">
-                    <div class="emoji">${ach.completed ? '🏆' : '🔒'}</div>
-                    <h3>${ach.name}</h3>
-                    <p>${ach.description}</p>
-                    ${ach.completed ? 
-                        `<div class="reward">🎁 +${ach.reward}</div>` : 
-                        `<div class="progress">${getAchievementProgress(ach)}</div>`}
-                </div>
-            `).join('');
+            container.innerHTML = '<div>Нет достижений для отображения</div>'; // Заполните вашими данными
         }
 
-        // Обновленная статистика
         function updateStats() {
             document.getElementById('playTime').textContent = 
                 `${Math.floor(totalPlayTime / 60)}ч ${totalPlayTime % 60}м`;
@@ -164,7 +205,6 @@
             document.getElementById('maxCPS').textContent = maxCPS;
         }
 
-        // Обновленные улучшения
         function updateUpgradesUI() {
             const container = document.getElementById('upgradesList');
             container.innerHTML = upgrades.map((upg, i) => `
@@ -185,18 +225,23 @@
             `).join('');
         }
 
+        function buyUpgrade(index) {
+            const upgrade = upgrades[index];
+            // Добавьте логику покупки
+        }
+
         function getUpgradeEmoji(type) {
             const emojis = {
                 click: '💥',
-                auto: '🤖',
-                critical: '🎯',
-                golden: '🌟',
-                boost: '🚀',
-                multiplier: '✨',
-                chain: '⚡'
+                auto: '🤖'
             };
             return emojis[type] || '✅';
         }
+
+        // Инициализация интерфейса
+        updateAchievementsUI();
+        updateStats();
+        updateUpgradesUI();
     </script>
 </body>
 </html>
