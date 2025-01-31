@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кликер Игра</title>
+    <style>
+        :root {
+            --neon-green: #4BF145;
+            --neon-blue: #00F3FF;
+            --dark-bg: #0a0a14;
+            --light-bg: rgba(255, 255, 255, 0.1);
+            --accent-purple: #BC13FE;
+            --gold: #FFD700;
+            --critical-red: #FF4136;
+            --button-bg: rgba(255, 255, 255, 0.2);
+            --border-color: var(--neon-blue);
+        }
+
+        body {
+            font-family: 'Nunito', Arial, sans-serif;
+            background: var(--dark-bg);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .nav a {
+            background: var(--button-bg);
+            color: var(--neon-blue);
+            padding: 10px 15px;
+            margin: 0 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 20px; 
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .nav a:hover {
+            background: var(--accent-purple);
+            color: #fff;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            background: rgba(20, 20, 40, 0.9);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            margin: 10px 0;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        #clickButton {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, var(--neon-green), var(--neon-blue));
+            border: none;
+            color: white;
+            font-size: 28px;
+            font-family: 'Russo One', cursive;
+            cursor: pointer;
+            margin: 20px auto;
+            box-shadow: 0 0 20px rgba(75, 241, 69, 0.3);
+            transition: transform 0.1s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #clickButton::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        #clickButton:active {
+            transform: scale(0.95) rotate(5deg);
+            box-shadow: 0 0 40px rgba(75, 241, 69, 0.6);
+        }
+
+        .score-container,
+        .stats-list {
+            margin: 15px 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .upgrade {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: rgba(20, 20, 40, 0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .upgrade:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(75, 241, 69, 0.2);
+        }
+
+        .upgrade button {
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .upgrade button:disabled {
+            background: rgba(85, 85, 85, 0.9);
+            cursor: not-allowed;
+        }
+
+        .floating-text {
+            position: absolute;
+            animation: floatUp 1s ease-out forwards;
+            font-size: 24px;
+            pointer-events: none;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        .critical-text {
+            color: var(--critical-red);
+            font-size: 32px;
+            animation: criticalFloat 1.5s ease-out forwards;
+        }
+
+        @keyframes shine {
+            0% { left: -50%; }
+            100% { left: 150%; }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+        }
+
+        @keyframes criticalFloat {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            50% { transform: translateY(-50px) scale(1.5); opacity: 1; }
+            100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+    </style>
+</head>
+<body>
+    <!-- Главная страница -->
+    <div id="main" class="page active">
+        <div class="container">
+            <h1>Кликер Игра</h1>
+            <div id="score" class="score-container">0</div>
+            <button id="clickButton">Клик!</button>
+            <div id="clickPower">Сила клика: 1</div>
+            <div id="autoClickers">Автокликеры: 0</div>
+        </div>
+    </div>
+
+    <!-- Страница "Улучшения" -->
+    <div id="upgrades" class="page">
+        <div class="container">
+            <h2>Улучшения</h2>
+            <div id="upgradesList" class="shop"></div>
+        </div>
+    </div>
+
+    <!-- Страница "Реферальная система" -->
+    <div id="referral" class="page">
+        <div class="container">
+            <h2>Реферальная система</h2>
+            <div class="referral-container">
+                <input type="text" id="referralCode" placeholder="Введите реферальный код">
+                <button id="applyReferral">Применить код</button>
+                <div id="referralMessage"></div>
+                <h3>Ваш реферальный код: <span id="userReferralCode">REF-${generateReferralCode()}</span></h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница "Статистика" -->
+    <div id="stats" class="page">
+        <div class="container">
+            <h2>Статистика</h2>
+            <div class="stats-list">
+                <p id="totalCoins">Собрано монет: 0</p>
+                <p id="totalUpgrades">Всего улучшений: 0</p>
+                <p id="invitedPeople">Приглашённых людей: 0</p>
+            </div>
+            <button id="resetStats">Сбросить статистику</button>
+        </div>
+    </div>
+
+    <div class="nav">
+        <a href="#" onclick="showPage('main')">🏠</a>
+        <a href="#" onclick="showPage('upgrades')">⚙️</a>
+        <a href="#" onclick="showPage('referral')">🔗</a>
+        <a href="#" onclick="showPage('stats')">📊</a>
+    </div>
+
+    <script>
+        let score = 0;
+        let baseClickPower = 1;
+        let autoClickers = 0;
+        let multipliers = { critical: 1, timeBoost: 1, goldenClick: 1 };
+        let totalUpgrades = 0; // Общее количество улучшений
+        let invitedPeople = 0; // Количество приглашённых людей
+        const referralBonus = 100; // Бонус за реферальный код
+        const userReferralCode = `REF-${generateReferralCode()}`; // Генерируем уникальный реферальный код
+
+        const upgrades = [
+            { name: 'Усиленный клик', price: 50, power: 1, type: 'click', owned: 0, max: 20 },
+            { name: 'Автокликер', price: 100, power: 1, type: 'auto', owned: 0, max: 50 },
+            { name: 'Критический удар (10%)', price: 500, power: 0.1, type: 'critical', owned: 0, max: 5 },
+            { name: 'Золотой клик', price: 1000, power: 5, type: 'golden', owned: 0, max: 1 },
+            { name: 'Ускорение времени', price: 2000, power: 2, type: 'boost', duration: 30, owned: 0, max: 3 },
+            { name: 'Множитель x2', price: 5000, power: 2, type: 'multiplier', owned: 0, max: 1 },
+            { name: 'Цепная реакция', price: 10000, power: 0.5, type: 'chain', owned: 0, max: 5 }
+        ];
+
+        function generateReferralCode() {
+            return Math.random().toString(36).substring(2, 10).toUpperCase(); // Генерация случайного кода
+        }
+
+        function calculateTotalClickPower() {
+            let total = baseClickPower;
+            total += upgrades.filter(u => u.type === 'click').reduce((sum, u) => sum + (u.power * u.owned), 0);
+            const multiplier = upgrades.filter(u => u.type === 'multiplier').reduce((sum, u) => sum * (u.power ** u.owned), 1);
+            const criticalMultiplier = 1 + upgrades.filter(u => u.type === 'critical').reduce((sum, u) => sum + (u.power * u.owned), 0);
+            const chainMultiplier = 1 + upgrades.filter(u => u.type === 'chain').reduce((sum, u) => sum + (u.power * u.owned), 0);
+            return total * multiplier * chainMultiplier * criticalMultiplier * multipliers.timeBoost * multipliers.goldenClick;
+        }
+
+        function buyUpgrade(index) {
+            const upgrade = upgrades[index];
+            if (score >= upgrade.price && upgrade.owned < upgrade.max) {
+                score -= upgrade.price;
+                upgrade.owned++;
+                totalUpgrades++; // Увеличиваем общее количество улучшений
+                upgrade.price = Math.floor(upgrade.price * 1.5);
+                saveGame();
+                updateUI();
+                return true;
+            }
+            return false;
+        }
+
+        document.getElementById('clickButton').addEventListener('click', (e) => {
+            let clickValue = calculateTotalClickPower();
+            const criticalChance = upgrades.filter(u => u.type === 'critical').reduce((sum, u) => sum + (u.power * u.owned), 0);
+            if (Math.random() < criticalChance) {
+                clickValue *= 2;
+                showCriticalEffect(e);
+            }
+            score += clickValue;
+            updateUI();
+            saveGame();
+            showClickEffect(e, clickValue);
+        });
+
+        function showClickEffect(event, value) {
+            const effect = document.createElement('div');
+            effect.className = 'floating-text';
+            effect.textContent = `+${Math.floor(value)}`;
+            effect.style.left = `${event.clientX}px`;
+            effect.style.top = `${event.clientY}px`;
+            document.body.appendChild(effect);
+            setTimeout(() => effect.remove(), 1000);
+        }
+
+        function showCriticalEffect(event) {
+            const effect = document.createElement('div');
+            effect.className = 'floating-text critical-text';
+            effect.textContent = 'CRITICAL!';
+            effect.style.left = `${event.clientX}px`;
+            effect.style.top = `${event.clientY}px`;
+            document.body.appendChild(effect);
+            setTimeout(() => effect.remove(), 1500);
+        }
+
+        function saveGame() {
+            const data = {
+                score,
+                baseClickPower,
+                autoClickers,
+                multipliers,
+                upgrades: upgrades.map(upgrade => ({
+                    owned: upgrade.owned,
+                    price: upgrade.price
+                })),
+                totalUpgrades,
+                invitedPeople
+            };
+            localStorage.setItem('clickerSave', JSON.stringify(data));
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('clickerSave');
+            if (saved) {
+                const data = JSON.parse(saved);
+                score = data.score || 0;
+                baseClickPower = data.baseClickPower || 1;
+                autoClickers = data.autoClickers || 0;
+                multipliers = data.multipliers || { critical: 1, timeBoost: 1, goldenClick: 1 };
+                totalUpgrades = data.totalUpgrades || 0;
+                invitedPeople = data.invitedPeople || 0;
+                upgrades.forEach((upgrade, index) => {
+                    if (data.upgrades && data.upgrades[index]) {
+                        upgrade.owned = data.upgrades[index].owned || 0;
+                        upgrade.price = data.upgrades[index].price || upgrade.price;
+                    }
+                });
+            }
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = Math.floor(score);
+            document.getElementById('clickPower').textContent = `Сила клика: ${calculateTotalClickPower()}`;
+            document.getElementById('autoClickers').textContent = `Автокликеры: ${autoClickers}`;
+            
+            const upgradesDiv = document.getElementById('upgradesList');
+            upgradesDiv.innerHTML = upgrades.map((upgrade, index) => `
+                <div class="upgrade">
+                    <div>
+                        <h3>${upgrade.name}</h3>
+                        <p>${getUpgradeDescription(upgrade)}</p>
+                        <p>Цена: ${Math.floor(upgrade.price)}</p>
+                        <p>Куплено: ${upgrade.owned}/${upgrade.max}</p>
+                    </div>
+                    <button onclick="buyUpgrade(${index})" ${score < upgrade.price || upgrade.owned >= upgrade.max ? 'disabled' : ''}>
+                        Купить
+                    </button>
+                </div>
+            `).join('');
+
+            // Обновление страницы статистики
+            document.getElementById('totalCoins').textContent = `Собрано монет: ${score}`;
+            document.getElementById('totalUpgrades').textContent = `Всего улучшений: ${totalUpgrades}`;
+            document.getElementById('invitedPeople').textContent = `Приглашённых людей: ${invitedPeople}`;
+            
+            // Отображение уникального реферального кода
+            document.getElementById('userReferralCode').textContent = userReferralCode;
+        }
+
+        function getUpgradeDescription(upgrade) {
+            switch (upgrade.type) {
+                case 'critical': return `Шанс: +${upgrade.power * 100}%`;
+                case 'golden': return `Множитель: x${upgrade.power}`;
+                case 'boost': return `Длительность: ${upgrade.duration}с`;
+                default: return `Сила: +${upgrade.power}`;
+            }
+        }
+
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+
+            if (pageId === 'upgrades') {
+                updateUI();
+            } else if (pageId === 'referral') {
+                document.getElementById('referralMessage').textContent = '';
+            }
+        }
+
+        document.getElementById('applyReferral').addEventListener('click', () => {
+            const referralCode = document.getElementById('referralCode').value.trim();
+            if (referralCode === 'REF123') { // Пример реферального кода
+                score += referralBonus;
+                invitedPeople++;
+                saveGame();
+                document.getElementById('referralMessage').textContent = `Вы получили ${referralBonus} очков за введение реферального кода!`;
+            } else {
+                document.getElementById('referralMessage').textContent = 'Неверный реферальный код!';
+            }
+        });
+
+        function resetStats() {
+            totalUpgrades = 0;
+            invitedPeople = 0;
+            score = 0; // Сбросить также собранные монеты
+            saveGame();
+            updateUI();
+            alert('Статистика очищена.');
+        }
+
+        document.getElementById('resetStats').addEventListener('click', resetStats);
+
+        function init() {
+            loadGame();
+            updateUI();
+            showPage('main');
+        }
+
+        init();
+    </script>
+</body>
+</html>
