@@ -243,11 +243,12 @@
         let playTime = 0;
         let maxCPS = 0;
         let lastClickTime = Date.now();
-
-        const upgrades = [
+        let lastClickAmount = 0;
+        let startTime = Date.now();
+        let upgrades = [
             { name: 'Увеличение кликов +1', price: 10, owned: 0, max: 10, type: 'click', effect: 1 },
             { name: 'Увеличение кликов +2', price: 30, owned: 0, max: 5, type: 'click', effect: 2 },
-            { name: 'Автоматический кликер', price: 50, owned: 0, max: 2, type: 'auto' }
+            { name: 'Автоматический кликер', price: 50, owned: 0, max: 2, type: 'auto', effect: 0 }
         ];
 
         function loadData() {
@@ -255,6 +256,7 @@
             const savedEarningsPerClick = localStorage.getItem('earningsPerClick');
             const savedUpgrades = JSON.parse(localStorage.getItem('upgrades'));
             const savedPlayTime = localStorage.getItem('playTime');
+            const savedMaxCPS = localStorage.getItem('maxCPS');
 
             if (savedCurrency !== null) {
                 currency = parseInt(savedCurrency);
@@ -272,6 +274,9 @@
             if (savedPlayTime !== null) {
                 playTime = parseInt(savedPlayTime);
             }
+            if (savedMaxCPS !== null) {
+                maxCPS = parseInt(savedMaxCPS);
+            }
         }
 
         function saveData() {
@@ -279,6 +284,7 @@
             localStorage.setItem('earningsPerClick', earningsPerClick);
             localStorage.setItem('upgrades', JSON.stringify(upgrades));
             localStorage.setItem('playTime', playTime);
+            localStorage.setItem('maxCPS', maxCPS);
         }
 
         function showPage(pageId) {
@@ -308,7 +314,12 @@
         }
 
         function updateStats() {
-            const currentTime = Math.floor((Date.now() - lastClickTime) / 1000);
+            const currentTime = Date.now();
+            playTime = Math.floor((currentTime - startTime) / 1000); // Обновление времени игры в секундах
+            const clicksThisSecond = lastClickAmount - currency;
+            if (clicksThisSecond > maxCPS) {
+                maxCPS = clicksThisSecond;
+            }
             document.getElementById('playTime').textContent = `${Math.floor(playTime / 60)}ч ${playTime % 60}м`;
             document.getElementById('totalEarned').textContent = currency;
             document.getElementById('maxCPS').textContent = maxCPS;
