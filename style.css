@@ -19,7 +19,8 @@ body {
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(15px);
-    width: 320px;
+    width: 90%;
+    max-width: 400px;
     text-align: center;
     transition: background 0.5s;
 }
@@ -47,6 +48,7 @@ button {
     color: white;
     transition: all 0.3s ease;
     font-weight: 600;
+    display: inline-block; /* Для выравнивания кнопок */
 }
 
 button:hover {
@@ -62,6 +64,9 @@ select {
     padding: 10px;
     margin-top: 15px;
     font-size: 1em;
+    background: white;
+    color: black;
+    border-radius: 5px;
 }
 
 .leaderboard {
