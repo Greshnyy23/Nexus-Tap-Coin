@@ -40,7 +40,7 @@ body {
     margin-right: 14px;
 }
 
-.score {
+.money {
     color: #ffffff;
     font-size: 36px;
     font-weight: 600;
@@ -70,7 +70,7 @@ body {
     100% { transform: scale(1); }
 }
 
-.money-display {
+.level-display {
     margin-bottom: 20px;
     color: #ffffff;
 }
