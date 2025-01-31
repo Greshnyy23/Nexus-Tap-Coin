@@ -51,16 +51,23 @@ html, body {
     transition: transform 0.2s ease;
     --tiltX: 0deg;
     --tiltY: 0deg;
-    transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
     cursor: pointer;
 }
 
-.navigation {
-    margin-top: 20px;
+.money-display {
+    margin-bottom: 20px;
+    color: #fff;
 }
 
-.nav-button {
-    padding: 10px 20px;
+.upgrades {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+button {
+    padding: 10px 15px;
     font-size: 16px;
     background: #28a745; 
     color: white;
@@ -69,18 +76,11 @@ html, body {
     cursor: pointer;
     transition: background 0.3s;
     font-weight: 600;
-    margin: 5px; /* Отступы между кнопками */
+    margin: 5px;
 }
 
-.nav-button:hover {
+button:hover {
     background: #218838; 
-}
-
-.upgrades, .statistics {
-    margin-top: 20px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
 }
 
 .progress {
@@ -114,35 +114,9 @@ html, body {
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
-    margin: 5px; /* Отступы между кнопками */
+    margin: 5px;
 }
 
 .character-button:hover {
     background: #0056b3; /* Темно-синий при наведении */
-}
-
-.plus-one {
-    position: absolute;
-    font-family: 'Poppins', sans-serif;
-    text-shadow: 0px 0px 4px rgba(234, 182, 64, 0.5);
-    font-size: 28px;
-    font-weight: 600;
-    background: linear-gradient(180deg, #e8c547 0%, #ef882b 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    pointer-events: none;
-    user-select: none;
-    animation: move-up 2s forwards;
-}
-
-@keyframes move-up {
-    0% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
 }
