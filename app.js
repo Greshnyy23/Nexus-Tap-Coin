@@ -1,3 +1,6 @@
+const tg = window.Telegram.WebApp;
+tg.ready();
+
 const $circle = document.querySelector('#circle');
 const $money = document.querySelector('#money');
 const $levelDisplay = document.getElementById('levelDisplay');
@@ -5,6 +8,7 @@ const $upgradeButton = document.getElementById('upgradeButton');
 const $levelUpButton = document.getElementById('levelUpButton');
 const $progressFill = document.getElementById('progressFill');
 const $achievementList = document.getElementById('achievementList');
+const $closeButton = document.getElementById('closeButton');
 
 let money = 0;
 let level = 1;
@@ -137,6 +141,11 @@ function showAchievements() {
         });
     }
 }
+
+// Закрытие приложения
+$closeButton.addEventListener('click', () => {
+    tg.close();
+});
 
 // Инициализация
 start();
