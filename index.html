@@ -36,15 +36,12 @@
         .nav a {
             background: var(--button-bg);
             color: var(--neon-blue);
-            padding: 10px;
+            padding: 10px 15px;
             margin: 0 10px;
             border-radius: 5px;
             text-decoration: none;
             font-size: 20px; /* Увеличим размер текста */
             transition: background 0.3s, color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .nav a:hover {
@@ -56,7 +53,7 @@
             max-width: 500px;
             width: 100%;
             text-align: center;
-            padding: 20px;
+            padding: 15px;
             border: 2px solid var(--border-color);
             border-radius: 15px;
             background: rgba(20, 20, 40, 0.9);
@@ -373,7 +370,7 @@
             document.getElementById('totalCoins').textContent = `Собрано монет: ${score}`;
             document.getElementById('totalUpgrades').textContent = `Всего улучшений: ${totalUpgrades}`;
             document.getElementById('invitedPeople').textContent = `Приглашённых людей: ${invitedPeople}`;
-
+            
             // Отображение уникального реферального кода
             document.getElementById('userReferralCode').textContent = userReferralCode;
         }
