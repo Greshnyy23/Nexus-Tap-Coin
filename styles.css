@@ -7,15 +7,18 @@ html, body {
     justify-content: center;
     align-items: center;
     font-family: 'Poppins', sans-serif;
-    background: radial-gradient(circle, #2c3e50, #34495e);
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    overflow: hidden;
 }
 
 .game {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    padding: 20px;
+    padding: 30px;
     text-align: center;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
 }
 
 .header {
@@ -32,7 +35,7 @@ html, body {
 }
 
 .score {
-    color: #fff;
+    color: #ffffff;
     font-size: 36px;
     font-weight: 600;
     user-select: none;
@@ -47,44 +50,43 @@ html, body {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
     transition: transform 0.2s ease;
-    --tiltX: 0deg;
-    --tiltY: 0deg;
-    cursor: pointer;
 }
 
 .money-display {
     margin-bottom: 20px;
-    color: #fff;
+    color: #ffffff;
 }
 
 .upgrades {
     margin-top: 20px;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
 }
 
-button {
-    padding: 10px 15px;
+.upgrade-button {
+    padding: 10px 20px;
     font-size: 16px;
-    background: #28a745; 
+    background: linear-gradient(90deg, #ff416c, #ff4b2b); 
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.3s, transform 0.2s;
     font-weight: 600;
-    margin: 5px;
+    margin: 5px; /* Отступы между кнопками */
 }
 
-button:hover {
-    background: #218838; 
+.upgrade-button:hover {
+    background: linear-gradient(90deg, #ff4b2b, #ff416c);
+    transform: scale(1.05);
 }
 
 .progress {
     margin-top: 20px;
+    width: 100%;
 }
 
 .progress-bar {
@@ -92,12 +94,13 @@ button:hover {
     background-color: #ddd;
     border-radius: 5px;
     overflow: hidden;
+    height: 20px;
 }
 
 .progress-fill {
-    height: 20px;
+    height: 100%;
     background-color: #28a745;
-    width: 0%;
+    width: 0%; /* Начальная ширина нулевая */
     transition: width 0.5s ease;
 }
 
@@ -114,9 +117,35 @@ button:hover {
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
-    margin: 5px;
+    margin: 5px; /* Отступы между кнопками */
 }
 
 .character-button:hover {
     background: #0056b3; /* Темно-синий при наведении */
+}
+
+.plus-one {
+    position: absolute;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: 0 0 4px rgba(234, 182, 64, 0.5);
+    font-size: 28px;
+    font-weight: 600;
+    background: linear-gradient(180deg, #e8c547 0%, #ef882b 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    user-select: none;
+    animation: move-up 2s forwards;
+}
+
+@keyframes move-up {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
 }
