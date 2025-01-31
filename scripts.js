@@ -1,124 +1,157 @@
-let gold = 0;
-let goldPerSecond = 0;
-let clickPower = 1;
-let level = 1;
-let experience = 0;
-let isBoostActive = false;
+let score = 0;
+let baseClickPower = 1;
+let autoClickers = 0;
+let multipliers = { critical: 1, timeBoost: 1, goldenClick: 1 };
 
-const goldElement = document.getElementById('gold');
-const gpsElement = document.getElementById('gps');
-const clickPowerElement = document.getElementById('clickPower');
-const levelElement = document.getElementById('level');
-const experienceElement = document.getElementById('experience');
+const upgrades = [
+    { name: 'Усиленный клик', price: 50, power: 1, type: 'click', owned: 0, max: 20 },
+    { name: 'Автокликер', price: 100, power: 1, type: 'auto', owned: 0, max: 50 },
+    { name: 'Критический удар (10%)', price: 500, power: 0.1, type: 'critical', owned: 0, max: 5 },
+    { name: 'Золотой клик', price: 1000, power: 5, type: 'golden', owned: 0, max: 1 },
+    { name: 'Ускорение времени', price: 2000, power: 2, type: 'boost', duration: 30, owned: 0, max: 3 },
+    { name: 'Множитель x2', price: 5000, power: 2, type: 'multiplier', owned: 0, max: 1 },
+    { name: 'Цепная реакция', price: 10000, power: 0.5, type: 'chain', owned: 0, max: 5 }
+];
 
-const clickButton = document.getElementById('clickButton');
-const buyMinerButton = document.getElementById('buyMinerButton');
-const buyProMinerButton = document.getElementById('buyProMinerButton');
-const buyClickUpgradeButton = document.getElementById('buyClickUpgradeButton');
-const buyBoostButton = document.getElementById('buyBoostButton');
-const achievementList = document.getElementById('achievementList');
-
-// Инициализация Telegram Web App
-const tg = window.Telegram.WebApp;
-tg.expand(); // Развернуть приложение на весь экран
-
-// Обновление статистики
-function updateStats() {
-    goldElement.textContent = gold;
-    gpsElement.textContent = goldPerSecond;
-    clickPowerElement.textContent = clickPower;
-    levelElement.textContent = level;
-    experienceElement.textContent = experience;
+function calculateTotalClickPower() {
+    let total = baseClickPower;
+    total += upgrades.filter(u => u.type === 'click').reduce((sum, u) => sum + (u.power * u.owned), 0);
+    const multiplier = upgrades.filter(u => u.type === 'multiplier').reduce((sum, u) => sum * (u.power ** u.owned), 1);
+    const criticalMultiplier = 1 + upgrades.filter(u => u.type === 'critical').reduce((sum, u) => sum + (u.power * u.owned), 0);
+    const chainMultiplier = 1 + upgrades.filter(u => u.type === 'chain').reduce((sum, u) => sum + (u.power * u.owned), 0);
+    return total * multiplier * chainMultiplier * criticalMultiplier * multipliers.timeBoost * multipliers.goldenClick;
 }
 
-// Проверка уровня
-function checkLevelUp() {
-    if (experience >= level * 10) {
-        level++;
-        experience = 0;
-        tg.showAlert(`Вы достигли уровня ${level}!`);
-    }
-}
-
-// Проверка достижений
-function checkAchievements() {
-    const achievements = [
-        { condition: level >= 5, text: "Достигнут 5 уровень!" },
-        { condition: gold >= 1000, text: "Добыто 1000 золота!" },
-        { condition: goldPerSecond >= 10, text: "10 золота в секунду!" },
-    ];
-
-    achievements.forEach(achievement => {
-        if (achievement.condition && !achievementList.querySelector(`li:contains("${achievement.text}")`)) {
-            const li = document.createElement('li');
-            li.textContent = achievement.text;
-            achievementList.appendChild(li);
+function buyUpgrade(index) {
+    const upgrade = upgrades[index];
+    if (score >= upgrade.price && upgrade.owned < upgrade.max) {
+        score -= upgrade.price;
+        upgrade.owned++;
+        switch(upgrade.type) {
+            case 'auto':
+                autoClickers += upgrade.power;
+                break;
+            case 'boost':
+                activateBoost(upgrade);
+                break;
+            case 'golden':
+                setupGoldenClick();
+                break;
         }
-    });
+        upgrade.price = Math.floor(upgrade.price * 1.5);
+        saveGame();
+        updateUI();
+        return true;
+    }
+    return false;
 }
 
-// Клик по кнопке добычи золота
-clickButton.addEventListener('click', () => {
-    gold += clickPower * (isBoostActive ? 2 : 1);
-    experience += clickPower;
-    updateStats();
-    checkLevelUp();
-});
-
-// Покупка шахтера
-buyMinerButton.addEventListener('click', () => {
-    const minerPrice = parseInt(document.getElementById('minerPrice').textContent);
-    if (gold >= minerPrice) {
-        gold -= minerPrice;
-        goldPerSecond += 1;
-        updateStats();
-    } else {
-        tg.showAlert('Недостаточно золота!');
+document.getElementById('clickButton').addEventListener('click', (e) => {
+    let clickValue = calculateTotalClickPower();
+    const criticalChance = upgrades.filter(u => u.type === 'critical').reduce((sum, u) => sum + (u.power * u.owned), 0);
+    if (Math.random() < criticalChance) {
+        clickValue *= 2;
+        showCriticalEffect(e);
     }
+    score += clickValue;
+    updateUI();
+    saveGame();
+    showClickEffect(e, clickValue);
 });
 
-// Покупка профессионального шахтера
-buyProMinerButton.addEventListener('click', () => {
-    const proMinerPrice = parseInt(document.getElementById('proMinerPrice').textContent);
-    if (gold >= proMinerPrice) {
-        gold -= proMinerPrice;
-        goldPerSecond += 5;
-        updateStats();
-    } else {
-        tg.showAlert('Недостаточно золота!');
+function showClickEffect(event, value) {
+    const effect = document.createElement('div');
+    effect.className = 'floating-text';
+    effect.textContent = `+${Math.floor(value)}`;
+    effect.style.left = `${event.clientX}px`;
+    effect.style.top = `${event.clientY}px`;
+    document.body.appendChild(effect);
+    setTimeout(() => effect.remove(), 1000);
+}
+
+function showCriticalEffect(event) {
+    const effect = document.createElement('div');
+    effect.className = 'floating-text critical-text';
+    effect.textContent = 'CRITICAL!';
+    effect.style.left = `${event.clientX}px`;
+    effect.style.top = `${event.clientY}px`;
+    document.body.appendChild(effect);
+    setTimeout(() => effect.remove(), 1500);
+}
+
+function activateBoost(upgrade) {
+    // Логика активации улучшения времени
+}
+
+function setupGoldenClick() {
+    // Логика настройки золотого клика
+}
+
+function saveGame() {
+    const data = {
+        score,
+        baseClickPower,
+        autoClickers,
+        multipliers,
+        upgrades: upgrades.map(upgrade => ({
+            owned: upgrade.owned,
+            price: upgrade.price
+        }))
+    };
+    localStorage.setItem('clickerSave', JSON.stringify(data));
+}
+
+function loadGame() {
+    const saved = localStorage.getItem('clickerSave');
+    if (saved) {
+        const data = JSON.parse(saved);
+        score = data.score || 0;
+        baseClickPower = data.baseClickPower || 1;
+        autoClickers = data.autoClickers || 0;
+        multipliers = data.multipliers || { critical: 1, timeBoost: 1, goldenClick: 1 };
+        upgrades.forEach((upgrade, index) => {
+            if (data.upgrades && data.upgrades[index]) {
+                upgrade.owned = data.upgrades[index].owned || 0;
+                upgrade.price = data.upgrades[index].price || upgrade.price;
+            }
+        });
     }
-});
+    updateUI();
+}
 
-// Покупка улучшения клика
-buyClickUpgradeButton.addEventListener('click', () => {
-    const clickUpgradePrice = parseInt(document.getElementById('clickUpgradePrice').textContent);
-    if (gold >= clickUpgradePrice) {
-        gold -= clickUpgradePrice;
-        clickPower += 1;
-        updateStats();
-    } else {
-        tg.showAlert('Недостаточно золота!');
+function updateUI() {
+    document.getElementById('score').textContent = Math.floor(score);
+    document.getElementById('clickPower').textContent = `Сила клика: ${calculateTotalClickPower()}`;
+    document.getElementById('autoClickers').textContent = `Автокликеры: ${autoClickers}`;
+
+    const upgradesDiv = document.getElementById('upgrades');
+    upgradesDiv.innerHTML = upgrades.map((upgrade, index) => `
+        <div class="upgrade">
+            <div>
+                <h3>${upgrade.name}</h3>
+                <p>${getUpgradeDescription(upgrade)}</p>
+                <p>Цена: ${Math.floor(upgrade.price)}</p>
+                <p>Куплено: ${upgrade.owned}/${upgrade.max}</p>
+            </div>
+            <button onclick="buyUpgrade(${index})" ${score < upgrade.price || upgrade.owned >= upgrade.max ? 'disabled' : ''}>
+                Купить
+            </button>
+        </div>
+    `).join('');
+}
+
+function getUpgradeDescription(upgrade) {
+    switch (upgrade.type) {
+        case 'critical': return `Шанс: +${upgrade.power * 100}%`;
+        case 'golden': return `Множитель: x${upgrade.power}`;
+        case 'boost': return `Длительность: ${upgrade.duration}с`;
+        default: return `Сила: +${upgrade.power}`;
     }
-});
+}
 
-// Покупка буста
-buyBoostButton.addEventListener('click', () => {
-    const boostPrice = parseInt(document.getElementById('boostPrice').textContent);
-    if (gold >= boostPrice) {
-        gold -= boostPrice;
-        isBoostActive = true;
-        setTimeout(() => {
-            isBoostActive = false;
-            tg.showAlert('Буст добычи закончился!');
-        }, 30000);
-        updateStats();
-    } else {
-        tg.showAlert('Недостаточно золота!');
-    }
-});
+function init() {
+    loadGame();
+    updateUI();
+}
 
-// Автоматическая добыча золота
-setInterval(() => {
-    gold += goldPerSecond * (isBoostActive ? 2 : 1);
-    updateStats();
-}, 1000);
+init();
