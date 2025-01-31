@@ -7,7 +7,6 @@
     <title>Lizzard Clicker</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
@@ -29,23 +28,21 @@
             <button id="levelUpButton" class="upgrade-button">Уровень выше (100 монет)</button>
             <button id="autoClickerButton" class="upgrade-button">Авто-кликер (200 монет)</button>
             <button id="coinMultiplierButton" class="upgrade-button">Множитель монет (300 монет)</button>
-            <button id="bonusItemButton" class="upgrade-button">Бонус кусков (400 монет)</button>
-        </div>
-        <div class="progress">
-            <div id="progressBar" class="progress-bar">
-                <div id="progressFill" class="progress-fill"></div>
-            </div>
         </div>
         <div class="character-selection">
             <h3>Выберите персонажа:</h3>
             <button id="frogButton" class="character-button">Лягушка</button>
             <button id="lizzardButton" class="character-button">Ящерица</button>
+            <button id="owlButton" class="character-button">Сова</button>
+            <button id="dragonButton" class="character-button">Дракон</button>
         </div>
         <div class="achievements">
             <h3>Достижения:</h3>
             <div id="achievementList"></div>
         </div>
-        <button id="closeButton" class="close-button">Закрыть</button>
+        <div class="settings">
+            <button id="resetButton">Сбросить прогресс</button>
+        </div>
     </div>
     <script src="app.js" defer></script>
 </body>
