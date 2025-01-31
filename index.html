@@ -3,43 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hamster Kombat</title>
+    <title>Киберпанк Кликер 2050</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <div id="app">
         <header>
-            <h1>Hamster Kombat</h1>
-            <div class="balance">
-                <span class="credits">Кредитов: <span id="currency">82,863.87</span></span>
-                <span class="diamonds">💎 <span id="diamonds">152,703</span></span>
-            </div>
-            <div class="user-info">
-                <span>CEO: Carpe Diem</span>
+            <h1>🌌 Киберпанк Кликер 2050</h1>
+            <div class="currency-display">
+                <span id="currency">0</span> <span class="currency-label">💰 Кредитов</span>
+                <div class="earnings">
+                    💵 Заработок за клик: <span id="earningsPerClick">1</span>
+                    <div class="earnings-per-second">⏳ Заработок в секунду: <span id="earningsPerSecond">0</span></div>
+                </div>
             </div>
         </header>
-
         <main>
-            <h2>Новые задания</h2>
-            <div class="quests">
-                <div class="quest">
-                    <h3>Merge Dale</h3>
-                    <p>Прогресс: <span id="mergeDaleProgress">0/40</span></p>
-                </div>
-                <div class="quest">
-                    <h3>Merge Away</h3>
-                    <p>Прогресс: <span id="mergeAwayProgress">0/40</span></p>
-                </div>
-                <div class="quest">
-                    <h3>Doodle God</h3>
-                    <p>Прогресс: <span id="doodleGodProgress">0/40</span></p>
-                </div>
-            </div>
+            <section class="main-action">
+                <button class="click-button" onclick="earnCurrency()">💰 Заработать монеты</button>
+            </section>
+            <section class="upgrades-section">
+                <h2>⚡ Улучшения</h2>
+                <div class="upgrades-grid" id="upgradesList"></div>
+            </section>
+            <section class="quests-section">
+                <h2>🚀 Задания</h2>
+                <div id="questsList"></div>
+            </section>
         </main>
 
         <footer>
-            <button id="earnButton">Заработать кредиты</button>
+            <div class="stats-grid">
+                <div class="stat-item">🕒 Время игры: <span id="playTime">0ч 0м 0с</span></div>
+                <div class="stat-item">💵 Всего заработано: <span id="totalEarned">0</span></div>
+                <div class="stat-item">🚀 Макс. кликов/сек: <span id="maxCPS">0</span></div>
+            </div>
+            <div id="achievements-section" class="achievements-section">
+                <h2>🏆 Достижения</h2>
+                <div id="achievements-list"></div>
+            </div>
         </footer>
+        <div id="notification" class="notification"></div>
     </div>
     <script src="script.js"></script>
 </body>
