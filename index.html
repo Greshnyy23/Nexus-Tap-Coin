@@ -30,6 +30,8 @@
         }
 
         .nav {
+            display: flex;
+            justify-content: center;
             margin-bottom: 20px;
         }
 
@@ -40,7 +42,7 @@
             margin: 0 10px;
             border-radius: 5px;
             text-decoration: none;
-            font-size: 20px; /* Увеличим размер текста */
+            font-size: 20px; 
             transition: background 0.3s, color 0.3s;
         }
 
@@ -370,7 +372,7 @@
             document.getElementById('totalCoins').textContent = `Собрано монет: ${score}`;
             document.getElementById('totalUpgrades').textContent = `Всего улучшений: ${totalUpgrades}`;
             document.getElementById('invitedPeople').textContent = `Приглашённых людей: ${invitedPeople}`;
-            
+
             // Отображение уникального реферального кода
             document.getElementById('userReferralCode').textContent = userReferralCode;
         }
