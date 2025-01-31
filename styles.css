@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -7,18 +8,17 @@ html, body {
     justify-content: center;
     align-items: center;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    overflow: hidden;
+    background: linear-gradient(135deg, #444, #333);
 }
 
 .game {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.8);
     border-radius: 20px;
     padding: 30px;
     text-align: center;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
     width: 90%;
-    max-width: 400px;
+    max-width: 450px;
 }
 
 .header {
@@ -38,7 +38,6 @@ html, body {
     color: #ffffff;
     font-size: 36px;
     font-weight: 600;
-    user-select: none;
 }
 
 .circle {
@@ -50,7 +49,7 @@ html, body {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    box-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+    box-shadow: 0 0 30px rgba(50, 255, 0, 0.8);
     transition: transform 0.2s ease;
 }
 
@@ -62,14 +61,14 @@ html, body {
 .upgrades {
     margin-top: 20px;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
 }
 
 .upgrade-button {
-    padding: 10px 20px;
+    padding: 12px 18px; /* Увеличенные отступы для лучшего удобства */
     font-size: 16px;
-    background: linear-gradient(90deg, #ff416c, #ff4b2b); 
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
     color: white;
     border: none;
     border-radius: 5px;
@@ -81,12 +80,11 @@ html, body {
 
 .upgrade-button:hover {
     background: linear-gradient(90deg, #ff4b2b, #ff416c);
-    transform: scale(1.05);
+    transform: scale(1.05); /* Увеличиваем размер при наведении */
 }
 
 .progress {
     margin-top: 20px;
-    width: 100%;
 }
 
 .progress-bar {
@@ -99,7 +97,7 @@ html, body {
 
 .progress-fill {
     height: 100%;
-    background-color: #28a745;
+    background-color: #28a745; /* Цвет заполнения прогресса */
     width: 0%; /* Начальная ширина нулевая */
     transition: width 0.5s ease;
 }
@@ -109,8 +107,8 @@ html, body {
 }
 
 .character-button {
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 8px 15px; /* Уменьшенные отступы для компактности */
+    font-size: 14px;
     background: #007bff; /* Синий фон для кнопок выбора */
     color: white;
     border: none;
@@ -127,7 +125,7 @@ html, body {
 .plus-one {
     position: absolute;
     font-family: 'Poppins', sans-serif;
-    text-shadow: 0 0 4px rgba(234, 182, 64, 0.5);
+    text-shadow: 0px 0px 4px rgba(234, 182, 64, 0.8);
     font-size: 28px;
     font-weight: 600;
     background: linear-gradient(180deg, #e8c547 0%, #ef882b 100%);
