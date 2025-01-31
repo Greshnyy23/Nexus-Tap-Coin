@@ -76,7 +76,7 @@
             height: 200%;
             background: linear-gradient(45deg, 
                 transparent, 
-                rgba(255, 255, 255, 0.1), 
+                rgba(255,255,255,0.1), 
                 transparent);
             transform: rotate(45deg);
             animation: shine 3s infinite;
@@ -146,7 +146,7 @@
             left: 50%;
             width: 300%;
             height: 300%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10.01%);
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10.01%);
             transform: translate(-50%, -50%) scale(0);
             transition: transform 0.5s;
         }
@@ -222,6 +222,17 @@
         .page.active {
             display: block;
         }
+
+        .referral-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .referral-container input {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+        }
     </style>
 </head>
 <body>
@@ -229,6 +240,7 @@
     <div class="nav">
         <a href="#" onclick="showPage('main')">Главная</a>
         <a href="#" onclick="showPage('upgrades')">Улучшения</a>
+        <a href="#" onclick="showPage('referral')">Реферальная система</a>
     </div>
 
     <!-- Главная страница -->
@@ -250,11 +262,24 @@
         </div>
     </div>
 
+    <!-- Страница "Реферальная система" -->
+    <div id="referral" class="page">
+        <div class="container">
+            <h2>Реферальная система</h2>
+            <div class="referral-container">
+                <input type="text" id="referralCode" placeholder="Введите реферальный код">
+                <button id="applyReferral">Применить код</button>
+                <div id="referralMessage"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let score = 0;
         let baseClickPower = 1;
         let autoClickers = 0;
         let multipliers = { critical: 1, timeBoost: 1, goldenClick: 1 };
+        const referralBonus = 100; // Бонус за реферальный код
 
         const upgrades = [
             { name: 'Усиленный клик', price: 50, power: 1, type: 'click', owned: 0, max: 20 },
@@ -280,17 +305,6 @@
             if (score >= upgrade.price && upgrade.owned < upgrade.max) {
                 score -= upgrade.price;
                 upgrade.owned++;
-                switch(upgrade.type) {
-                    case 'auto':
-                        autoClickers += upgrade.power;
-                        break;
-                    case 'boost':
-                        activateBoost(upgrade);
-                        break;
-                    case 'golden':
-                        setupGoldenClick();
-                        break;
-                }
                 upgrade.price = Math.floor(upgrade.price * 1.5);
                 saveGame();
                 updateUI();
@@ -330,14 +344,6 @@
             effect.style.top = `${event.clientY}px`;
             document.body.appendChild(effect);
             setTimeout(() => effect.remove(), 1500);
-        }
-
-        function activateBoost(upgrade) {
-            // Логика активации улучшения времени
-        }
-
-        function setupGoldenClick() {
-            // Логика настройки золотого клика
         }
 
         function saveGame() {
@@ -410,31 +416,29 @@
             document.getElementById(pageId).classList.add('active');
 
             if (pageId === 'upgrades') {
-                updateUIUpgrades();
+                updateUI();
+            } else if (pageId === 'referral') {
+                document.getElementById('referralMessage').textContent = '';
             }
-        }
-
-        function updateUIUpgrades() {
-            const upgradesDiv = document.getElementById('upgradesList');
-            upgradesDiv.innerHTML = upgrades.map((upgrade, index) => `
-                <div class="upgrade">
-                    <div>
-                        <h3>${upgrade.name}</h3>
-                        <p>${getUpgradeDescription(upgrade)}</p>
-                        <p>Цена: ${Math.floor(upgrade.price)}</p>
-                        <p>Куплено: ${upgrade.owned}/${upgrade.max}</p>
-                    </div>
-                    <button onclick="buyUpgrade(${index})" ${score < upgrade.price || upgrade.owned >= upgrade.max ? 'disabled' : ''}>
-                        Купить
-                    </button>
-                </div>
-            `).join('');
         }
 
         function init() {
             loadGame();
             updateUI();
+            showPage('main');
         }
+
+        // Реализация реферальной системы
+        document.getElementById('applyReferral').addEventListener('click', () => {
+            const referralCode = document.getElementById('referralCode').value.trim();
+            if (referralCode === 'REF123') { // Пример реферального кода
+                score += referralBonus;
+                saveGame();
+                document.getElementById('referralMessage').textContent = `Вы получили ${referralBonus} очков за введение реферального кода!`;
+            } else {
+                document.getElementById('referralMessage').textContent = 'Неверный реферальный код!';
+            }
+        });
 
         init();
     </script>
