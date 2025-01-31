@@ -1,5 +1,5 @@
-html,
-body {
+/* Базовые стили */
+html, body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -26,6 +26,8 @@ body {
     width: 90%;
     max-width: 450px;
     margin-top: 60px;
+    position: relative;
+    z-index: 1;
 }
 
 .header {
@@ -50,10 +52,6 @@ body {
 .circle {
     position: relative;
     margin-bottom: 20px;
-    --tiltX: 0deg;
-    --tiltY: 0deg;
-    transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
-    transition: transform 0.3s ease;
 }
 
 .circle img {
@@ -125,6 +123,7 @@ body {
 
 .tab-button {
     padding: 10px 20px;
+    font-size: 20px;
     background: #007bff;
     color: white;
     border: none;
@@ -186,4 +185,121 @@ body {
 @keyframes fall {
     0% { top: -30px; }
     100% { top: 200px; }
+}
+
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.notification {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    animation: slideIn 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+#click-wave {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    opacity: 1;
+    pointer-events: none;
+}
+
+@keyframes wave {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(1); opacity: 0; }
+}
+
+.coin-animation {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: url('./assets/coin.png') no-repeat center/cover;
+    animation: fly 1s ease-out;
+}
+
+@keyframes fly {
+    0% { transform: translate(0, 0); opacity: 1; }
+    100% { transform: translate(0, -100px); opacity: 0; }
+}
+
+.upgrade-animation {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 215, 0, 0.5);
+    border-radius: 50%;
+    animation: upgrade 0.5s ease-out;
+}
+
+@keyframes upgrade {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+#themeToggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+body.light-theme {
+    background: linear-gradient(135deg, #f0f0f0, #d0d0d0);
+    color: #333;
+}
+
+body.light-theme .game {
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+}
+
+body.light-theme .money {
+    color: #333;
+}
+
+body.light-theme .level-display {
+    color: #333;
+}
+
+body.light-theme .tab-button {
+    background: #0056b3;
+    color: white;
+}
+
+body.light-theme .tab-button.active {
+    background: #007bff;
+}
+
+body.light-theme .notification {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
 }
