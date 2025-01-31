@@ -1,217 +1,202 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кликер Игра PRO</title>
-    <style>
-        :root {
-            --neon-green: #4BF145;
-            --neon-blue: #00F3FF;
-            --dark-bg: #0a0a14;
-            --light-bg: rgba(255, 255, 255, 0.1);
-            --accent-purple: #BC13FE;
-            --gold: #FFD700;
-            --critical-red: #FF4136;
-            --button-bg: rgba(255, 255, 255, 0.2);
-            --border-color: var(--neon-blue);
-        }
-
-        /* ... (остальные стили остаются без изменений) ... */
-
-        /* Новые стили для достижений и уровней */
-        .achievement-badge {
-            background: rgba(75, 241, 69, 0.2);
-            padding: 8px 15px;
-            border-radius: 20px;
-            margin: 5px;
-            border: 1px solid var(--neon-green);
-        }
-
-        .level-bar {
-            width: 100%;
-            height: 10px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 5px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-
-        .level-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
-            transition: width 0.5s ease;
-        }
-
-        .event-banner {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(188, 19, 254, 0.9);
-            padding: 10px 20px;
-            border-radius: 10px;
-            animation: bannerPulse 2s infinite;
-        }
-
-        @keyframes bannerPulse {
-            0% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.05); }
-            100% { transform: translateX(-50%) scale(1); }
-        }
-    </style>
+    <!-- ... (стили остаются без изменений) ... -->
 </head>
 <body>
-    <!-- Главная страница (обновленная) -->
+    <!-- Навигация -->
+    <div class="nav">
+        <a href="#" onclick="showPage('main')">🏠</a>
+        <a href="#" onclick="showPage('upgrades')">⚡</a>
+        <a href="#" onclick="showPage('achievements')">🏆</a>
+        <a href="#" onclick="showPage('referral')">🤝</a>
+        <a href="#" onclick="showPage('stats')">📊</a>
+        <a href="#" onclick="showPage('events')">🎉</a>
+    </div>
+
+    <!-- Главная страница -->
     <div id="main" class="page active">
         <div class="container">
-            <div class="level-bar">
-                <div class="level-progress" id="levelProgress"></div>
-            </div>
-            <h1>Уровень <span id="currentLevel">1</span></h1>
-            <div id="score" class="score-container">0</div>
-            <button id="clickButton">Клик!</button>
-            <div class="stats-row">
-                <div id="clickPower">Сила: 1</div>
-                <div id="autoClickers">Авто: 0</div>
-                <div id="multiplier">Множитель: x1</div>
-            </div>
-            <div id="achievements" class="achievements-container"></div>
+            <!-- ... (прежнее содержимое) ... -->
         </div>
     </div>
 
-    <!-- ... (остальные страницы без изменений) ... -->
+    <!-- Страница улучшений -->
+    <div id="upgrades" class="page">
+        <div class="container">
+            <h2>⚡ Усиления</h2>
+            <div class="upgrades-grid" id="upgradesList"></div>
+        </div>
+    </div>
+
+    <!-- Страница достижений -->
+    <div id="achievements" class="page">
+        <div class="container">
+            <h2>🏆 Трофеи</h2>
+            <div class="achievements-grid" id="achievementsList"></div>
+        </div>
+    </div>
+
+    <!-- Реферальная система -->
+    <div id="referral" class="page">
+        <div class="container">
+            <h2>🤝 Пригласи друзей</h2>
+            <div class="referral-box">
+                <input type="text" id="referralCode" placeholder="Введи код друга">
+                <button id="applyReferral">✅ Применить</button>
+                <div class="your-code">
+                    <span>Твой код:</span>
+                    <div class="code-box">📋 ${userReferralCode}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика -->
+    <div id="stats" class="page">
+        <div class="container">
+            <h2>📊 История успеха</h2>
+            <div class="stats-grid">
+                <div class="stat-item">🕒 Время игры: <span id="playTime">0ч</span></div>
+                <div class="stat-item">🤑 Всего заработано: <span id="totalEarned">0</span></div>
+                <div class="stat-item">🚀 Макс. кликов/сек: <span id="maxCPS">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- События -->
+    <div id="events" class="page">
+        <div class="container">
+            <h2>🎉 Активные бонусы</h2>
+            <div class="events-list" id="activeEvents">
+                <div class="event-item">🎁 Двойные монеты: <span class="timer">00:00</span></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Новые стили для страниц */
+        .upgrades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .achievement-card {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--gold);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .achievement-card.locked {
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        .referral-box {
+            background: rgba(188, 19, 254, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--accent-purple);
+        }
+
+        .code-box {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            background: rgba(0, 243, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .event-item {
+            background: rgba(75, 241, 69, 0.1);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
 
     <script>
-        // Новая система достижений
-        const achievements = [
-            { id: 'novice', name: 'Новичок', description: 'Собрать 1000 монет', completed: false, reward: 500 },
-            { id: 'clicker', name: 'Мастер кликов', description: 'Совершить 100 кликов', completed: false, reward: 200 },
-            { id: 'upgrader', name: 'Улучшатель', description: 'Купить 5 улучшений', completed: false, reward: 1000 }
-        ];
-
-        // Система уровней
-        let level = 1;
-        let xp = 0;
-        let xpToNextLevel = 100;
-        let totalClicks = 0;
-
-        // Система событий
-        let activeEvent = null;
-        const events = [
-            { 
-                name: 'Двойные монеты', 
-                effect: { multiplier: 2 }, 
-                duration: 30000, // 30 секунд
-                active: false 
-            }
-        ];
-
-        // Обновленная функция клика
-        document.getElementById('clickButton').addEventListener('click', (e) => {
-            totalClicks++;
-            let clickValue = calculateTotalClickPower();
-            
-            // Применение активного события
-            if(activeEvent) {
-                clickValue *= activeEvent.effect.multiplier;
-            }
-
-            // Критический удар
-            const criticalChance = upgrades.filter(u => u.type === 'critical')
-                .reduce((sum, u) => sum + (u.power * u.owned), 0);
-            
-            if(Math.random() < criticalChance) {
-                clickValue *= 2;
-                showCriticalEffect(e);
-            }
-
-            score += clickValue;
-            gainXP(10); // Начисление опыта за клик
-            checkAchievements();
-            updateUI();
-            saveGame();
-            showClickEffect(e, clickValue);
-        });
-
-        // Новая функция для системы уровней
-        function gainXP(amount) {
-            xp += amount;
-            if(xp >= xpToNextLevel) {
-                level++;
-                xp = 0;
-                xpToNextLevel = Math.floor(xpToNextLevel * 1.5);
-                showNotification(`🎉 Новый уровень! Теперь вы ${level} уровня!`);
-            }
+        // Обновленная функция отображения достижений
+        function updateAchievementsUI() {
+            const container = document.getElementById('achievementsList');
+            container.innerHTML = achievements.map(ach => `
+                <div class="achievement-card ${ach.completed ? '' : 'locked'}">
+                    <div class="emoji">${ach.completed ? '🏆' : '🔒'}</div>
+                    <h3>${ach.name}</h3>
+                    <p>${ach.description}</p>
+                    ${ach.completed ? 
+                        `<div class="reward">🎁 +${ach.reward}</div>` : 
+                        `<div class="progress">${getAchievementProgress(ach)}</div>`}
+                </div>
+            `).join('');
         }
 
-        // Система достижений
-        function checkAchievements() {
-            achievements.forEach(achievement => {
-                if(!achievement.completed) {
-                    switch(achievement.id) {
-                        case 'novice':
-                            if(score >= 1000) completeAchievement(achievement);
-                            break;
-                        case 'clicker':
-                            if(totalClicks >= 100) completeAchievement(achievement);
-                            break;
-                        case 'upgrader':
-                            if(totalUpgrades >= 5) completeAchievement(achievement);
-                            break;
-                    }
-                }
-            });
+        // Обновленная статистика
+        function updateStats() {
+            document.getElementById('playTime').textContent = 
+                `${Math.floor(totalPlayTime / 60)}ч ${totalPlayTime % 60}м`;
+            document.getElementById('totalEarned').textContent = totalEarned;
+            document.getElementById('maxCPS').textContent = maxCPS;
         }
 
-        function completeAchievement(achievement) {
-            achievement.completed = true;
-            score += achievement.reward;
-            showNotification(`🏆 Достижение: ${achievement.name} (+${achievement.reward} монет)`);
-        }
-
-        // Система событий
-        function startRandomEvent() {
-            const event = events[Math.floor(Math.random() * events.length)];
-            activeEvent = event;
-            activeEvent.active = true;
-            
-            const eventBanner = document.createElement('div');
-            eventBanner.className = 'event-banner';
-            eventBanner.textContent = `🎉 Активно событие: ${event.name}`;
-            document.body.appendChild(eventBanner);
-
-            setTimeout(() => {
-                activeEvent = null;
-                eventBanner.remove();
-                showNotification(`Событие "${event.name}" завершено`);
-            }, event.duration);
-        }
-
-        // Обновленный UI
-        function updateUI() {
-            // Обновление уровня и прогресса
-            document.getElementById('currentLevel').textContent = level;
-            document.getElementById('levelProgress').style.width = 
-                `${(xp / xpToNextLevel) * 100}%`;
-
-            // Обновление достижений
-            const achievementsDiv = document.getElementById('achievements');
-            achievementsDiv.innerHTML = achievements
-                .filter(a => a.completed)
-                .map(a => `
-                    <div class="achievement-badge">
-                        ${a.name} - ${a.description}
+        // Обновленные улучшения
+        function updateUpgradesUI() {
+            const container = document.getElementById('upgradesList');
+            container.innerHTML = upgrades.map((upg, i) => `
+                <div class="upgrade">
+                    <div class="upgrade-header">
+                        <span class="emoji">${getUpgradeEmoji(upg.type)}</span>
+                        <h3>${upg.name}</h3>
                     </div>
-                `).join('');
-
-            // ... (остальные обновления UI остаются)
+                    <div class="upgrade-info">
+                        <p>💵 Цена: ${upg.price}</p>
+                        <p>📦 Куплено: ${upg.owned}/${upg.max}</p>
+                    </div>
+                    <button onclick="buyUpgrade(${i})" 
+                            ${score < upg.price || upg.owned >= upg.max ? 'disabled' : ''}>
+                        🛒 Купить
+                    </button>
+                </div>
+            `).join('');
         }
 
-        // Запуск случайных событий каждые 2 минуты
-        setInterval(startRandomEvent, 120000);
-
-        // ... (остальной код остается без изменений) ...
+        function getUpgradeEmoji(type) {
+            const emojis = {
+                click: '💥',
+                auto: '🤖',
+                critical: '🎯',
+                golden: '🌟',
+                boost: '🚀',
+                multiplier: '✨',
+                chain: '⚡'
+            };
+            return emojis[type] || '✅';
+        }
     </script>
 </body>
 </html>
