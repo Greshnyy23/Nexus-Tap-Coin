@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Киберпанк Игра 2050</title>
+    <title>Nexus Tap Coin</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: #0a0a0a;
+            background: linear-gradient(to bottom right, #0a0a0a, #1d3557);
             color: #00d4d4;
             overflow: hidden;
-            background-image: linear-gradient(45deg, #2b2d42, #1d3557);
             box-sizing: border-box;
         }
 
@@ -72,7 +71,7 @@
             max-width: 600px;
             margin: 20px auto;
             padding: 30px;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             border-radius: 15px;
             box-shadow: 0 4px 25px rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
@@ -164,6 +163,7 @@
             background: #00b3b3;
         }
 
+        /* Уведомление о получении валюты */
         .notification {
             position: fixed;
             top: 20px;
@@ -234,29 +234,22 @@
         </div>
     </div>
 
-    <!-- Уведомление -->
+    <!-- Уведомление для результатов -->
     <div id="notification" class="notification"></div>
 
     <script>
         let currency = 0;
         let earningsPerClick = 1;
-        let playTime = 0;
-        let maxCPS = 0;
-        let lastClickTime = Date.now();
-        let lastClickAmount = 0;
-        let startTime = Date.now();
-        let upgrades = [
+        const upgrades = [
             { name: 'Увеличение кликов +1', price: 10, owned: 0, max: 10, type: 'click', effect: 1 },
             { name: 'Увеличение кликов +2', price: 30, owned: 0, max: 5, type: 'click', effect: 2 },
-            { name: 'Автоматический кликер', price: 50, owned: 0, max: 2, type: 'auto', effect: 0 }
+            { name: 'Автоматический кликер', price: 50, owned: 0, max: 2, type: 'auto' }
         ];
 
         function loadData() {
             const savedCurrency = localStorage.getItem('currency');
             const savedEarningsPerClick = localStorage.getItem('earningsPerClick');
             const savedUpgrades = JSON.parse(localStorage.getItem('upgrades'));
-            const savedPlayTime = localStorage.getItem('playTime');
-            const savedMaxCPS = localStorage.getItem('maxCPS');
 
             if (savedCurrency !== null) {
                 currency = parseInt(savedCurrency);
@@ -271,20 +264,12 @@
                     }
                 });
             }
-            if (savedPlayTime !== null) {
-                playTime = parseInt(savedPlayTime);
-            }
-            if (savedMaxCPS !== null) {
-                maxCPS = parseInt(savedMaxCPS);
-            }
         }
 
         function saveData() {
             localStorage.setItem('currency', currency);
             localStorage.setItem('earningsPerClick', earningsPerClick);
             localStorage.setItem('upgrades', JSON.stringify(upgrades));
-            localStorage.setItem('playTime', playTime);
-            localStorage.setItem('maxCPS', maxCPS);
         }
 
         function showPage(pageId) {
@@ -301,7 +286,6 @@
             document.getElementById('currency').textContent = currency;
             showNotification(`+${earningsPerClick} валюты!`);
             saveData();
-            updateStats();
         }
 
         function showNotification(message) {
@@ -314,15 +298,9 @@
         }
 
         function updateStats() {
-            const currentTime = Date.now();
-            playTime = Math.floor((currentTime - startTime) / 1000); // Обновление времени игры в секундах
-            const clicksThisSecond = lastClickAmount - currency;
-            if (clicksThisSecond > maxCPS) {
-                maxCPS = clicksThisSecond;
-            }
-            document.getElementById('playTime').textContent = `${Math.floor(playTime / 60)}ч ${playTime % 60}м`;
-            document.getElementById('totalEarned').textContent = currency;
-            document.getElementById('maxCPS').textContent = maxCPS;
+            document.getElementById('playTime').textContent = `${Math.floor(0 / 60)}ч ${0 % 60}м`; // Замените на вашу логику
+            document.getElementById('totalEarned').textContent = currency; // Вставьте вашу логику
+            document.getElementById('maxCPS').textContent = 0; // Вставьте вашу логику
         }
 
         function updateUpgradesUI() {
@@ -355,11 +333,12 @@
                 showNotification(`Куплено: ${upgrade.name}`);
                 saveData();
             } else {
-                alert('Недостаточно валюты или достигнут лимит');
+                alert('Недостаточно валюты или достигнут лимит покупок');
             }
         }
 
-        loadData();
+        // Инициализация интерфейса
+        loadData(); // Загружаем данные при старте
         updateStats();
         updateUpgradesUI();
     </script>
