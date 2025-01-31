@@ -1,73 +1,98 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    background-color: #282c34;
-    font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    color: white;
-    text-align: center;
-    transition: background 0.5s;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    font-family: 'Poppins', sans-serif;
 }
 
 .container {
     background: rgba(255, 255, 255, 0.1);
     padding: 40px;
     border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    width: 300px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(15px);
+    width: 320px;
+    text-align: center;
     transition: background 0.5s;
 }
 
 h1 {
     font-size: 2.5em;
-    margin-bottom: 10px;
+    color: white;
+    margin-bottom: 20px;
 }
 
 #score, #highScore, #level {
     font-size: 1.5em;
     margin: 10px 0;
+    color: #ffffff;
 }
 
 button {
     padding: 15px 25px;
     font-size: 1.2em;
-    margin-top: 20px;
+    margin-top: 15px;
     cursor: pointer;
     border: none;
     border-radius: 25px;
     background: linear-gradient(90deg, #ff416c, #ff4b2b);
     color: white;
-    transition: background 0.3s, transform 0.2s;
-    position: relative;
-    animation: pulse 1s infinite;
+    transition: all 0.3s ease;
+    font-weight: 600;
 }
 
 button:hover {
-    background: linear-gradient(90deg, #ff4b2b, #ff416c);
     transform: scale(1.05);
+    background: linear-gradient(90deg, #ff4b2b, #ff416c);
 }
 
 button:active {
     transform: scale(0.95);
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+select {
+    padding: 10px;
+    margin-top: 15px;
+    font-size: 1em;
 }
 
-/* Темные темы */
+.leaderboard {
+    margin-top: 20px;
+    color: #ffffff;
+    max-height: 150px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.leaderboard h2 {
+    border-bottom: 2px solid #ff4b2b;
+    margin-bottom: 10px;
+}
+
 body.dark-mode {
-    background-color: #121212;
+    background: linear-gradient(135deg, #1a1a1a, #4f4f4f);
     color: #e0e0e0;
 }
+
 .container.dark-mode {
     background: rgba(255, 255, 255, 0.2);
 }
+
 body.dark-mode button {
     background: linear-gradient(90deg, #9b59b6, #8e44ad);
+}
+
+body.dark-mode h1,
+body.dark-mode #score,
+body.dark-mode #highScore,
+body.dark-mode #level {
+    color: #e0e0e0;
 }
