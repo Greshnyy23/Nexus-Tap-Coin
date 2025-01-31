@@ -3,42 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2040 Игровое приложение</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <title>Киберпанк Игра</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to bottom right, #81d4fa, #29b6f6);
-            color: #2c3e50;
+            background: radial-gradient(circle, #0f0f0f, #000);
+            color: #00ffcc;
+            overflow: hidden;
         }
 
         .nav {
-            background: #00695c;
-            padding: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
             display: flex;
             justify-content: space-around;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
         }
 
         .nav a {
-            color: white;
+            color: #00ffcc;
             text-decoration: none;
             font-size: 18px;
             padding: 10px 15px;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
             border-radius: 5px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .nav a:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .nav a::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: #ff007f;
+            transition: width 0.4s ease, left 0.4s ease;
+        }
+
+        .nav a:hover::before {
+            width: 100%;
+            left: 0;
         }
 
         .page {
             display: none;
             padding: 20px;
-            animation: fade 0.5s ease-in-out;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         .active {
@@ -46,7 +60,7 @@
             opacity: 1;
         }
 
-        @keyframes fade {
+        @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
@@ -55,32 +69,34 @@
             max-width: 600px;
             margin: 20px auto;
             padding: 20px;
-            background: white;
+            background: rgba(17, 17, 17, 0.9);
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
         }
 
         h2 {
-            color: #004d40;
+            color: #ff007f;
             text-align: center;
+            text-shadow: 0 0 5px #00ffcc;
         }
 
         .click-button {
-            background: #388e3c;
+            background: #ff007f;
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 15px 20px;
+            padding: 15px 20px; 
             font-size: 20px;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
             width: 100%;
             margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(255, 0, 124, 0.6);
         }
 
         .click-button:hover {
-            background: #2c6e2d;
+            background: #e60057;
             transform: scale(1.05);
         }
 
@@ -88,6 +104,7 @@
             font-size: 24px;
             text-align: center;
             margin: 15px 0;
+            text-shadow: 0 0 5px #00ffcc;
         }
 
         .upgrades-grid {
@@ -97,28 +114,34 @@
         }
 
         .upgrade {
-            background: #f5f5f5;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 15px;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .upgrade:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.2); /* Легкий эффект при наведении */
         }
 
         .upgrade h3 {
             margin: 10px 0;
             font-size: 18px;
+            color: #ff007f;
         }
 
         .upgrade-button {
-            background: #1e88e5;
-            color: white;
+            background: #00ffcc;
+            color: #000;
             border: none;
             border-radius: 5px;
             padding: 10px;
             cursor: pointer;
             transition: background 0.3s;
-            width: 100%; /* Ширина кнопки по карточке */
-            margin-top: 10px;
+            width: 100%; 
         }
 
         .upgrade-button:disabled {
@@ -126,7 +149,7 @@
         }
 
         .upgrade-button:hover:not(:disabled) {
-            background: #186cb1;
+            background: #00cc99;
         }
 
         /* Уведомление о получении валюты */
@@ -160,7 +183,7 @@
     <!-- Главная страница -->
     <div id="main" class="page active">
         <div class="container">
-            <h2>Игровое приложение</h2>
+            <h2>Киберпанк Игровое приложение</h2>
             <button class="click-button" onclick="earnCurrency()">💰 Кликни, чтобы заработать!</button>
             <div class="currency-display">Валюта: <span id="currency">0</span> (Заработок за клик: <span id="earningsPerClick">1</span>)</div>
         </div>
@@ -259,9 +282,9 @@
 
         // Обновление интерфейса
         function updateStats() {
-            document.getElementById('playTime').textContent = `${Math.floor(0 / 60)}ч ${0 % 60}м`; // Обновите свою логику
-            document.getElementById('totalEarned').textContent = 0; // Обновите свою логику
-            document.getElementById('maxCPS').textContent = 0; // Обновите свою логику
+            document.getElementById('playTime').textContent = `${Math.floor(0 / 60)}ч ${0 % 60}м`; // Замените на вашу логику
+            document.getElementById('totalEarned').textContent = 0; // Замените на вашу логику
+            document.getElementById('maxCPS').textContent = 0; // Замените на вашу логику
         }
 
         function updateUpgradesUI() {
