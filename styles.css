@@ -178,10 +178,10 @@ html, body {
     border: 1px solid #444;
 }
 
-.falling-artifact {
+.falling-coin {
     width: 30px;
     height: 30px;
-    background: url('./assets/artifact.png') no-repeat center/cover;
+    background: url('./assets/coin.png') no-repeat center/cover;
     position: absolute;
     top: -30px;
     left: 50%;
@@ -241,7 +241,7 @@ html, body {
     position: absolute;
     width: 20px;
     height: 20px;
-    background: url('./assets/artifact.png') no-repeat center/cover;
+    background: url('./assets/coin.png') no-repeat center/cover;
     animation: fly 1s ease-out;
 }
 
