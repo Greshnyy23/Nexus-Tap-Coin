@@ -27,12 +27,11 @@ body {
     z-index: 1;
 }
 
-.particles {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 0;
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 36px;
+    text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-blue);
 }
 
 #clickButton {
@@ -79,12 +78,11 @@ body {
     font-size: 28px;
     margin: 30px 0;
     position: relative;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.7);
     padding: 20px;
     border-radius: 15px;
     border: 2px solid var(--neon-blue);
     box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-    animation: float 3s ease-in-out infinite;
 }
 
 .shop {
@@ -105,8 +103,6 @@ body {
     justify-content: space-between;
     align-items: center;
     transition: transform 0.3s, box-shadow 0.3s;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(75, 241, 69, 0.1);
 }
 
 .upgrade:hover {
@@ -157,7 +153,7 @@ body {
     animation: floatUp 1s ease-out forwards;
     font-size: 24px;
     pointer-events: none;
-    text-shadow: 0 0 5px rgba(255,255,255,0.8);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
 .critical-text {
@@ -185,67 +181,4 @@ body {
     0% { transform: translateY(0) scale(1); opacity: 1; }
     50% { transform: translateY(-50px) scale(1.5); opacity: 1; }
     100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
-}
-
-@keyframes float {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0); }
-}
-
-@keyframes waveExpand {
-    0% { transform: scale(0); opacity: 1; }
-    100% { transform: scale(2); opacity: 0; }
-}
-
-.glow {
-    animation: glowPulse 2s infinite alternate;
-}
-
-@keyframes glowPulse {
-    from { 
-        box-shadow: 0 0 10px var(--neon-green), 
-                   0 0 20px var(--neon-blue); 
-    }
-    to { 
-        box-shadow: 0 0 20px var(--neon-green), 
-                   0 0 40px var(--neon-blue); 
-    }
-}
-
-.progress-bar {
-    width: 100%;
-    height: 6px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 3px;
-    margin-top: 10px;
-    overflow: hidden;
-    position: relative;
-}
-
-.progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255,255,255,0.3), 
-        transparent);
-    animation: progressShine 2s infinite;
-}
-
-@keyframes progressShine {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-.progress {
-    height: 100%;
-    background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
-    transition: width 0.5s ease;
-    position: relative;
-    z-index: 1;
 }
