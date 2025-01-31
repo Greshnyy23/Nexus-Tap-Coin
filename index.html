@@ -22,28 +22,44 @@
         <div class="level-display">
             <h3 id="levelDisplay">Уровень: 1</h3>
         </div>
-        <div class="upgrades">
+
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="upgrades">Улучшения</button>
+            <button class="tab-button" data-tab="achievements">Достижения</button>
+            <button class="tab-button" data-tab="settings">Настройки</button>
+        </div>
+
+        <!-- Контент вкладок -->
+        <div class="tab-content" id="upgrades">
             <h3>Улучшения:</h3>
             <button id="upgradeButton" class="upgrade-button">Двойные монеты (50 монет)</button>
             <button id="levelUpButton" class="upgrade-button">Уровень выше (100 монет)</button>
             <button id="autoClickerButton" class="upgrade-button">Авто-кликер (200 монет)</button>
             <button id="coinMultiplierButton" class="upgrade-button">Множитель монет (300 монет)</button>
         </div>
-        <div class="character-selection">
-            <h3>Выберите персонажа:</h3>
-            <button id="frogButton" class="character-button">Лягушка</button>
-            <button id="lizzardButton" class="character-button">Ящерица</button>
-            <button id="owlButton" class="character-button">Сова</button>
-            <button id="dragonButton" class="character-button">Дракон</button>
-        </div>
-        <div class="achievements">
+
+        <div class="tab-content" id="achievements" style="display: none;">
             <h3>Достижения:</h3>
             <div id="achievementList"></div>
         </div>
-        <div class="settings">
+
+        <div class="tab-content" id="settings" style="display: none;">
+            <h3>Настройки:</h3>
+            <label for="languageSelect">Язык:</label>
+            <select id="languageSelect">
+                <option value="ru">Русский</option>
+                <option value="en">English</option>
+            </select>
             <button id="resetButton">Сбросить прогресс</button>
         </div>
     </div>
+
+    <!-- Звуковые эффекты -->
+    <audio id="clickSound" src="./assets/click.mp3"></audio>
+    <audio id="upgradeSound" src="./assets/upgrade.mp3"></audio>
+    <audio id="achievementSound" src="./assets/achievement.mp3"></audio>
+
     <script src="app.js"></script>
 </body>
 
