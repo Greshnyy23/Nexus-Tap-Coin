@@ -1,6 +1,5 @@
 const $circle = document.querySelector('#circle');
 const $score = document.querySelector('#score');
-const $highScore = document.getElementById('highscore');
 const $levelDisplay = document.getElementById('levelDisplay');
 const $moneyDisplay = document.getElementById('moneyDisplay');
 const $upgradeButton = document.getElementById('upgradeButton');
@@ -10,9 +9,13 @@ const $achievementList = document.getElementById('achievementList');
 
 let score = 0;
 let level = 1;
-let money = 0; // Игровая валюта
+let money = 0;
 let upgradeActive = false;
 let achievements = [];
+
+// Звуковые эффекты
+const clickSound = new Audio('click.mp3');
+const levelUpSound = new Audio('level-up.mp3');
 
 // Инициализация
 function start() {
@@ -21,7 +24,6 @@ function start() {
     money = getMoney();
 
     setScore(score);
-    setHighScore(getHighScore());
     setLevel(level);
     updateMoneyDisplay();
     updateProgress();
@@ -35,19 +37,11 @@ function setScore(newScore) {
     $score.textContent = score;
 }
 
-function setHighScore(score) {
-    const currentHighScore = getHighScore();
-    if (score > currentHighScore) {
-        localStorage.setItem('highscore', score);
-        $highScore.textContent = score;
-        addAchievement("Новый рекорд!");
-    }
-}
-
 function setLevel(newLevel) {
     level = newLevel;
     localStorage.setItem('level', level);
     $levelDisplay.textContent = `Уровень: ${level}`;
+    levelUpSound.play();
 }
 
 function updateMoneyDisplay() {
@@ -55,16 +49,12 @@ function updateMoneyDisplay() {
 }
 
 function updateProgress() {
-    const progressPercentage = (score / 100) * 100; // Замените 100 на желаемый максимум
+    const progressPercentage = (score / 100) * 100;
     $progressFill.style.width = `${progressPercentage}%`;
 }
 
 function getScore() {
     return Number(localStorage.getItem('score')) || 0;
-}
-
-function getHighScore() {
-    return Number(localStorage.getItem('highscore')) || 0;
 }
 
 function getLevel() {
@@ -77,24 +67,24 @@ function getMoney() {
 
 // Очки и валюта
 function addOne() {
-    setScore(score + (upgradeActive ? 2 : 1)); // Учитывает улучшения
-    money += 1; // Добавляем монету
-    updateMoneyDisplay(); // Обновляем отображение денег
+    setScore(score + (upgradeActive ? 2 : 1));
+    money += 1;
+    updateMoneyDisplay();
+    clickSound.play();
 }
 
 // Улучшения
 $upgradeButton.addEventListener('click', () => {
     if (money >= 50) {
         upgradeActive = true;
-        money -= 50; // Вычитаем стоимость улучшения
+        money -= 50;
         updateMoneyDisplay();
-        
+        $upgradeButton.classList.add('active');
         setTimeout(() => {
-            upgradeActive = false; // Завершение действия улучшения
+            upgradeActive = false;
+            $upgradeButton.classList.remove('active');
             alert('Двойные очки закончились!');
-        }, 10000); // Длительность 10 секунд
-        
-        alert('Двойные очки активированы!');
+        }, 10000);
     } else {
         alert('Недостаточно монет для улучшения!');
     }
@@ -102,7 +92,7 @@ $upgradeButton.addEventListener('click', () => {
 
 $levelUpButton.addEventListener('click', () => {
     if (money >= 100) {
-        money -= 100; // Вычитаем стоимость повышения уровня
+        money -= 100;
         setLevel(level + 1);
         updateMoneyDisplay();
         addAchievement('Уровень повышен!');
@@ -114,7 +104,6 @@ $levelUpButton.addEventListener('click', () => {
 // Логика клика по кружку
 $circle.addEventListener('click', (event) => {
     const rect = $circle.getBoundingClientRect();
-
     const offsetX = event.clientX - rect.left - rect.width / 2;
     const offsetY = event.clientY - rect.top - rect.height / 2;
 
@@ -135,14 +124,11 @@ $circle.addEventListener('click', (event) => {
     plusOne.textContent = '+1';
     plusOne.style.left = `${event.clientX - rect.left}px`;
     plusOne.style.top = `${event.clientY - rect.top}px`;
-
     $circle.parentElement.appendChild(plusOne);
 
-    addOne(); // Добавление очка и валюты
+    addOne();
 
-    setTimeout(() => {
-        plusOne.remove();
-    }, 2000);
+    setTimeout(() => plusOne.remove(), 2000);
 });
 
 // Достижения
