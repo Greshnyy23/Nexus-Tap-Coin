@@ -18,14 +18,14 @@ html, body {
     box-shadow: 0 8px 30px rgba(0,0,0,0.2);
 }
 
-header .header {
+.header {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
 }
 
-header img {
+.header img {
     width: 50px;
     height: 50px;
     margin-right: 14px;
@@ -49,6 +49,10 @@ header img {
     border-radius: 50%;
     box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
     transition: transform 0.2s ease;
+    --tiltX: 0deg;
+    --tiltY: 0deg;
+    transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
+    cursor: pointer;
 }
 
 .navigation {
@@ -65,24 +69,80 @@ header img {
     cursor: pointer;
     transition: background 0.3s;
     font-weight: 600;
+    margin: 5px; /* Отступы между кнопками */
 }
 
 .nav-button:hover {
     background: #218838; 
 }
 
-button {
+.upgrades, .statistics {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.progress {
+    margin-top: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 20px;
+    background-color: #28a745;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.character-selection {
+    margin-top: 20px;
+}
+
+.character-button {
     padding: 10px 20px;
     font-size: 16px;
-    background: #28a745; 
+    background: #007bff; /* Синий фон для кнопок выбора */
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
-    font-weight: 600;
+    margin: 5px; /* Отступы между кнопками */
 }
 
-button:hover {
-    background: #218838; 
+.character-button:hover {
+    background: #0056b3; /* Темно-синий при наведении */
+}
+
+.plus-one {
+    position: absolute;
+    font-family: 'Poppins', sans-serif;
+    text-shadow: 0px 0px 4px rgba(234, 182, 64, 0.5);
+    font-size: 28px;
+    font-weight: 600;
+    background: linear-gradient(180deg, #e8c547 0%, #ef882b 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    user-select: none;
+    animation: move-up 2s forwards;
+}
+
+@keyframes move-up {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
 }
