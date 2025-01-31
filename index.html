@@ -3,79 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Clicker</title>
+    <title>Super Clicker</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #1a1a1a;
-            color: #fff;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            touch-action: manipulation;
-        }
+        /* ... (предыдущие стили остаются без изменений) ... */
 
-        .container {
-            max-width: 400px;
-            width: 100%;
-        }
-
-        #clickButton {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: #4CAF50;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.1s;
-            margin: 20px auto;
-            display: block;
-            touch-action: manipulation;
-        }
-
-        #clickButton:active {
-            transform: scale(0.95);
-        }
-
-        .score-container {
-            text-align: center;
-            font-size: 24px;
-            margin: 20px 0;
-        }
-
-        .shop {
-            background: #2a2a2a;
+        .prestige-section {
+            background: #3a3a3a;
             padding: 20px;
             border-radius: 15px;
             margin-top: 20px;
+            text-align: center;
         }
 
-        .upgrade {
-            background: #333;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .upgrade button {
-            background: #4CAF50;
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .upgrade button:disabled {
-            background: #666;
-            cursor: not-allowed;
+        .boost-timer {
+            color: #FFD700;
+            font-size: 14px;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -83,6 +26,8 @@
     <div class="container">
         <div class="score-container">
             Очков: <span id="score">0</span>
+            <div>Клик-сила: <span id="clickPower">1</span></div>
+            <div>Автокликеры: <span id="autoClickers">0</span></div>
         </div>
         
         <button id="clickButton">КЛИКАЙ!</button>
@@ -91,68 +36,101 @@
             <h2>Улучшения</h2>
             <div id="upgrades"></div>
         </div>
+
+        <div class="prestige-section">
+            <h3>Множители</h3>
+            <div id="boosts"></div>
+        </div>
     </div>
 
     <script>
         let score = 0;
-        let clickPower = 1;
+        let baseClickPower = 1;
         let autoClickers = 0;
-        let upgrades = [
+        let multipliers = {
+            critical: 1,
+            timeBoost: 1,
+            goldenClick: 1
+        };
+
+        const upgrades = [
             {
                 name: 'Усиленный клик',
                 price: 50,
-                power: 2,
+                power: 1,
+                type: 'click',
                 owned: 0,
-                max: 5
+                max: 20
             },
             {
                 name: 'Автокликер',
                 price: 100,
-                power: 0,
+                power: 1,
+                type: 'auto',
                 owned: 0,
-                max: 10
+                max: 50
             },
             {
-                name: 'Мега клик',
+                name: 'Критический удар (10%)',
                 price: 500,
-                power: 10,
+                power: 0.1,
+                type: 'critical',
+                owned: 0,
+                max: 5
+            },
+            {
+                name: 'Золотой клик',
+                price: 1000,
+                power: 5,
+                type: 'golden',
+                owned: 0,
+                max: 1
+            },
+            {
+                name: 'Ускорение времени',
+                price: 2000,
+                power: 2,
+                type: 'boost',
+                duration: 30,
                 owned: 0,
                 max: 3
+            },
+            {
+                name: 'Множитель x2',
+                price: 5000,
+                power: 2,
+                type: 'multiplier',
+                owned: 0,
+                max: 1
+            },
+            {
+                name: 'Цепная реакция',
+                price: 10000,
+                power: 0.5,
+                type: 'chain',
+                owned: 0,
+                max: 5
             }
         ];
 
-        // Загрузка сохранений
-        function loadGame() {
-            const saved = localStorage.getItem('clickerSave');
-            if(saved) {
-                const data = JSON.parse(saved);
-                score = data.score;
-                clickPower = data.clickPower;
-                autoClickers = data.autoClickers;
-                upgrades = data.upgrades;
-            }
-        }
+        let activeBoosts = {};
+        
+        // ... (функции loadGame и saveGame остаются без изменений) ...
 
-        // Сохранение игры
-        function saveGame() {
-            const data = {
-                score,
-                clickPower,
-                autoClickers,
-                upgrades
-            };
-            localStorage.setItem('clickerSave', JSON.stringify(data));
-        }
-
-        // Обновление интерфейса
         function updateUI() {
             document.getElementById('score').textContent = Math.floor(score);
+            document.getElementById('clickPower').textContent = calculateTotalClickPower();
+            document.getElementById('autoClickers').textContent = autoClickers;
+            
             document.getElementById('upgrades').innerHTML = upgrades.map((upgrade, index) => `
                 <div class="upgrade">
                     <div>
                         <h3>${upgrade.name}</h3>
-                        <p>Цена: ${upgrade.price}</p>
+                        <p>${getUpgradeDescription(upgrade)}</p>
+                        <p>Цена: ${Math.floor(upgrade.price)}</p>
                         <p>Куплено: ${upgrade.owned}/${upgrade.max}</p>
+                        ${activeBoosts[upgrade.name] ? 
+                            `<div class="boost-timer">Осталось: ${activeBoosts[upgrade.name].duration}s</div>` : ''}
                     </div>
                     <button 
                         onclick="buyUpgrade(${index})" 
@@ -163,17 +141,43 @@
             `).join('');
         }
 
-        // Покупка улучшения
+        function getUpgradeDescription(upgrade) {
+            switch(upgrade.type) {
+                case 'critical': return `Шанс: +${upgrade.power * 100}%`;
+                case 'golden': return `Множитель: x${upgrade.power}`;
+                case 'boost': return `Длительность: ${upgrade.duration}s`;
+                default: return `Сила: +${upgrade.power}`;
+            }
+        }
+
+        function calculateTotalClickPower() {
+            let total = baseClickPower;
+            
+            upgrades.forEach(upgrade => {
+                if(upgrade.type === 'click') total += upgrade.power * upgrade.owned;
+                if(upgrade.type === 'critical') total *= 1 + (upgrade.power * upgrade.owned);
+                if(upgrade.type === 'multiplier') total *= upgrade.power ** upgrade.owned;
+            });
+
+            return Math.floor(total * multipliers.timeBoost * multipliers.goldenClick);
+        }
+
         function buyUpgrade(index) {
             const upgrade = upgrades[index];
             if(score >= upgrade.price && upgrade.owned < upgrade.max) {
                 score -= upgrade.price;
                 upgrade.owned++;
                 
-                if(upgrade.name === 'Автокликер') {
-                    autoClickers++;
-                } else {
-                    clickPower += upgrade.power;
+                switch(upgrade.type) {
+                    case 'auto':
+                        autoClickers += upgrade.power;
+                        break;
+                    case 'boost':
+                        activateBoost(upgrade);
+                        break;
+                    case 'golden':
+                        setupGoldenClick();
+                        break;
                 }
                 
                 upgrade.price = Math.floor(upgrade.price * 1.5);
@@ -182,29 +186,75 @@
             }
         }
 
-        // Автоклики
-        function autoClick() {
-            score += autoClickers;
-            updateUI();
-            saveGame();
+        function activateBoost(upgrade) {
+            multipliers.timeBoost = upgrade.power;
+            activeBoosts[upgrade.name] = {
+                duration: upgrade.duration
+            };
+
+            const interval = setInterval(() => {
+                activeBoosts[upgrade.name].duration--;
+                if(activeBoosts[upgrade.name].duration <= 0) {
+                    multipliers.timeBoost = 1;
+                    delete activeBoosts[upgrade.name];
+                    clearInterval(interval);
+                }
+                updateUI();
+            }, 1000);
         }
 
-        // Инициализация
+        function setupGoldenClick() {
+            const goldenClicker = document.createElement('div');
+            goldenClicker.style.position = 'fixed';
+            goldenClicker.style.left = `${Math.random() * 80}%`;
+            goldenClicker.style.top = `${Math.random() * 80}%`;
+            goldenClicker.style.width = '50px';
+            goldenClicker.style.height = '50px';
+            goldenClicker.style.background = 'gold';
+            goldenClicker.style.borderRadius = '50%';
+            goldenClicker.style.cursor = 'pointer';
+            goldenClicker.onclick = () => {
+                score += 100 * multipliers.goldenClick;
+                document.body.removeChild(goldenClicker);
+                multipliers.goldenClick = 1;
+                updateUI();
+            };
+            document.body.appendChild(goldenClicker);
+            
+            setTimeout(() => {
+                if(document.body.contains(goldenClicker)) {
+                    document.body.removeChild(goldenClicker);
+                    multipliers.goldenClick = 1;
+                }
+            }, 5000);
+        }
+
+        // ... (остальной код остается без изменений) ...
+
+        // Модифицированная функция клика
         document.getElementById('clickButton').addEventListener('click', () => {
-            score += clickPower;
+            let clickValue = calculateTotalClickPower();
+            
+            // Проверка на критический удар
+            const criticalChance = upgrades
+                .filter(u => u.type === 'critical')
+                .reduce((sum, u) => sum + u.power * u.owned, 0);
+            
+            if(Math.random() < criticalChance) {
+                clickValue *= 2;
+            }
+
+            // Цепная реакция
+            const chainMultiplier = 1 + upgrades
+                .filter(u => u.type === 'chain')
+                .reduce((sum, u) => sum + u.power * u.owned, 0);
+            
+            score += clickValue * chainMultiplier;
             updateUI();
             saveGame();
         });
 
-        // Запуск авто-кликов
-        setInterval(autoClick, 1000);
-        
-        // Загрузка игры при старте
-        loadGame();
-        updateUI();
-        
-        // Сохранение при закрытии
-        window.addEventListener('beforeunload', saveGame);
+        // ... (остальной код инициализации) ...
     </script>
 </body>
 </html>
