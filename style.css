@@ -1,66 +1,205 @@
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #1a1a1a;
-    color: #00ff7f;
-    font-family: 'Arial', sans-serif;
+* {
+    box-sizing: border-box;
 }
 
-.container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    background: #2a2a2a;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom right, #0a0a0a, #1d3557);
+    color: #00ff7f;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 header {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
     text-align: center;
 }
 
-.balance {
-    font-size: 1.5em;
+h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
 }
 
-.user-info {
-    margin: 10px 0;
+.currency-display {
+    font-size: 2em;
+}
+
+.currency-label {
+    font-size: 0.7em;
+}
+
+.earnings {
     font-size: 1em;
+    margin-top: 10px;
+    text-align: left;
 }
 
-main {
-    margin: 20px 0;
-}
-
-.quests {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.quest {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-footer {
+.main-action {
     text-align: center;
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-button {
-    background: #00d4d4;
-    color: white;
+.click-button {
+    background: #00ff7f; /* Неоновый зеленый */
     border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
+    border-radius: 50%;
+    padding: 20px;
+    width: 150px;
+    height: 150px;
     cursor: pointer;
-    font-size: 1em;
-    transition: background 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 255, 127, 0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
 }
 
-button:hover {
-    background: #008080;
+.click-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 15px rgba(0, 255, 127, 0.8);
+}
+
+.upgrades-section,
+.achievements-section {
+    margin-bottom: 20px;
+}
+
+.upgrades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.upgrade {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
+    transition: transform 0.2s, background 0.3s;
+    opacity: 0; /* Скрытая по умолчанию для анимации */
+    transform: translateY(20px); /* Начальная позиция */
+    margin-bottom: 10px;
+}
+
+.upgrade.visible {
+    opacity: 1;
+    transform: translateY(0); /* Конечная позиция */
+}
+
+.upgrade:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.upgrade h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+    color: #ff007f;
+}
+
+.upgrade-button {
+    background: #00d4d4;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+}
+
+.upgrade-button:disabled {
+    background: #ccc;
+}
+
+.upgrade-button:hover:not(:disabled) {
+    background: #00b3b3;
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #4caf50;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.stats-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
+}
+
+.achievements-section {
+    margin-bottom: 20px;
+}
+
+#achievements-list {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.achievement {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    margin: 5px 0;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    display: none;
+    animation: fadeInOverlay 0.3s forwards;
+}
+
+.overlay.show {
+    display: block;
+}
+
+@keyframes fadeInOverlay {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.dailyReward {
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
 }
