@@ -1,17 +1,26 @@
 const $circle = document.querySelector('#circle');
 const $score = document.querySelector('#score');
 const $highScore = document.getElementById('highscore');
+const $levelDisplay = document.getElementById('levelDisplay');
 const $upgradeButton = document.getElementById('upgradeButton');
+const $levelUpButton = document.getElementById('levelUpButton');
+const $timerDisplay = document.getElementById('timer');
 
-let upgradeCost = 50; // Стоимость улучшения
+let score = 0;
+let level = 1;
+let upgradeActive = false;
+let timer = 10;
+let timerInterval;
 
 function start() {
     setScore(getScore());
     setHighScore(getHighScore());
     setImage();
+    startTimer();
 }
 
-function setScore(score) {
+function setScore(newScore) {
+    score = newScore;
     localStorage.setItem('score', score);
     $score.textContent = score;
 }
@@ -25,7 +34,7 @@ function setHighScore(score) {
 }
 
 function setImage() {
-    if (getScore() >= 50) {
+    if (score >= 50) {
         $circle.setAttribute('src', './assets/lizzard.png');
     }
 }
@@ -39,18 +48,36 @@ function getHighScore() {
 }
 
 function addOne() {
-    setScore(getScore() + 1);
+    setScore(score + (upgradeActive ? 2 : 1));
     setHighScore(getScore());
     setImage();
 }
 
 function upgrade() {
-    if (getScore() >= upgradeCost) {
-        setScore(getScore() - upgradeCost);
-        upgradeCost *= 2; // Увеличиваем стоимость улучшения
-        $upgradeButton.textContent = `Улучшить (${upgradeCost} монет)`; // Обновляем текст кнопки
+    if (getScore() >= 50) {
+        upgradeActive = true;
+        setScore(getScore() - 50);
+        $upgradeButton.disabled = true; // Отключить кнопку
+        setTimeout(() => {
+            upgradeActive = false;
+            $upgradeButton.disabled = false; // Включить кнопку обратно
+        }, 10000); // Действие длится 10 секунд
     } else {
         alert('Недостаточно монет для улучшения!');
+    }
+}
+
+function levelUp() {
+    if (getScore() >= 100) {
+        setScore(getScore() - 100);
+        level++;
+        $levelDisplay.textContent = `Уровень: ${level}`;
+        $levelUpButton.disabled = true; // Отключить кнопку
+        setTimeout(() => {
+            $levelUpButton.disabled = false; // Включить кнопку обратно
+        }, 10000); // Действие длится 10 секунд
+    } else {
+        alert('Недостаточно монет для повышения уровня!');
     }
 }
 
@@ -87,7 +114,32 @@ $circle.addEventListener('click', (event) => {
     }, 2000);
 });
 
-// Обработчик события для кнопки улучшения
+// Обработчики событий
 $upgradeButton.addEventListener('click', upgrade);
+$levelUpButton.addEventListener('click', levelUp);
 
+// Таймер
+function startTimer() {
+    $timerDisplay.textContent = `Время: ${timer}`;
+    timerInterval = setInterval(() => {
+        timer--;
+        $timerDisplay.textContent = `Время: ${timer}`;
+        
+        if (timer <= 0) {
+            clearInterval(timerInterval);
+            alert('Время вышло! Ваш результат: ' + score);
+            resetGame(); // Сбросить игру
+        }
+    }, 1000);
+}
+
+function resetGame() {
+    setScore(0);
+    level = 1;
+    $levelDisplay.textContent = `Уровень: ${level}`;
+    timer = 10;
+    startTimer();
+}
+
+// Инициализация
 start();
