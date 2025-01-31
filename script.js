@@ -1,105 +1,72 @@
-let currency = 0; // Начальное количество валюты
-let earningsPerClick = 1; // Сколько валюты зарабатывается за один клик
-const upgrades = [
-    { name: 'Увеличение кликов +1', price: 10, owned: 0, max: 10, type: 'click', effect: 1 },
-    { name: 'Увеличение кликов +2', price: 30, owned: 0, max: 5, type: 'click', effect: 2 },
-    { name: 'Автоматический кликер', price: 50, owned: 0, max: 2, type: 'auto' }
-];
+let currency = 0;
+let earningsPerClick = 1;
+let playTime = 0;
+let totalEarned = 0;
+let maxCPS = 0;
 
-function loadData() {
-    const savedCurrency = localStorage.getItem('currency');
-    const savedEarningsPerClick = localStorage.getItem('earningsPerClick');
-    const savedUpgrades = JSON.parse(localStorage.getItem('upgrades'));
+const currencyDisplay = document.getElementById("currency");
+const earningsPerClickDisplay = document.getElementById("earningsPerClick");
+const playTimeDisplay = document.getElementById("playTime");
+const totalEarnedDisplay = document.getElementById("totalEarned");
+const maxCPSDisplay = document.getElementById("maxCPS");
 
-    if (savedCurrency !== null) {
-        currency = parseInt(savedCurrency);
-    }
-    if (savedEarningsPerClick !== null) {
-        earningsPerClick = parseInt(savedEarningsPerClick);
-    }
-    if (savedUpgrades) {
-        upgrades.forEach((upgrade, index) => {
-            if (savedUpgrades[index]) {
-                upgrade.owned = savedUpgrades[index].owned;
-            }
-        });
-    }
-}
-
-function saveData() {
-    localStorage.setItem('currency', currency);
-    localStorage.setItem('earningsPerClick', earningsPerClick);
-    localStorage.setItem('upgrades', JSON.stringify(upgrades));
-}
-
-function showPage(pageId) {
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(page => {
-        page.classList.remove('active');
-    });
-    document.getElementById(pageId).classList.add('active');
-    saveData(); // Сохраняем данные при смене страницы
-}
+const notification = document.getElementById("notification");
 
 function earnCurrency() {
     currency += earningsPerClick;
-    document.getElementById('currency').textContent = currency;
-    showNotification(`+${earningsPerClick} валюты!`); // Показываем уведомление
-    saveData(); // Сохраняем данные после изменения валюты
+    totalEarned += earningsPerClick;
+    currencyDisplay.textContent = currency;
+    totalEarnedDisplay.textContent = totalEarned;
+    showNotification(`Вы заработали ${earningsPerClick} валюты!`);
 }
 
 function showNotification(message) {
-    const notification = document.getElementById('notification');
     notification.textContent = message;
-    notification.classList.add('show');
-
-    // Убираем уведомление через 2 секунды
+    notification.style.display = 'block';
     setTimeout(() => {
-        notification.classList.remove('show');
-    }, 2000);
+        notification.style.display = 'none';
+    }, 3000);
 }
 
-function updateStats() {
-    document.getElementById('playTime').textContent = `${Math.floor(0 / 60)}ч ${0 % 60}м`; // Замените на вашу логику
-    document.getElementById('totalEarned').textContent = currency; // Замените на вашу логику
-    document.getElementById('maxCPS').textContent = 0; // Замените на вашу логику
-}
+// Старт таймера игры
+setInterval(() => {
+    playTime++;
+    playTimeDisplay.textContent = `${Math.floor(playTime / 60)}ч ${playTime % 60}м`;
+}, 60000); // Обновляем каждую минуту
 
-function updateUpgradesUI() {
-    const container = document.getElementById('upgradesList');
-    container.innerHTML = upgrades.map((upg, i) => `
-        <div class="upgrade">
-            <h3>${upg.name}</h3>
-            <p>💵 Цена: ${upg.price}</p>
-            <p>📦 Куплено: ${upg.owned}/${upg.max}</p>
-            ${upg.effect ? `<p>↑ Заработок за клик: +${upg.effect}</p>` : ''}
-            <button class="upgrade-button" onclick="buyUpgrade(${i})" 
-                    ${currency < upg.price || upg.owned >= upg.max ? 'disabled' : ''}>
-                🛒 Купить
-            </button>
-        </div>
-    `).join('');
-}
+// Моделируем улучшения
+function createUpgrade(name, cost, effect) {
+    const upgradeItem = document.createElement('div');
+    upgradeItem.classList.add('upgrade-item');
+    upgradeItem.innerHTML = `${name} (Цена: ${cost} валюты)`;
 
-function buyUpgrade(index) {
-    const upgrade = upgrades[index];
-    if (currency >= upgrade.price && upgrade.owned < upgrade.max) {
-        currency -= upgrade.price;
-        upgrade.owned++;
-        if (upgrade.effect) {
-            earningsPerClick += upgrade.effect;
-            document.getElementById('earningsPerClick').textContent = earningsPerClick;
+    upgradeItem.onclick = () => {
+        if (currency >= cost) {
+            currency -= cost;
+            earningsPerClick += effect;
+            earningsPerClickDisplay.textContent = earningsPerClick;
+            currencyDisplay.textContent = currency;
+            showNotification(`${name} улучшено!`);
+        } else {
+            showNotification(`Недостаточно валюты для улучшения ${name}`);
         }
-        document.getElementById('currency').textContent = currency;
-        updateUpgradesUI();
-        showNotification(`Куплено: ${upgrade.name}`);
-        saveData();
-    } else {
-        alert('Недостаточно валюты или достигнут лимит покупок');
-    }
+    };
+
+    return upgradeItem;
 }
 
-// Инициализация интерфейса
-loadData(); // Загружаем данные при старте
-updateStats(); // Обновляем статистику
-updateUpgradesUI(); // Обновляем интерфейс улучшений
+// Добавление улучшений
+function loadUpgrades() {
+    const upgradesList = document.getElementById("upgradesList");
+    upgradesList.appendChild(createUpgrade('Ускорение кликов', 100, 1));
+    upgradesList.appendChild(createUpgrade('Мощность кликов', 250, 2));
+}
+
+loadUpgrades();
+
+// Мониторинг максимального CPS
+setInterval(() => {
+    const cps = earningsPerClick / 1; // Примерная скорость кликов за секунду
+    maxCPS = Math.max(maxCPS, cps);
+    maxCPSDisplay.textContent = maxCPS.toFixed(2);
+}, 1000);
