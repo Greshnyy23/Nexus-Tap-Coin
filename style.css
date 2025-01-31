@@ -16,6 +16,32 @@ body {
     min-height: 100vh;
 }
 
+.nav {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.nav a {
+    color: #00d4d4;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.nav a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.page {
+    display: none;
+    padding: 20px;
+}
+
+.active {
+    display: block;
+}
+
 header {
     background: rgba(0, 0, 0, 0.8);
     padding: 20px;
@@ -38,11 +64,7 @@ h1 {
 .earnings {
     font-size: 1em;
     margin-top: 10px;
-}
-
-main {
-    flex: 1;
-    padding: 20px;
+    text-align: left;
 }
 
 .main-action {
@@ -51,30 +73,23 @@ main {
 }
 
 .click-button {
-    background: #ff007f; /* Неоновый зеленый */
+    background: #00ff7f;
     border: none;
     border-radius: 50%;
     padding: 20px;
     width: 150px;
     height: 150px;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(255, 0, 124, 0.5);
+    box-shadow: 0 4px 10px rgba(0, 255, 127, 0.5);
     transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
-}
-
-.click-button svg {
-    width: 80%;
-    height: auto;
-    fill: #000;
 }
 
 .click-button:hover {
     transform: scale(1.1);
-    box-shadow: 0 8px 15px rgba(255, 0, 124, 0.8);
+    box-shadow: 0 8px 15px rgba(0, 255, 127, 0.8);
 }
 
 .upgrades-section,
@@ -101,7 +116,7 @@ main {
 
 .upgrade.visible {
     opacity: 1;
-    transform: translateY(0); /* Изначальная позиция */
+    transform: translateY(0); /* Конечная позиция */
 }
 
 .upgrade:hover {
@@ -167,7 +182,7 @@ main {
 }
 
 .achievements-section {
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 #achievements-list {
@@ -198,15 +213,6 @@ main {
 
 .overlay.show {
     display: block;
-}
-
-@keyframes fadeInOverlay {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
 }
 
 .dailyReward {
