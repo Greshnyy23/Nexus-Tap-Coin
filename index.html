@@ -76,6 +76,40 @@
             }
         ];
 
+        // Загрузка сохранений
+        function loadGame() {
+            const saved = localStorage.getItem('clickerSave');
+            if (saved) {
+                const data = JSON.parse(saved);
+                score = data.score || 0;
+                baseClickPower = data.baseClickPower || 1;
+                autoClickers = data.autoClickers || 0;
+                multipliers = data.multipliers || { critical: 1, timeBoost: 1, goldenClick: 1 };
+                upgrades.forEach((upgrade, index) => {
+                    if (data.upgrades && data.upgrades[index]) {
+                        upgrade.owned = data.upgrades[index].owned || 0;
+                        upgrade.price = data.upgrades[index].price || upgrade.price;
+                    }
+                });
+            }
+            updateUI();
+        }
+
+        // Сохранение игры
+        function saveGame() {
+            const data = {
+                score,
+                baseClickPower,
+                autoClickers,
+                multipliers,
+                upgrades: upgrades.map(upgrade => ({
+                    owned: upgrade.owned,
+                    price: upgrade.price
+                }))
+            };
+            localStorage.setItem('clickerSave', JSON.stringify(data));
+        }
+
         // Исправленная функция расчета силы клика
         function calculateTotalClickPower() {
             let total = baseClickPower;
@@ -106,11 +140,11 @@
         // Исправленная функция покупки улучшений
         function buyUpgrade(index) {
             const upgrade = upgrades[index];
-            if(score >= upgrade.price && upgrade.owned < upgrade.max) {
+            if (score >= upgrade.price && upgrade.owned < upgrade.max) {
                 score -= upgrade.price;
                 upgrade.owned++;
                 
-                switch(upgrade.type) {
+                switch (upgrade.type) {
                     case 'auto':
                         autoClickers += upgrade.power;
                         break;
@@ -140,7 +174,7 @@
                 .filter(u => u.type === 'critical')
                 .reduce((sum, u) => sum + (u.power * u.owned), 0);
             
-            if(Math.random() < criticalChance) {
+            if (Math.random() < criticalChance) {
                 clickValue *= 2;
                 showCriticalEffect(e);
             }
@@ -164,17 +198,65 @@
 
         function showCriticalEffect(event) {
             const effect = document.createElement('div');
-            effect.className = 'floating-text';
+            effect.className = 'floating-text critical-text';
             effect.textContent = 'CRITICAL!';
-            effect.style.color = '#FFD700';
-            effect.style.fontSize = '28px';
             effect.style.left = `${event.clientX}px`;
             effect.style.top = `${event.clientY}px`;
             document.body.appendChild(effect);
             setTimeout(() => effect.remove(), 1500);
         }
 
-        // ... (остальные функции остаются без изменений) ...
+        // Автоклики
+        function autoClick() {
+            if (autoClickers > 0) {
+                score += autoClickers * calculateTotalClickPower();
+                updateUI();
+                saveGame();
+            }
+        }
+
+        // Инициализация
+        function init() {
+            loadGame();
+            setInterval(autoClick, 1000);
+            updateUI();
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            document.getElementById('score').textContent = Math.floor(score);
+            document.getElementById('clickPower').textContent = calculateTotalClickPower();
+            document.getElementById('autoClickers').textContent = autoClickers;
+            
+            const upgradesDiv = document.getElementById('upgrades');
+            upgradesDiv.innerHTML = upgrades.map((upgrade, index) => `
+                <div class="upgrade">
+                    <div>
+                        <h3>${upgrade.name}</h3>
+                        <p>${getUpgradeDescription(upgrade)}</p>
+                        <p>Цена: ${Math.floor(upgrade.price)}</p>
+                        <p>Куплено: ${upgrade.owned}/${upgrade.max}</p>
+                    </div>
+                    <button 
+                        onclick="buyUpgrade(${index})" 
+                        ${score < upgrade.price || upgrade.owned >= upgrade.max ? 'disabled' : ''}>
+                        Купить
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function getUpgradeDescription(upgrade) {
+            switch (upgrade.type) {
+                case 'critical': return `Шанс: +${upgrade.power * 100}%`;
+                case 'golden': return `Множитель: x${upgrade.power}`;
+                case 'boost': return `Длительность: ${upgrade.duration}s`;
+                default: return `Сила: +${upgrade.power}`;
+            }
+        }
+
+        // Запуск игры
+        init();
     </script>
 </body>
 </html>
