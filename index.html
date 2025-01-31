@@ -14,6 +14,7 @@
             --gold: #FFD700;
             --critical-red: #FF4136;
             --button-bg: rgba(255, 255, 255, 0.2);
+            --border-color: var(--neon-blue);
         }
 
         body {
@@ -39,7 +40,7 @@
             margin: 0 10px;
             border-radius: 5px;
             text-decoration: none;
-            font-size: 20px;  /* Увеличим размер текста */
+            font-size: 18px;
             transition: background 0.3s, color 0.3s;
         }
 
@@ -52,8 +53,8 @@
             max-width: 500px;
             width: 100%;
             text-align: center;
-            padding: 15px;
-            border: 2px solid var(--neon-blue);
+            padding: 20px;
+            border: 2px solid var(--border-color);
             border-radius: 15px;
             background: rgba(20, 20, 40, 0.9);
             box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
@@ -89,9 +90,9 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.1), 
+            background: linear-gradient(45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
                 transparent);
             transform: rotate(45deg);
             animation: shine 3s infinite;
@@ -108,14 +109,14 @@
             background: rgba(0, 0, 0, 0.7);
             padding: 15px;
             border-radius: 10px;
-            border: 2px solid var(--neon-blue);
+            border: 2px solid var(--border-color);
             box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
         }
 
         .upgrade {
             padding: 10px;
             margin-bottom: 10px;
-            border: 1px solid var(--neon-blue);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             background: rgba(20, 20, 40, 0.8);
             display: flex;
@@ -369,7 +370,7 @@
             document.getElementById('totalCoins').textContent = `Собрано монет: ${score}`;
             document.getElementById('totalUpgrades').textContent = `Всего улучшений: ${totalUpgrades}`;
             document.getElementById('invitedPeople').textContent = `Приглашённых людей: ${invitedPeople}`;
-            
+
             // Отображение уникального реферального кода
             document.getElementById('userReferralCode').textContent = userReferralCode;
         }
