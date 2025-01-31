@@ -5,9 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Кликер Игра</title>
     <style>
+        :root {
+            --neon-green: #4BF145;
+            --neon-blue: #00F3FF;
+            --dark-bg: #0a0a14;
+            --light-bg: rgba(255, 255, 255, 0.1);
+            --accent-purple: #BC13FE;
+            --gold: #FFD700;
+            --critical-red: #FF4136;
+            --button-bg: rgba(255, 255, 255, 0.2);
+            --border-color: var(--neon-blue);
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #1e1e2f;
+            font-family: 'Nunito', Arial, sans-serif;
+            background: var(--dark-bg);
             color: #fff;
             margin: 0;
             padding: 20px;
@@ -17,114 +29,82 @@
             min-height: 100vh;
         }
 
-        /* Навигация */
-        .nav {
-            display: flex;
-            gap: 15px; /* Пространство между ссылками */
-            margin-bottom: 20px;
-        }
-
-        .nav a {
-            background: #4a4a7a; /* Темный фон для ссылок */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 18px; 
-            transition: background 0.3s ease, transform 0.2s;
-        }
-
-        .nav a:hover {
-            background: #6a6a9a; /* Светлее при наведении */
-            transform: translateY(-2px); /* Эффект при наведении */
-        }
-
-        /* Контейнер для страниц */
         .container {
             max-width: 500px;
             width: 100%;
             text-align: center;
-            padding: 20px;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            background: rgba(20, 20, 40, 0.9);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
             margin-bottom: 20px;
-            border: 2px solid #5a5a95;
-            border-radius: 12px;
-            background: #2c2c4f; /* Основной цвет фона контейнера */
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
         }
 
-        h1, h2 {
+        h1 {
             margin: 10px 0;
-            text-shadow: 0 0 10px #ffffff;
+            text-shadow: 0 0 10px var(--neon-green);
         }
 
-        /* Стиль для кнопки клика */
         #clickButton {
-            width: 180px;
-            height: 180px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            background: linear-gradient(145deg, #5e5e98, #4a4a7a);
+            background: linear-gradient(145deg, var(--neon-green), var(--neon-blue));
             border: none;
-            color: #fff;
-            font-size: 26px;
+            color: white;
+            font-size: 28px;
+            font-family: 'Russo One', cursive;
             cursor: pointer;
             margin: 20px auto;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(75, 241, 69, 0.3);
             transition: transform 0.1s, box-shadow 0.3s;
             position: relative;
+            overflow: hidden;
         }
 
-        #clickButton:hover {
-            transform: scale(1.05); /* Эффект наведения для кнопки */
+        #clickButton::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
         }
 
         #clickButton:active {
-            transform: scale(0.95);
-            box-shadow: none;
+            transform: scale(0.95) rotate(5deg);
+            box-shadow: 0 0 40px rgba(75, 241, 69, 0.6);
         }
 
-        /* Стиль для контейнера результатов */
-        .score-container,
-        .stats-list {
-            margin: 15px 0;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #5a5a95;
-        }
-
-        /* Стиль для улучшений */
-        .upgrade {
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #5a5a95;
-            border-radius: 10px;
-            background: rgba(50, 50, 50, 0.8);
+        /* Навигация */
+        .nav {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.3s, box-shadow 0.3s;
+            justify-content: center;
+            margin-top: auto; /* Перемещаем навигацию вниз */
+            margin-bottom: 20px;
         }
 
-        .upgrade:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-        }
-
-        .upgrade button {
-            background: linear-gradient(45deg, #5e5e98, #4a4a7a);
-            border: none;
-            color: white;
-            padding: 8px 12px;
+        .nav a {
+            background: var(--button-bg);
+            color: var(--neon-blue);
+            padding: 10px 15px;
+            margin: 0 10px;
             border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 20px; 
+            transition: background 0.3s, color 0.3s;
         }
 
-        .upgrade button:disabled {
-            background: rgba(85, 85, 85, 0.9);
-            color: #ccc; /* Цвет для отключенной кнопки */
-            cursor: not-allowed;
+        .nav a:hover {
+            background: var(--accent-purple);
+            color: #fff;
         }
 
         /* Анимации текста */
@@ -133,13 +113,18 @@
             animation: floatUp 1s ease-out forwards;
             font-size: 24px;
             pointer-events: none;
-            color: #FFD700; /* Цвет для текста с наградой */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
         }
 
         .critical-text {
             color: var(--critical-red);
             font-size: 32px;
             animation: criticalFloat 1.5s ease-out forwards;
+        }
+
+        @keyframes shine {
+            0% { left: -50%; }
+            100% { left: 150%; }
         }
 
         @keyframes floatUp {
@@ -154,14 +139,6 @@
     </style>
 </head>
 <body>
-    <!-- Навигация -->
-    <div class="nav">
-        <a href="#" onclick="showPage('main')">🏠</a>
-        <a href="#" onclick="showPage('upgrades')">⚙️</a>
-        <a href="#" onclick="showPage('referral')">🔗</a>
-        <a href="#" onclick="showPage('stats')">📊</a>
-    </div>
-
     <!-- Главная страница -->
     <div id="main" class="page active">
         <div class="container">
@@ -347,7 +324,7 @@
             document.getElementById('totalCoins').textContent = `Собрано монет: ${score}`;
             document.getElementById('totalUpgrades').textContent = `Всего улучшений: ${totalUpgrades}`;
             document.getElementById('invitedPeople').textContent = `Приглашённых людей: ${invitedPeople}`;
-
+            
             // Отображение уникального реферального кода
             document.getElementById('userReferralCode').textContent = userReferralCode;
         }
