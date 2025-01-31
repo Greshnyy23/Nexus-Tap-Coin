@@ -3,31 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Киберпанк Игра</title>
+    <title>Киберпанк Игра 2050</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: radial-gradient(circle, #0f0f0f, #000);
-            color: #00ffcc;
+            background: #0a0a0a;
+            color: #00d4d4;
             overflow: hidden;
+            background-image: linear-gradient(45deg, #2b2d42, #1d3557);
+            box-sizing: border-box;
         }
 
         .nav {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
             display: flex;
             justify-content: space-around;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
         }
 
         .nav a {
-            color: #00ffcc;
+            color: #00d4d4;
             text-decoration: none;
             font-size: 18px;
             padding: 10px 15px;
-            transition: background 0.3s, transform 0.2s;
+            transition: background 0.3s, transform 0.3s;
             border-radius: 5px;
             position: relative;
             overflow: hidden;
@@ -68,55 +71,64 @@
         .container {
             max-width: 600px;
             margin: 20px auto;
-            padding: 20px;
-            background: rgba(17, 17, 17, 0.9);
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 25px rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
+            border: 1px solid #444;
         }
 
         h2 {
             color: #ff007f;
             text-align: center;
-            text-shadow: 0 0 5px #00ffcc;
+            font-size: 2.2em;
+            text-shadow: 0 0 10px #00d4d4;
+            margin-bottom: 20px;
         }
 
         .click-button {
             background: #ff007f;
             color: white;
             border: none;
-            border-radius: 5px;
-            padding: 15px 20px; 
-            font-size: 20px;
+            border-radius: 50%;
+            padding: 30px;
+            font-size: 40px;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
-            width: 100%;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(255, 0, 124, 0.6);
+            width: 120px;
+            height: 120px;
+            box-shadow: 0 4px 15px rgba(255, 0, 124, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: 20px auto;
         }
 
         .click-button:hover {
             background: #e60057;
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         .currency-display {
             font-size: 24px;
             text-align: center;
             margin: 15px 0;
-            text-shadow: 0 0 5px #00ffcc;
+            text-shadow: 0 0 5px #00d4d4;
         }
 
         .upgrades-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            gap: 20px;
+            margin-top: 20px;
         }
 
         .upgrade {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
             box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
             transition: transform 0.2s, background 0.3s;
@@ -134,11 +146,11 @@
         }
 
         .upgrade-button {
-            background: #00ffcc;
+            background: #00d4d4;
             color: #000;
             border: none;
             border-radius: 5px;
-            padding: 10px;
+            padding: 12px;
             cursor: pointer;
             transition: background 0.3s;
             width: 100%; 
@@ -149,7 +161,7 @@
         }
 
         .upgrade-button:hover:not(:disabled) {
-            background: #00cc99;
+            background: #00b3b3;
         }
 
         .notification {
@@ -196,8 +208,8 @@
     <!-- Главная страница -->
     <div id="main" class="page active">
         <div class="container">
-            <h2>Киберпанк Игровое приложение</h2>
-            <button class="click-button" onclick="earnCurrency()">💰 Кликни, чтобы заработать!</button>
+            <h2>Киберпанк Игра 2050</h2>
+            <button class="click-button" onclick="earnCurrency()">😎</button>
             <div class="currency-display">Валюта: <span id="currency">0</span> (Заработок за клик: <span id="earningsPerClick">1</span>)</div>
         </div>
     </div>
@@ -222,17 +234,15 @@
         </div>
     </div>
 
-    <!-- Уведомление для результатов -->
+    <!-- Уведомление -->
     <div id="notification" class="notification"></div>
 
     <script>
-        // Глобальные переменные
-        let currency = 0; // Начальное количество валюты
-        let earningsPerClick = 1; // Сколько валюты зарабатывается за один клик
-        let playTime = 0; // Время игры в секундах
-        let maxCPS = 0; // Максимальное количество кликов в секунду
-        let lastClickTime = Date.now(); // Время последнего клика
-        let cpsInterval = 1000; // Интервал для автоматических кликов (если есть апгрейд)
+        let currency = 0;
+        let earningsPerClick = 1;
+        let playTime = 0;
+        let maxCPS = 0;
+        let lastClickTime = Date.now();
 
         const upgrades = [
             { name: 'Увеличение кликов +1', price: 10, owned: 0, max: 10, type: 'click', effect: 1 },
@@ -240,7 +250,6 @@
             { name: 'Автоматический кликер', price: 50, owned: 0, max: 2, type: 'auto' }
         ];
 
-        // Загрузка данных из localStorage
         function loadData() {
             const savedCurrency = localStorage.getItem('currency');
             const savedEarningsPerClick = localStorage.getItem('earningsPerClick');
@@ -265,7 +274,6 @@
             }
         }
 
-        // Сохраняем данные в localStorage
         function saveData() {
             localStorage.setItem('currency', currency);
             localStorage.setItem('earningsPerClick', earningsPerClick);
@@ -273,38 +281,32 @@
             localStorage.setItem('playTime', playTime);
         }
 
-        // Показывать выбранную страницу
         function showPage(pageId) {
             const pages = document.querySelectorAll('.page');
             pages.forEach(page => {
                 page.classList.remove('active');
             });
             document.getElementById(pageId).classList.add('active');
-            saveData(); // Сохраняем данные при смене страницы
+            saveData();
         }
 
-        // Функция для зарабатывания валюты при клике
         function earnCurrency() {
             currency += earningsPerClick;
-            document.getElementById('currency').textContent = currency; // Обновляем отображаемую валюту
-            showNotification(`+${earningsPerClick} валюты за клик!`); // Показываем уведомление
-            saveData(); // Сохраняем данные после изменения валюты
+            document.getElementById('currency').textContent = currency;
+            showNotification(`+${earningsPerClick} валюты!`);
+            saveData();
             updateStats();
         }
 
-        // Функция для показа уведомления
         function showNotification(message) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.classList.add('show');
-
-            // Убираем уведомление через 2 секунды
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 2000);
         }
 
-        // Обновление интерфейса
         function updateStats() {
             const currentTime = Math.floor((Date.now() - lastClickTime) / 1000);
             document.getElementById('playTime').textContent = `${Math.floor(playTime / 60)}ч ${playTime % 60}м`;
@@ -312,7 +314,6 @@
             document.getElementById('maxCPS').textContent = maxCPS;
         }
 
-        // Обновление UI для улучшений
         function updateUpgradesUI() {
             const container = document.getElementById('upgradesList');
             container.innerHTML = upgrades.map((upg, i) => `
@@ -329,30 +330,25 @@
             `).join('');
         }
 
-        // Функция для покупки улучшения
         function buyUpgrade(index) {
             const upgrade = upgrades[index];
             if (currency >= upgrade.price && upgrade.owned < upgrade.max) {
                 currency -= upgrade.price;
                 upgrade.owned++;
-
-                // Увеличиваем доход за клик
                 if (upgrade.effect) {
                     earningsPerClick += upgrade.effect;
                     document.getElementById('earningsPerClick').textContent = earningsPerClick;
                 }
-
-                document.getElementById('currency').textContent = currency; // Обновляем отображаемую валюту
+                document.getElementById('currency').textContent = currency;
                 updateUpgradesUI();
-                showNotification(`Куплено: ${upgrade.name}. Остальная валюта: ${currency}`);
-                saveData(); // Сохраняем данные после покупки
+                showNotification(`Куплено: ${upgrade.name}`);
+                saveData();
             } else {
-                alert('Недостаточно валюты или достигнут лимит покупок');
+                alert('Недостаточно валюты или достигнут лимит');
             }
         }
 
-        // Инициализация интерфейса
-        loadData(); // Загружаем данные при старте
+        loadData();
         updateStats();
         updateUpgradesUI();
     </script>
