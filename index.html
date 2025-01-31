@@ -119,12 +119,12 @@
             padding: 15px;
             text-align: center;
             box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
-            transition: transform 0.2s;
+            transition: transform 0.2s, background 0.3s;
         }
 
         .upgrade:hover {
             transform: scale(1.05);
-            background: rgba(255, 255, 255, 0.2); /* Легкий эффект при наведении */
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .upgrade h3 {
@@ -152,7 +152,6 @@
             background: #00cc99;
         }
 
-        /* Уведомление о получении валюты */
         .notification {
             position: fixed;
             top: 20px;
@@ -169,6 +168,20 @@
         .notification.show {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
@@ -216,6 +229,11 @@
         // Глобальные переменные
         let currency = 0; // Начальное количество валюты
         let earningsPerClick = 1; // Сколько валюты зарабатывается за один клик
+        let playTime = 0; // Время игры в секундах
+        let maxCPS = 0; // Максимальное количество кликов в секунду
+        let lastClickTime = Date.now(); // Время последнего клика
+        let cpsInterval = 1000; // Интервал для автоматических кликов (если есть апгрейд)
+
         const upgrades = [
             { name: 'Увеличение кликов +1', price: 10, owned: 0, max: 10, type: 'click', effect: 1 },
             { name: 'Увеличение кликов +2', price: 30, owned: 0, max: 5, type: 'click', effect: 2 },
@@ -227,6 +245,7 @@
             const savedCurrency = localStorage.getItem('currency');
             const savedEarningsPerClick = localStorage.getItem('earningsPerClick');
             const savedUpgrades = JSON.parse(localStorage.getItem('upgrades'));
+            const savedPlayTime = localStorage.getItem('playTime');
 
             if (savedCurrency !== null) {
                 currency = parseInt(savedCurrency);
@@ -241,6 +260,9 @@
                     }
                 });
             }
+            if (savedPlayTime !== null) {
+                playTime = parseInt(savedPlayTime);
+            }
         }
 
         // Сохраняем данные в localStorage
@@ -248,6 +270,7 @@
             localStorage.setItem('currency', currency);
             localStorage.setItem('earningsPerClick', earningsPerClick);
             localStorage.setItem('upgrades', JSON.stringify(upgrades));
+            localStorage.setItem('playTime', playTime);
         }
 
         // Показывать выбранную страницу
@@ -266,6 +289,7 @@
             document.getElementById('currency').textContent = currency; // Обновляем отображаемую валюту
             showNotification(`+${earningsPerClick} валюты за клик!`); // Показываем уведомление
             saveData(); // Сохраняем данные после изменения валюты
+            updateStats();
         }
 
         // Функция для показа уведомления
@@ -282,24 +306,21 @@
 
         // Обновление интерфейса
         function updateStats() {
-            document.getElementById('playTime').textContent = `${Math.floor(0 / 60)}ч ${0 % 60}м`; // Замените на вашу логику
-            document.getElementById('totalEarned').textContent = 0; // Замените на вашу логику
-            document.getElementById('maxCPS').textContent = 0; // Замените на вашу логику
+            const currentTime = Math.floor((Date.now() - lastClickTime) / 1000);
+            document.getElementById('playTime').textContent = `${Math.floor(playTime / 60)}ч ${playTime % 60}м`;
+            document.getElementById('totalEarned').textContent = currency;
+            document.getElementById('maxCPS').textContent = maxCPS;
         }
 
+        // Обновление UI для улучшений
         function updateUpgradesUI() {
             const container = document.getElementById('upgradesList');
             container.innerHTML = upgrades.map((upg, i) => `
                 <div class="upgrade">
-                    <div class="upgrade-header">
-                        <span class="emoji">⚡</span>
-                        <h3>${upg.name}</h3>
-                    </div>
-                    <div class="upgrade-info">
-                        <p>💵 Цена: ${upg.price}</p>
-                        <p>📦 Куплено: ${upg.owned}/${upg.max}</p>
-                        ${upg.effect ? `<p>↑ Заработок за клик: +${upg.effect}</p>` : ''}
-                    </div>
+                    <h3>${upg.name}</h3>
+                    <p>💵 Цена: ${upg.price}</p>
+                    <p>📦 Куплено: ${upg.owned}/${upg.max}</p>
+                    ${upg.effect ? `<p>↑ Заработок за клик: +${upg.effect}</p>` : ''}
                     <button class="upgrade-button" onclick="buyUpgrade(${i})" 
                             ${currency < upg.price || upg.owned >= upg.max ? 'disabled' : ''}>
                         🛒 Купить
@@ -308,6 +329,7 @@
             `).join('');
         }
 
+        // Функция для покупки улучшения
         function buyUpgrade(index) {
             const upgrade = upgrades[index];
             if (currency >= upgrade.price && upgrade.owned < upgrade.max) {
