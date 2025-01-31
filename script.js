@@ -19,7 +19,8 @@ const achievements = {
 const upgrades = [
     { name: 'Увеличение кликов +1', price: 10, owned: 0, max: 10, type: 'click', effect: 1 },
     { name: 'Увеличение кликов +2', price: 30, owned: 0, max: 5, type: 'click', effect: 2 },
-    { name: 'Ускоритель', price: 100, owned: 0, max: 5, type: 'passive', effect: 1 }
+    { name: 'Ускоритель', price: 100, owned: 0, max: 5, type: 'passive', effect: 1 },
+    { name: 'Бонус Монет', price: 200, owned: 0, max: 3, type: 'bonus', effect: 0.1 }
 ];
 
 function loadData() {
@@ -35,16 +36,17 @@ function loadData() {
 }
 
 function saveData() {
-  localStorage.setItem('gameData', JSON.stringify({
-    currency,
-    earningsPerClick,
-    upgrades,
-    maxCPS,
-    totalClicks,
-    lastLogin,
-    startTime
-  }));
+    localStorage.setItem('gameData', JSON.stringify({
+        currency,
+        earningsPerClick,
+        upgrades,
+        maxCPS,
+        totalClicks,
+        lastLogin,
+        startTime
+    }));
 }
+
 
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -70,6 +72,7 @@ function earnCurrency() {
     checkAchievements();
 }
 
+
 function showNotification(message) {
     const notification = document.getElementById('notification');
     notification.textContent = message;
@@ -94,14 +97,21 @@ function updateUpgradesUI() {
     const container = document.getElementById('upgradesList');
     container.innerHTML = upgrades.map((upg, i) => `
         <div class="upgrade">
-            <h3>${upg.name}</h3>
-            <p>Цена: ${upg.price}</p>
-            <p>Owned: ${upg.owned}/${upg.max}</p>
-            ${upg.effect ? `<p>Заработок: +${upg.effect}</p>` : ''}
+            <div class="upgrade-header">
+                <span class="emoji">⚡</span>
+                <h3>${upg.name}</h3>
+            </div>
+            <div class="upgrade-info">
+                <p>💵 Цена: ${upg.price}</p>
+                <p>📦 Куплено: ${upg.owned}/${upg.max}</p>
+                ${upg.effect ? `<p>↑ Заработок за клик/секунду: +${upg.effect}</p>` : ''}
+            </div>
             <div class="upgrade-progress">
                 <div class="progress-bar" style="width: ${Math.min(100, (upg.owned / upg.max) * 100)}%;"></div>
             </div>
-            <button class="upgrade-button" onclick="buyUpgrade(${i})" ${currency < upg.price || upg.owned >= upg.max ? 'disabled' : ''}>Купить</button>
+            <button class="upgrade-button" onclick="buyUpgrade(${i})" ${currency < upg.price || upg.owned >= upg.max ? 'disabled' : ''}>
+                🛒 Купить
+            </button>
         </div>
     `).join('');
 
@@ -162,6 +172,8 @@ function checkDailyReward() {
     updateUI();
     saveData();
   }
+  const dailyRewardDiv = document.getElementById('dailyReward');
+  dailyRewardDiv.textContent = lastLogin === today ? '' : 'Получена ежедневная награда';
 }
 
 function updateUI() {
@@ -172,17 +184,6 @@ function updateUI() {
     updateStats();
     updateAchievementsUI();
     updateDailyReward();
-}
-
-function updateDailyReward() {
-  const dailyReward = document.getElementById('dailyReward');
-  // Здесь реализуйте логику отображения вашей ежедневной награды
-  if (lastLogin !== today) {
-    dailyReward.innerHTML = `<p>Вы получили ежедневную награду: 50 монет!</p>`;
-    localStorage.setItem('lastLogin', today);
-  } else {
-    dailyReward.innerHTML = ``
-  }
 }
 
 setInterval(addEarningsPerSecond, 1000);
