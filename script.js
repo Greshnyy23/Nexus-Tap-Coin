@@ -1,11 +1,11 @@
 let currency = 0; // Начальное количество валюты
 let earningsPerClick = 1; // Сколько валюты зарабатывается за один клик
 let earningsPerSecond = 0; // Пассивный доход
-let startTime = Date.now(); // Время начала игры
+let totalClicks = 0; // Общее количество кликов
+let totalPlayTime = 0; // Общее время игры
 let maxCPS = 0; // Максимальные клики в секунду
 let lastClickTime = Date.now(); // Время последнего клика
 let clicksThisSecond = 0; // Кол-во кликов за текущую секунду
-let totalClicks = 0; // Общее количество кликов
 let lastLogin = localStorage.getItem('lastLogin'); // Дата последнего входа в систему
 const today = new Date().toDateString(); // Текущая дата для проверки ежедневной награды
 
@@ -32,9 +32,10 @@ function loadData() {
     maxCPS = savedData.maxCPS || 0;
     totalClicks = savedData.totalClicks || 0;
     lastLogin = savedData.lastLogin || null;
-    startTime = savedData.startTime || Date.now();
+    totalPlayTime = savedData.totalPlayTime || 0; // Время, которое провел игрок
     updateUI();
 }
+
 
 // Сохранение данных в localStorage
 function saveData() {
@@ -45,7 +46,7 @@ function saveData() {
         maxCPS,
         totalClicks,
         lastLogin,
-        startTime
+        totalPlayTime // Сохраняем общее время игры
     }));
 }
 
@@ -66,16 +67,16 @@ function earnCurrency() {
     if (timeSinceLastClick <= 1000) {
         clicksThisSecond++;
     } else {
-        clicksThisSecond = 1; // обнуление для новой секунды
+        clicksThisSecond = 1; // Обнуляем для новых секунд
     }
+    lastClickTime = currentTime;
 
-    lastClickTime = currentTime; // обновляем время последнего клика
-    maxCPS = Math.max(maxCPS, clicksThisSecond); // обновляем максимальное количество кликов в секунду
+    maxCPS = Math.max(maxCPS, clicksThisSecond); // Обновление максимального количества кликов в секунду
 
-    updateUI();
-    showNotification(`+${earningsPerClick} валюты!`);
-    saveData();
-    checkAchievements(); // Проверка на достижения
+    updateUI(); // Обновление интерфейса
+    showNotification(`+${earningsPerClick} валюты!`); // Показ уведомления
+    saveData(); // Сохраняем данные
+    checkAchievements(); // Проверка достижений
 }
 
 // Проверка на достижения
@@ -84,7 +85,7 @@ function checkAchievements() {
         if (totalClicks >= parseInt(threshold) && !localStorage.getItem(`achievement-${threshold}`)) {
             showNotification(`🏆 ${achievements[threshold]}`);
             localStorage.setItem(`achievement-${threshold}`, true); // Сохраняем достижение
-            updateAchievementsUI(); // Обновляем интерфейс достижений
+            updateAchievementsUI(); // Обновление интерфейса
         }
     });
 }
@@ -99,16 +100,12 @@ function showNotification(message) {
 
 // Обновление статистики
 function updateStats() {
-    const playTimeSeconds = Math.floor((Date.now() - startTime) / 1000);
+    const playTimeSeconds = Math.floor((Date.now() - startTime) / 1000); // Общее время игры
     const playTimeMinutes = Math.floor(playTimeSeconds / 60);
     const playTimeHours = Math.floor(playTimeMinutes / 60);
-    const playTimeSecondsRemainder = playTimeSeconds % 60;
-    const playTimeMinutesRemainder = playTimeMinutes % 60;
-
-    document.getElementById('playTime').textContent = `${playTimeHours}ч ${playTimeMinutesRemainder}м ${playTimeSecondsRemainder}с`;
-    document.getElementById('totalEarned').textContent = currency;
-    document.getElementById('maxCPS').textContent = maxCPS;
-    document.getElementById('earningsPerSecond').textContent = earningsPerSecond; 
+    document.getElementById('playTime').textContent = `${playTimeHours}ч ${playTimeMinutes % 60}м ${playTimeSeconds % 60}с`;
+    document.getElementById('totalEarned').textContent = currency; 
+    document.getElementById('maxCPS').textContent = maxCPS; 
 }
 
 // Обновление интерфейса улучшений
@@ -119,21 +116,22 @@ function updateUpgradesUI() {
             <h3>${upg.name}</h3>
             <p>💵 Цена: ${upg.price}</p>
             <p>Куплено: ${upg.owned}/${upg.max}</p>
-            ${upg.effect ? `<p>↑ Заработок за клик: +${upg.effect}</p>` : ''}
+            ${upg.effect ? `<p>↑ Заработок: +${upg.effect}</p>` : ''}
             <div class="upgrade-progress">
                 <div class="progress-bar" style="width: ${(upg.owned / upg.max) * 100}%;"></div>
             </div>
-            <button class="upgrade-button" onclick="buyUpgrade(${i})" ${currency < upg.price || upg.owned >= upg.max ? 'disabled' : ''}>Купить</button>
+            <button class="upgrade-button" onclick="buyUpgrade(${i})" 
+                ${currency < upg.price || upg.owned >= upg.max ? 'disabled' : ''}>Купить</button>
         </div>
     `).join('');
-
+    
     // Анимация появления
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             entry.target.classList.toggle('visible', entry.isIntersecting);
         });
     });
-
+    
     document.querySelectorAll('.upgrade').forEach(upgrade => observer.observe(upgrade));
 }
 
@@ -143,7 +141,7 @@ function buyUpgrade(index) {
     if (currency >= upgrade.price && upgrade.owned < upgrade.max) {
         currency -= upgrade.price;
         upgrade.owned++;
-
+        
         if (upgrade.type === 'passive') {
             earningsPerSecond += upgrade.effect; // Увеличение пассивного дохода
         } else if (upgrade.type === 'click') {
@@ -174,8 +172,8 @@ function updateAchievementsUI() {
 }
 
 // Инициализация
-loadData(); // Загрузка данных
-updateUI(); // Обновление интерфейса
+loadData();
+updateUI();
 
 // Запуск функции добавления валюты в секунду каждую секунду
 setInterval(addEarningsPerSecond, 1000);
