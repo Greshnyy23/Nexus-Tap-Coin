@@ -36,12 +36,15 @@
         .nav a {
             background: var(--button-bg);
             color: var(--neon-blue);
-            padding: 10px 15px;
+            padding: 10px;
             margin: 0 10px;
             border-radius: 5px;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 20px; /* Увеличим размер текста */
             transition: background 0.3s, color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .nav a:hover {
@@ -179,10 +182,10 @@
 <body>
     <!-- Навигация -->
     <div class="nav">
-        <a href="#" onclick="showPage('main')">🏠 Главная</a>
-        <a href="#" onclick="showPage('upgrades')">⚙️ Улучшения</a>
-        <a href="#" onclick="showPage('referral')">🔗 Реферальная система</a>
-        <a href="#" onclick="showPage('stats')">📊 Статистика</a>
+        <a href="#" onclick="showPage('main')">🏠</a>
+        <a href="#" onclick="showPage('upgrades')">⚙️</a>
+        <a href="#" onclick="showPage('referral')">🔗</a>
+        <a href="#" onclick="showPage('stats')">📊</a>
     </div>
 
     <!-- Главная страница -->
