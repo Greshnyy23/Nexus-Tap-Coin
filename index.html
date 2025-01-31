@@ -76,7 +76,7 @@
             height: 200%;
             background: linear-gradient(45deg, 
                 transparent, 
-                rgba(255,255,255,0.1), 
+                rgba(255, 255, 255, 0.1), 
                 transparent);
             transform: rotate(45deg);
             animation: shine 3s infinite;
@@ -146,7 +146,7 @@
             left: 50%;
             width: 300%;
             height: 300%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10.01%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10.01%);
             transform: translate(-50%, -50%) scale(0);
             transition: transform 0.5s;
         }
@@ -233,6 +233,16 @@
             font-size: 16px;
             width: 200px;
         }
+
+        .stats-list {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--neon-blue);
+        }
     </style>
 </head>
 <body>
@@ -241,6 +251,7 @@
         <a href="#" onclick="showPage('main')">Главная</a>
         <a href="#" onclick="showPage('upgrades')">Улучшения</a>
         <a href="#" onclick="showPage('referral')">Реферальная система</a>
+        <a href="#" onclick="showPage('stats')">Статистика</a>
     </div>
 
     <!-- Главная страница -->
@@ -270,7 +281,21 @@
                 <input type="text" id="referralCode" placeholder="Введите реферальный код">
                 <button id="applyReferral">Применить код</button>
                 <div id="referralMessage"></div>
+                <h3>Ваш реферальный код: <span id="userReferralCode">REF-${generateReferralCode()}</span></h3>
             </div>
+        </div>
+    </div>
+
+    <!-- Страница "Статистика" -->
+    <div id="stats" class="page">
+        <div class="container">
+            <h2>Статистика</h2>
+            <div class="stats-list">
+                <p id="totalCoins">Собрано монет: 0</p>
+                <p id="totalUpgrades">Всего улучшений: 0</p>
+                <p id="invitedPeople">Приглашённых людей: 0</p>
+            </div>
+            <button id="resetStats">Сбросить статистику</button>
         </div>
     </div>
 
@@ -279,7 +304,10 @@
         let baseClickPower = 1;
         let autoClickers = 0;
         let multipliers = { critical: 1, timeBoost: 1, goldenClick: 1 };
+        let totalUpgrades = 0; // Общее количество улучшений
+        let invitedPeople = 0; // Количество приглашённых людей
         const referralBonus = 100; // Бонус за реферальный код
+        const userReferralCode = `REF-${generateReferralCode()}`; // Генерируем уникальный реферальный код
 
         const upgrades = [
             { name: 'Усиленный клик', price: 50, power: 1, type: 'click', owned: 0, max: 20 },
@@ -290,6 +318,10 @@
             { name: 'Множитель x2', price: 5000, power: 2, type: 'multiplier', owned: 0, max: 1 },
             { name: 'Цепная реакция', price: 10000, power: 0.5, type: 'chain', owned: 0, max: 5 }
         ];
+
+        function generateReferralCode() {
+            return Math.random().toString(36).substring(2, 10).toUpperCase(); // Генерация случайного кода
+        }
 
         function calculateTotalClickPower() {
             let total = baseClickPower;
@@ -305,6 +337,7 @@
             if (score >= upgrade.price && upgrade.owned < upgrade.max) {
                 score -= upgrade.price;
                 upgrade.owned++;
+                totalUpgrades++; // Общее количество улучшений увеличивается
                 upgrade.price = Math.floor(upgrade.price * 1.5);
                 saveGame();
                 updateUI();
@@ -355,7 +388,9 @@
                 upgrades: upgrades.map(upgrade => ({
                     owned: upgrade.owned,
                     price: upgrade.price
-                }))
+                })),
+                totalUpgrades,
+                invitedPeople
             };
             localStorage.setItem('clickerSave', JSON.stringify(data));
         }
@@ -368,6 +403,8 @@
                 baseClickPower = data.baseClickPower || 1;
                 autoClickers = data.autoClickers || 0;
                 multipliers = data.multipliers || { critical: 1, timeBoost: 1, goldenClick: 1 };
+                totalUpgrades = data.totalUpgrades || 0;
+                invitedPeople = data.invitedPeople || 0;
                 upgrades.forEach((upgrade, index) => {
                     if (data.upgrades && data.upgrades[index]) {
                         upgrade.owned = data.upgrades[index].owned || 0;
@@ -382,7 +419,7 @@
             document.getElementById('score').textContent = Math.floor(score);
             document.getElementById('clickPower').textContent = `Сила клика: ${calculateTotalClickPower()}`;
             document.getElementById('autoClickers').textContent = `Автокликеры: ${autoClickers}`;
-
+            
             const upgradesDiv = document.getElementById('upgradesList');
             upgradesDiv.innerHTML = upgrades.map((upgrade, index) => `
                 <div class="upgrade">
@@ -397,6 +434,14 @@
                     </button>
                 </div>
             `).join('');
+
+            // Обновление страницы статистики
+            document.getElementById('totalCoins').textContent = `Собрано монет: ${score}`;
+            document.getElementById('totalUpgrades').textContent = `Всего улучшений: ${totalUpgrades}`;
+            document.getElementById('invitedPeople').textContent = `Приглашённых людей: ${invitedPeople}`;
+
+            // Отображение уникального реферального кода
+            document.getElementById('userReferralCode').textContent = userReferralCode;
         }
 
         function getUpgradeDescription(upgrade) {
@@ -422,23 +467,34 @@
             }
         }
 
-        function init() {
-            loadGame();
-            updateUI();
-            showPage('main');
-        }
-
-        // Реализация реферальной системы
         document.getElementById('applyReferral').addEventListener('click', () => {
             const referralCode = document.getElementById('referralCode').value.trim();
             if (referralCode === 'REF123') { // Пример реферального кода
                 score += referralBonus;
+                invitedPeople++;
                 saveGame();
                 document.getElementById('referralMessage').textContent = `Вы получили ${referralBonus} очков за введение реферального кода!`;
             } else {
                 document.getElementById('referralMessage').textContent = 'Неверный реферальный код!';
             }
         });
+
+        function resetStats() {
+            totalUpgrades = 0;
+            invitedPeople = 0;
+            score = 0; // Сбросить также собранные монеты
+            saveGame();
+            updateUI();
+            alert('Статистика очищена.');
+        }
+
+        document.getElementById('resetStats').addEventListener('click', resetStats);
+
+        function init() {
+            loadGame();
+            updateUI();
+            showPage('main');
+        }
 
         init();
     </script>
