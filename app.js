@@ -101,11 +101,13 @@ class Game {
     }
 
     initCards() {
-        const incomes = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]; // Разные доходы в час
+        const incomes = [10, 20, 30, 50, 70, 90, 110, 130, 150, 200]; // Разные доходы в час
+        const names = ['Купюра', 'Монета', 'Доллар', 'Счет', 'Кредиты', 'Инвестиции', 'Накопления', 'Банковский вклад', 'Дивиденды', 'Заработок'];
+        
         for (let i = 0; i < 10; i++) {
             this.cards.push({
                 id: i,
-                name: `Карточка ${i + 1}`,
+                name: names[i],
                 hourlyIncome: incomes[i],
                 level: 1,
                 cost: 100 * (i + 1) // Стоимость улучшения зависит от номера карточки
@@ -122,13 +124,14 @@ class Game {
             cardElement.innerHTML = `
                 <h3>${card.name}</h3>
                 <p>Часовой доход: ${card.hourlyIncome} монет</p>
+                <p>Уровень: ${card.level}</p>
                 <p>Стоимость улучшения: ${card.cost} монет</p>
                 <button class="upgrade-button" data-id="${card.id}">Улучшить</button>
             `;
             cardList.appendChild(cardElement);
         });
         
-        // Добаваем обработчики событий для кнопок улучшения
+        // Добавляем обработчики событий для кнопок улучшения
         document.querySelectorAll('.upgrade-button').forEach(button => {
             button.addEventListener('click', () => this.upgradeCard(Number(button.dataset.id)));
         });
@@ -150,8 +153,9 @@ class Game {
     }
 
     collectCardIncome() {
-        let totalIncome = this.cards.reduce((sum, card) => sum + card.hourlyIncome * card.level, 0);
+        let totalIncome = this.cards.reduce((sum, card) => sum + (card.hourlyIncome * card.level), 0);
         this.addMoney(totalIncome);
+        this.showNotification(`Собрано ${totalIncome} монет от карточек!`, 'success');
     }
 
     setupTabSwitching() {
