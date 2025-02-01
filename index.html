@@ -1,102 +1,96 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Stalker Clicker</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Clicker</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
-
 <body>
     <div id="particles-js"></div>
-
-    <div class="game">
-        <header class="header">
-            <img src="./assets/coin.png" alt="coin" />
-            <h2 class="money" id="money">0</h2>
-        </header>
-        <div class="circle" id="clickable-area">
-            <img id="circle" src="./assets/frog.png" alt="frog" />
-            <div class="plus-one-container"></div>
-            <div id="click-wave"></div>
+    
+    <div class="game-container">
+        <div class="header">
+            <img src="./assets/coin.png" alt="Coin" class="coin-icon">
+            <h1 class="money-counter" id="money">0</h1>
         </div>
-        <div class="level-display">
-            <h3 id="levelDisplay">Уровень: 1</h3>
+
+        <div class="main-circle" id="clickArea">
+            <div class="circle-glow"></div>
+            <img src="./assets/core.png" alt="Core" class="core-image">
+            <div class="click-effect" id="clickEffect"></div>
+        </div>
+
+        <div class="stats-container">
+            <div class="level-box">
+                <span class="level-label">Уровень</span>
+                <span class="level-value" id="level">1</span>
+            </div>
+            <div class="multiplier-box">
+                <span class="multiplier-label">Множитель</span>
+                <span class="multiplier-value" id="multiplier">1x</span>
+            </div>
         </div>
 
         <div class="tabs">
-            <button class="tab-button active" data-tab="upgrades">🛠️ Улучшения</button>
-            <button class="tab-button" data-tab="achievements">🏆 Достижения</button>
-            <button class="tab-button" data-tab="settings">⚙️ Настройки</button>
-            <button class="tab-button" data-tab="minigame">🎮 Мини-игра</button>
+            <button class="tab active" data-tab="upgrades">🛠 Улучшения</button>
+            <button class="tab" data-tab="achievements">🏆 Достижения</button>
+            <button class="tab" data-tab="minigame">🎮 Мини-игра</button>
+            <button class="tab" data-tab="settings">⚙ Настройки</button>
         </div>
 
-        <div class="tab-content" id="upgrades" style="display: block;">
-            <h3>Улучшения:</h3>
-            <div class="upgrade" id="clickSpeedUpgrade">
-                <h4>Увеличение скорости клика</h4>
-                <p>Стоимость: <span id="clickSpeedCost">50</span> монет</p>
-                <button id="clickSpeedButton" class="upgrade-button">Купить</button>
+        <div class="tab-content active" id="upgrades">
+            <div class="upgrade-card">
+                <h3>Сила клика</h3>
+                <div class="upgrade-info">
+                    <span class="current-value" id="clickPowerValue">1</span>
+                    <button class="buy-button" id="buyClickPower">Купить (<span id="clickPowerCost">50</span>)</button>
+                </div>
             </div>
-            <div class="upgrade" id="autoClickUpgrade">
-                <h4>Улучшение авто-клика</h4>
-                <p>Стоимость: <span id="autoClickCost">100</span> монет</p>
-                <button id="autoClickButton" class="upgrade-button">Купить</button>
+            <div class="upgrade-card">
+                <h3>Авто-кликер</h3>
+                <div class="upgrade-info">
+                    <span class="current-value" id="autoClickLevel">0</span>
+                    <button class="buy-button" id="buyAutoClick">Купить (<span id="autoClickCost">100</span>)</button>
+                </div>
             </div>
-            <div class="upgrade" id="multiplierUpgrade">
-                <h4>Увеличение множителя</h4>
-                <p>Стоимость: <span id="multiplierCost">150</span> монет</p>
-                <button id="multiplierButton" class="upgrade-button">Купить</button>
+            <div class="upgrade-card">
+                <h3>Критический удар</h3>
+                <div class="upgrade-info">
+                    <span class="current-value" id="criticalChance">5%</span>
+                    <button class="buy-button" id="buyCritical">Купить (<span id="criticalCost">200</span>)</button>
+                </div>
             </div>
         </div>
 
-        <div class="tab-content" id="achievements" style="display: none;">
-            <h3>Достижения:</h3>
-            <div id="achievementList"></div>
-        </div>
-
-        <div class="tab-content" id="settings" style="display: none;">
-            <h3>Настройки:</h3>
-            <label for="languageSelect">Язык:</label>
-            <select id="languageSelect">
-                <option value="ru">Русский</option>
-                <option value="en">English</option>
-                <option value="uk">Українська</option>
-            </select>
-            <button id="resetButton">Сбросить прогресс</button>
-            <button id="prestigeButton">Престиж</button>
-        </div>
-
-        <div class="tab-content" id="minigame" style="display: none;">
-            <h3>Мини-игра: Поймай монету</h3>
-            <div id="minigameArea">
-                <div id="coin" class="falling-coin"></div>
-                <div id="catchCoinOverlay" class="catch-coin-overlay">Поймай монету!</div>
+        <div class="tab-content" id="achievements">
+            <div class="achievement-list" id="achievementList">
+                <!-- Achievements will be inserted here -->
             </div>
-            <p id="minigameScore">Счет: 0</p>
+        </div>
+
+        <div class="tab-content" id="minigame">
+            <div class="minigame-area" id="minigameArea">
+                <div class="falling-object" id="fallingObject"></div>
+                <div class="score-display" id="minigameScore">Счет: 0</div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="settings">
+            <div class="setting-item">
+                <label>Звуки:</label>
+                <input type="checkbox" id="soundToggle" checked>
+            </div>
+            <button class="danger-button" id="resetProgress">Сбросить прогресс</button>
+            <div class="credits">Версия 1.0 · Neon Clicker</div>
         </div>
     </div>
 
-    <div id="notification-container"></div>
-    <button id="themeToggle">🌙</button>
+    <div id="notifications"></div>
+    <button id="themeButton" class="theme-toggle">🌙</button>
 
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" id="closeModal">&times;</span>
-            <h3 id="modalMessage"></h3>
-            <button id="confirmYes">Да</button>
-            <button id="confirmNo">Нет</button>
-        </div>
-    </div>
-
-    <audio id="clickSound" src="./assets/click.mp3"></audio>
-    <audio id="upgradeSound" src="./assets/upgrade.mp3"></audio>
-    <audio id="achievementSound" src="./assets/achievement.mp3"></audio>
-
-    <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
-
 </html>
