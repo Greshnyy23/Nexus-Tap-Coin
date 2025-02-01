@@ -8,7 +8,7 @@ html, body {
     justify-content: center;
     align-items: center;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+    background: linear-gradient(135deg, #1e1e1e, #121212);
     animation: gradientShift 10s infinite alternate;
     color: #e0e0e0;
 }
@@ -43,9 +43,14 @@ html, body {
 }
 
 .money {
-    color: #ffd700;
+    color: #00ff99; /* Neon Green */
     font-size: 36px;
     font-weight: 600;
+}
+
+.level-display {
+    margin-bottom: 20px;
+    color: #ffcc00; /* Neon Yellow */
 }
 
 .circle {
@@ -70,18 +75,13 @@ html, body {
     transform: scale(0.95);
 }
 
-.level-display {
-    margin-bottom: 20px;
-    color: #ffd700;
-}
-
 /* Кнопки улучшений */
 .upgrade-button {
     padding: 12px 18px;
     font-size: 16px;
-    background: #5c5c5c;
-    color: #e0e0e0;
-    border: 1px solid #666;
+    background: #333333; /* Dark Gray */
+    border: 1px solid #00ff99; /* Neon Green border */
+    color: #ffffff;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
@@ -90,8 +90,9 @@ html, body {
 }
 
 .upgrade-button:hover {
-    background: #666;
+    background: #444444; /* Slightly lighter gray */
     transform: scale(1.05);
+    box-shadow: 0 0 10px #00ff99; /* Neon glow effect */
 }
 
 /* Вкладки */
@@ -104,16 +105,17 @@ html, body {
 .tab-button {
     padding: 10px 20px;
     font-size: 20px;
-    background: #444;
+    background: #222222; /* Darker tab background */
     color: #e0e0e0;
-    border: 1px solid #666;
+    border: 1px solid #00ff99; /* Neon Green border */
     border-radius: 5px 5px 0 0;
     cursor: pointer;
     transition: background 0.3s;
 }
 
 .tab-button.active {
-    background: #888;
+    background: #00ff99; /* Neon Green */
+    color: #121212; /* Dark background for active tab */
 }
 
 .tab-content {
@@ -245,29 +247,33 @@ body.light-theme {
     color: #333;
 }
 
-body.light-theme .game {
-    background: rgba(255, 255, 255, 0.8);
-    color: #333;
-}
-
 body.light-theme .money {
-    color: #333;
+    color: #ff3399; /* Neon Pink */
 }
 
 body.light-theme .level-display {
+    color: #ffcc00; /* Neon Yellow */
+}
+
+body.light-theme .upgrade-button {
+    background: #f0f0f0; /* Light Background */
+    border: 1px solid #ff3399; /* Neon Pink border */
     color: #333;
 }
 
-body.light-theme .tab-button {
-    background: #666;
-    color: white;
+body.light-theme .upgrade-button:hover {
+    background: #e0e0e0; /* Slightly darker light */
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #ff3399; /* Neon glow effect */
+}
+
+body.light-theme .tabs .tab-button {
+    background: #f0f0f0; /* Light Tab Background */
+    color: #333;
+    border: 1px solid #ff3399; /* Neon Pink border */
 }
 
 body.light-theme .tab-button.active {
-    background: #888;
-}
-
-body.light-theme .notification {
-    background: rgba(255, 255, 255, 0.9);
-    color: #333;
+    background: #ff3399; /* Neon Pink */
+    color: #fff; /* White text for active tab */
 }
