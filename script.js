@@ -9,7 +9,6 @@ class Game {
         this.minigameScore = 0;
         this.isMinigameActive = false;
         this.achievements = [];
-
         this.init();
     }
 
@@ -18,13 +17,14 @@ class Game {
         this.$circle.addEventListener('click', () => this.addMoney(this.clickMultiplier));
         document.getElementById('startMinigameButton').addEventListener('click', () => this.startMinigame());
         document.getElementById('restartMinigameButton').addEventListener('click', () => this.restartMinigame());
-        document.getElementById('resetProgress').addEventListener('click', () => this.resetProgress());
+        document.getElementById('resetProgress').addEventListener('click', () => this.openConfirmationModal());
 
         this.setupTabSwitching();
 
         setInterval(() => {
             this.saveGame();
-        }, 10000);
+            this.updateInterface();
+        }, 1000); // Auto-update every second
     }
 
     loadGame() {
@@ -89,13 +89,13 @@ class Game {
 
     spawnFallingObject() {
         const fallingObject = document.getElementById('fallingObject');
-        fallingObject.style.left = Math.random() * (200 - 30) + 'px';
+        fallingObject.style.left = Math.random() * (200 - 30) + 'px'; // Положение в рамках игрового круга
         fallingObject.style.top = '0px';
         fallingObject.style.display = 'block';
 
         let fallInterval = setInterval(() => {
             let currentTop = parseInt(fallingObject.style.top);
-            if (currentTop >= 180) {
+            if (currentTop >= 180) { // Если объект достиг основания
                 clearInterval(fallInterval);
                 fallingObject.style.display = 'none';
                 this.endMinigame();
@@ -104,11 +104,12 @@ class Game {
             }
         }, 100);
 
+        // Слушаем клик по падающему объекту
         fallingObject.addEventListener('click', () => {
             this.minigameScore++;
             this.updateMinigameScore();
-            fallingObject.style.display = 'none';
-            this.spawnFallingObject();
+            fallingObject.style.display = 'none'; // скрыть объект
+            this.spawnFallingObject(); // спавнить новый объект
         });
     }
 
@@ -129,14 +130,32 @@ class Game {
     }
 
     resetProgress() {
-        if (confirm('Вы уверены, что хотите сбросить прогресс?')) {
-            this.money = 0;
-            this.achievements = [];
-            this.saveGame();
-            this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
-            document.getElementById('achievementList').innerHTML = '';
-            this.showNotification('Прогресс сброшен!', 'success');
-        }
+        const modal = document.getElementById('confirmationModal');
+        modal.style.display = 'block';
+    }
+
+    openConfirmationModal() {
+        const modal = document.getElementById('confirmationModal');
+        modal.style.display = 'block';
+    }
+
+    closeConfirmationModal() {
+        const modal = document.getElementById('confirmationModal');
+        modal.style.display = 'none';
+    }
+
+    confirmReset() {
+        this.money = 0;
+        this.achievements = [];
+        this.saveGame();
+        this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
+        document.getElementById('achievementList').innerHTML = '';
+        this.showNotification('Прогресс сброшен!', 'success');
+        this.closeConfirmationModal();
+    }
+
+    updateInterface() {
+        this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
     }
 
     showNotification(message, type) {
@@ -150,7 +169,13 @@ class Game {
     }
 }
 
-// Инициализация
+// Модальное окно для подтверждения сброса
 document.addEventListener('DOMContentLoaded', () => {
     const game = new Game();
+
+    // Закрытие модального окна
+    const modal = document.getElementById('confirmationModal');
+    document.querySelector('.close-modal').addEventListener('click', () => game.closeConfirmationModal());
+    document.getElementById('cancelReset').addEventListener('click', () => game.closeConfirmationModal());
+    document.getElementById('confirmReset').addEventListener('click', () => game.confirmReset());
 });
