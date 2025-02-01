@@ -27,6 +27,7 @@ body {
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 0 30px var(--glow);
+    position: relative;
 }
 
 .header {
@@ -61,14 +62,6 @@ body {
     to { transform: rotate(360deg); }
 }
 
-.click-effect {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    pointer-events: none;
-}
-
 .tabs {
     display: flex;
     justify-content: space-around;
@@ -94,7 +87,7 @@ body {
     padding: 15px;
     background: rgba(40, 40, 40, 0.9);
     border-radius: 10px;
-    margin-top: 140px;
+    margin-top: 10px;
 }
 
 .tab-content.active {
@@ -159,4 +152,55 @@ body {
     height: 45px;
     border-radius: 50%;
     cursor: pointer;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    background-color: var(--medium-bg);
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn {
+    background: var(--neon-blue);
+    color: var(--light-text);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background: rgba(0, 204, 255, 0.8);
 }
