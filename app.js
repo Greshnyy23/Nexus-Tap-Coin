@@ -13,7 +13,6 @@ const $coin = document.getElementById('coin');
 const $minigameScore = document.getElementById('minigameScore');
 const $themeToggle = document.getElementById('themeToggle');
 
-// Динамическое подтверждение
 const $confirmModal = document.getElementById('confirmModal');
 const $modalMessage = document.getElementById('modalMessage');
 const $confirmYes = document.getElementById('confirmYes');
@@ -31,71 +30,31 @@ let prestigeLevel = 0;
 let minigameScore = 0;
 
 const upgrades = {
-    doubleCoins: { level: 1, cost: 50 },
-    levelUp: { level: 1, cost: 100 },
-    autoClicker: { level: 0, cost: 200 },
-    coinMultiplier: { level: 1, cost: 300 }
+    doubleCoins: { level: 1, cost: 50, baseCost: 50 },
+    levelUp: { level: 1, cost: 100, baseCost: 100 },
+    autoClicker: { level: 0, cost: 200, baseCost: 200 },
+    coinMultiplier: { level: 1, cost: 300, baseCost: 300 }
 };
 
-const localization = {
-    ru: {
-        money: "Монеты",
-        level: "Уровень",
-        upgrades: "Улучшения",
-        achievements: "Достижения",
-        settings: "Настройки",
-        miniGame: "Мини-игра",
-        doubleCoins: "Двойные монеты (50 монет)",
-        levelUp: "Уровень выше (100 монет)",
-        autoClicker: "Авто-кликер (200 монет)",
-        coinMultiplier: "Множитель монет (300 монет)",
-        resetProgress: "Сбросить прогресс",
-        language: "Язык",
-        newbie: "Новичок",
-        experienced: "Опытный",
-        master: "Мастер",
-        autoClickerAchievement: "Авто-кликер",
-        multiplierAchievement: "Множитель"
-    },
-    en: {
-        money: "Coins",
-        level: "Level",
-        upgrades: "Upgrades",
-        achievements: "Achievements",
-        settings: "Settings",
-        miniGame: "Mini-game",
-        doubleCoins: "Double coins (50 coins)",
-        levelUp: "Level up (100 coins)",
-        autoClicker: "Auto-clicker (200 coins)",
-        coinMultiplier: "Coin multiplier (300 coins)",
-        resetProgress: "Reset progress",
-        language: "Language",
-        newbie: "Newbie",
-        experienced: "Experienced",
-        master: "Master",
-        autoClickerAchievement: "Auto-clicker",
-        multiplierAchievement: "Multiplier"
-    },
-    uk: {
-        money: "Монети",
-        level: "Рівень",
-        upgrades: "Покращення",
-        achievements: "Досягнення",
-        settings: "Налаштування",
-        miniGame: "Міні-гра",
-        doubleCoins: "Подвійні монети (50 монет)",
-        levelUp: "Рівень вищий (100 монет)",
-        autoClicker: "Авто-кілкер (200 монет)",
-        coinMultiplier: "Множник монет (300 монет)",
-        resetProgress: "Скинути прогрес",
-        language: "Мова",
-        newbie: "Новачок",
-        experienced: "Досвідчений",
-        master: "Майстер",
-        autoClickerAchievement: "Авто-клік",
-        multiplierAchievement: "Множник"
-    }
-};
+// Обновление интерфейса для улучшений
+function updateUpgradeInterface() {
+    document.getElementById('doubleCoinsLevel').textContent = upgrades.doubleCoins.level;
+    document.getElementById('doubleCoinsCost').textContent = Math.round(upgrades.doubleCoins.cost);
+
+    document.getElementById('levelUpLevel').textContent = upgrades.levelUp.level;
+    document.getElementById('levelUpCost').textContent = Math.round(upgrades.levelUp.cost);
+
+    document.getElementById('autoClickerLevel').textContent = upgrades.autoClicker.level;
+    document.getElementById('autoClickerCost').textContent = Math.round(upgrades.autoClicker.cost);
+
+    document.getElementById('coinMultiplierLevel').textContent = upgrades.coinMultiplier.level;
+    document.getElementById('coinMultiplierCost').textContent = Math.round(upgrades.coinMultiplier.cost);
+}
+
+// Функция для изменения стоимости улучшения
+function increaseUpgradeCost(upgrade) {
+    return Math.round(upgrade.baseCost * Math.pow(1.15, upgrade.level)); // Увеличение на 15% за уровень
+}
 
 // Инициализация
 function start() {
@@ -108,6 +67,7 @@ function start() {
     checkAchievements();
     updateTexts();
     languageSelect.value = currentLanguage;
+    updateUpgradeInterface();
 
     document.querySelector('.tab-button.active').click();
     particlesJS.load('particles-js', 'particles.json');
@@ -116,14 +76,14 @@ function start() {
 function setMoney(newMoney) {
     money = newMoney;
     localStorage.setItem('money', money);
-    $money.textContent = `${localization[currentLanguage].money}: ${money}`;
+    $money.textContent = `Монеты: ${money}`;
     checkAchievements();
 }
 
 function setLevel(newLevel) {
     level = newLevel;
     localStorage.setItem('level', level);
-    $levelDisplay.textContent = `${localization[currentLanguage].level}: ${level}`;
+    $levelDisplay.textContent = `Уровень: ${level}`;
 }
 
 function getMoney() {
@@ -167,9 +127,9 @@ $upgradeButton.addEventListener('click', () => {
     if (money >= upgrades.doubleCoins.cost) {
         money -= upgrades.doubleCoins.cost;
         upgrades.doubleCoins.level++;
-        upgrades.doubleCoins.cost *= 2;
+        upgrades.doubleCoins.cost = increaseUpgradeCost(upgrades.doubleCoins);
         setMoney(money);
-        updateUpgradeButtons();
+        updateUpgradeInterface();
         showNotification('Улучшение "Двойные монеты" куплено!', 'success');
     } else {
         showNotification('Недостаточно монет для улучшения!', 'error');
@@ -180,10 +140,10 @@ $levelUpButton.addEventListener('click', () => {
     if (money >= upgrades.levelUp.cost) {
         money -= upgrades.levelUp.cost;
         level++;
-        upgrades.levelUp.cost *= 2;
+        upgrades.levelUp.cost = increaseUpgradeCost(upgrades.levelUp);
         setMoney(money);
         setLevel(level);
-        updateUpgradeButtons();
+        updateUpgradeInterface();
         showNotification('Уровень повышен!', 'success');
     } else {
         showNotification('Недостаточно монет для повышения уровня!', 'error');
@@ -194,13 +154,13 @@ $autoClickerButton.addEventListener('click', () => {
     if (money >= upgrades.autoClicker.cost && !autoClickerActive) {
         money -= upgrades.autoClicker.cost;
         upgrades.autoClicker.level++;
-        upgrades.autoClicker.cost *= 2;
+        upgrades.autoClicker.cost = increaseUpgradeCost(upgrades.autoClicker);
         setMoney(money);
         autoClickerActive = true;
         autoClickerInterval = setInterval(() => {
             addMoney(calculateCoinsPerClick());
         }, 1000);
-        updateUpgradeButtons();
+        updateUpgradeInterface();
         showNotification('Авто-кликер активирован!', 'success');
     } else {
         showNotification('Недостаточно монет для улучшения или авто-кликер уже активен!', 'error');
@@ -211,7 +171,7 @@ $coinMultiplierButton.addEventListener('click', () => {
     if (money >= upgrades.coinMultiplier.cost && !coinMultiplierActive) {
         money -= upgrades.coinMultiplier.cost;
         upgrades.coinMultiplier.level++;
-        upgrades.coinMultiplier.cost *= 2;
+        upgrades.coinMultiplier.cost = increaseUpgradeCost(upgrades.coinMultiplier);
         setMoney(money);
         coinMultiplierActive = true;
         showNotification('Множитель монет активирован!', 'success');
@@ -221,6 +181,7 @@ $coinMultiplierButton.addEventListener('click', () => {
             coinMultiplierActive = false;
             showNotification('Множитель монет закончился!', 'info');
         }, 10000);
+        updateUpgradeInterface();
     } else {
         showNotification('Недостаточно монет для улучшения или множитель уже активен!', 'error');
     }
@@ -229,11 +190,11 @@ $coinMultiplierButton.addEventListener('click', () => {
 // Проверка достижений
 function checkAchievements() {
     const achievements = [
-        { name: localization[currentLanguage].newbie, condition: () => money >= 100 },
-        { name: localization[currentLanguage].experienced, condition: () => money >= 500 },
-        { name: localization[currentLanguage].master, condition: () => money >= 1000 },
-        { name: localization[currentLanguage].autoClickerAchievement, condition: () => autoClickerActive },
-        { name: localization[currentLanguage].multiplierAchievement, condition: () => coinMultiplierActive }
+        { name: 'Новичок', condition: () => money >= 100 },
+        { name: 'Опытный', condition: () => money >= 500 },
+        { name: 'Мастер', condition: () => money >= 1000 },
+        { name: 'Авто-кликер', condition: () => autoClickerActive },
+        { name: 'Множитель', condition: () => coinMultiplierActive }
     ];
 
     $achievementList.innerHTML = '';
@@ -258,19 +219,17 @@ function changeLanguage(lang) {
 }
 
 function updateTexts() {
-    const texts = localization[currentLanguage];
-
-    $money.textContent = `${texts.money}: ${money}`;
-    $levelDisplay.textContent = `${texts.level}: ${level}`;
-    document.querySelector('#upgrades h3').textContent = texts.upgrades;
-    document.querySelector('#achievements h3').textContent = texts.achievements;
-    document.querySelector('#settings h3').textContent = texts.settings;
-    $upgradeButton.textContent = texts.doubleCoins;
-    $levelUpButton.textContent = texts.levelUp;
-    $autoClickerButton.textContent = texts.autoClicker;
-    $coinMultiplierButton.textContent = texts.coinMultiplier;
-    $resetButton.textContent = texts.resetProgress;
-    document.querySelector('label[for="languageSelect"]').textContent = texts.language;
+    $money.textContent = `Монеты: ${money}`;
+    $levelDisplay.textContent = `Уровень: ${level}`;
+    document.querySelector('#upgrades h3').textContent = 'Улучшения:';
+    document.querySelector('#achievements h3').textContent = 'Достижения:';
+    document.querySelector('#settings h3').textContent = 'Настройки:';
+    $upgradeButton.textContent = 'Купить';
+    $levelUpButton.textContent = 'Купить';
+    $autoClickerButton.textContent = 'Купить';
+    $coinMultiplierButton.textContent = 'Купить';
+    $resetButton.textContent = 'Сбросить прогресс';
+    document.querySelector('label[for="languageSelect"]').textContent = 'Язык:';
 }
 
 // Сброс прогресса
@@ -308,10 +267,10 @@ function showConfirmModal(title, message) {
             prestigeLevel++;
             money = Math.floor(money * 0.1); // Игрок получает 10% от своих текущих денег как бонус
             level = 1; // Сбрасываем уровень
-            upgrades.doubleCoins.level = 0; // Сбрасываем улучшения
+            upgrades.doubleCoins.level = 1; // Сбрасываем улучшения
             upgrades.autoClicker.level = 0;
-            upgrades.coinMultiplier.level = 0;
-            upgrades.levelUp.level = 0;
+            upgrades.coinMultiplier.level = 1;
+            upgrades.levelUp.level = 1;
 
             localStorage.clear();
             setMoney(money);
