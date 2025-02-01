@@ -31,7 +31,7 @@ body {
 
 .game-container {
     background: var(--medium-bg);
-    max-width: 450px;
+    max-width: 451px;
     margin: 20px auto;
     padding: 20px;
     border-radius: 15px;
