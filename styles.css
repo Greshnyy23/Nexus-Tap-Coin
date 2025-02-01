@@ -9,13 +9,7 @@ html, body {
     align-items: center;
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #1e1e1e, #121212);
-    animation: gradientShift 10s infinite alternate;
     color: #e0e0e0;
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
 }
 
 .game {
@@ -57,7 +51,6 @@ html, body {
     position: relative;
     margin-bottom: 20px;
     cursor: pointer;
-    transition: transform 0.1s;
 }
 
 .circle img {
@@ -91,8 +84,6 @@ html, body {
 
 .upgrade-button:hover {
     background: #444444; /* Slightly lighter gray */
-    transform: scale(1.05);
-    box-shadow: 0 0 10px #00ff99; /* Neon glow effect */
 }
 
 /* Вкладки */
@@ -108,7 +99,7 @@ html, body {
     background: #222222; /* Darker tab background */
     color: #e0e0e0;
     border: 1px solid #00ff99; /* Neon Green border */
-    border-radius: 5px 5px 0 0;
+    border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
 }
@@ -123,7 +114,6 @@ html, body {
     padding: 20px;
     background: rgba(50, 50, 50, 0.8);
     border-radius: 0 0 10px 10px;
-    border: 1px solid #444;
 }
 
 /* Мини-игра */
@@ -134,7 +124,6 @@ html, body {
     background: rgba(50, 50, 50, 0.8);
     border-radius: 10px;
     overflow: hidden;
-    border: 1px solid #444;
 }
 
 .falling-coin {
@@ -167,18 +156,6 @@ html, body {
     padding: 10px 20px;
     border-radius: 5px;
     margin-bottom: 10px;
-    animation: slideIn 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
-    border: 1px solid #444;
-}
-
-@keyframes slideIn {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
 }
 
 /* Диалоговые окна подтверждения */
@@ -202,13 +179,6 @@ html, body {
     width: 80%; /* Ширина окна */
     border-radius: 10px; /* Радиус границы */
     text-align: center;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Добавляем тени */
-    animation: fadeIn 0.3s; /* Плавное появление модального окна */
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
 }
 
 .close-button {
@@ -240,40 +210,4 @@ html, body {
     font-size: 24px;
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-body.light-theme {
-    background: linear-gradient(135deg, #f0f0f0, #d0d0d0);
-    color: #333;
-}
-
-body.light-theme .money {
-    color: #ff3399; /* Neon Pink */
-}
-
-body.light-theme .level-display {
-    color: #ffcc00; /* Neon Yellow */
-}
-
-body.light-theme .upgrade-button {
-    background: #f0f0f0; /* Light Background */
-    border: 1px solid #ff3399; /* Neon Pink border */
-    color: #333;
-}
-
-body.light-theme .upgrade-button:hover {
-    background: #e0e0e0; /* Slightly darker light */
-    transform: scale(1.05);
-    box-shadow: 0 0 10px #ff3399; /* Neon glow effect */
-}
-
-body.light-theme .tabs .tab-button {
-    background: #f0f0f0; /* Light Tab Background */
-    color: #333;
-    border: 1px solid #ff3399; /* Neon Pink border */
-}
-
-body.light-theme .tab-button.active {
-    background: #ff3399; /* Neon Pink */
-    color: #fff; /* White text for active tab */
 }
