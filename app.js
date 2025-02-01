@@ -49,6 +49,9 @@ const localization = {
         upgrades: "Улучшения",
         achievements: "Достижения",
         settings: "Настройки",
+        miniGame: "Мини-игра",
+        crafting: "Крафт",
+        characters: "Персонажи",
         doubleCoins: "Двойные монеты (50 монет)",
         levelUp: "Уровень выше (100 монет)",
         autoClicker: "Авто-кликер (200 монет)",
@@ -67,6 +70,9 @@ const localization = {
         upgrades: "Upgrades",
         achievements: "Achievements",
         settings: "Settings",
+        miniGame: "Mini-game",
+        crafting: "Crafting",
+        characters: "Characters",
         doubleCoins: "Double coins (50 coins)",
         levelUp: "Level up (100 coins)",
         autoClicker: "Auto-clicker (200 coins)",
@@ -85,6 +91,9 @@ const localization = {
         upgrades: "Покращення",
         achievements: "Досягнення",
         settings: "Налаштування",
+        miniGame: "Міні-гра",
+        crafting: "Крафт",
+        characters: "Персонажі",
         doubleCoins: "Подвійні монети (50 монет)",
         levelUp: "Рівень вищий (100 монет)",
         autoClicker: "Авто-кілкер (200 монет)",
@@ -146,6 +155,7 @@ $circle.addEventListener('click', (event) => {
     $circle.appendChild(wave);
     setTimeout(() => wave.remove(), 500);
 
+    // Учет монеты в счете и в балансе
     addMoney(upgrades.doubleCoins.level > 0 ? 2 : 1);
 });
 
@@ -161,6 +171,7 @@ $upgradeButton.addEventListener('click', () => {
         upgrades.doubleCoins.level++;
         upgrades.doubleCoins.cost *= 2;
         setMoney(money);
+        updateUpgradeButtons();
         showNotification('Улучшение "Двойные монеты" куплено!', 'success');
     } else {
         showNotification('Недостаточно монет для улучшения!', 'error');
@@ -174,6 +185,7 @@ $levelUpButton.addEventListener('click', () => {
         upgrades.levelUp.cost *= 2;
         setMoney(money);
         setLevel(level);
+        updateUpgradeButtons();
         showNotification('Уровень повышен!', 'success');
     } else {
         showNotification('Недостаточно монет для повышения уровня!', 'error');
@@ -190,6 +202,7 @@ $autoClickerButton.addEventListener('click', () => {
         autoClickerInterval = setInterval(() => {
             addMoney(1);
         }, 1000);
+        updateUpgradeButtons();
         showNotification('Авто-кликер активирован!', 'success');
     } else {
         showNotification('Недостаточно монет для улучшения или авто-кликер уже активен!', 'error');
@@ -277,9 +290,9 @@ function showConfirmModal(title, message) {
     $confirmModal.style.display = 'block';
     $modalMessage.textContent = message;
 
-    $confirmYes.onclick = function() {
+    $confirmYes.onclick = function () {
         if (title === 'Сбросить прогресс?') {
-            // Реализация сброса прогресса
+            // Сброс прогресса
             localStorage.clear();
             money = 0;
             level = 1;
@@ -303,22 +316,23 @@ function showConfirmModal(title, message) {
             upgrades.levelUp.level = 0;
 
             localStorage.clear();
-            setMoney(money); // Устанавливаем новые деньги
+            setMoney(money);
             setLevel(level);
             checkAchievements();
             updateTexts();
             showNotification(`Престиж ${prestigeLevel} активирован! Вы получили бонус: ${money} монет!`, 'success');
         }
+        
         $confirmModal.style.display = 'none'; // Закрытие модала
     };
 
-    $confirmNo.onclick = function() {
+    $confirmNo.onclick = function () {
         $confirmModal.style.display = 'none'; // Закрытие модала
     };
-};
+}
 
 // Закрытие модального окна
-$closeModal.onclick = function() {
+$closeModal.onclick = function () {
     $confirmModal.style.display = 'none'; // Закрытие модала
 };
 
