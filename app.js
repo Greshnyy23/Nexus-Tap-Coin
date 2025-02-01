@@ -1,3 +1,15 @@
+const elements = {
+    money: document.getElementById('money'),
+    clickPowerValue: document.getElementById('clickPowerValue'),
+    clickPowerCost: document.getElementById('clickPowerCost'),
+    autoClickLevel: document.getElementById('autoClickLevel'),
+    autoClickCost: document.getElementById('autoClickCost'),
+    criticalChance: document.getElementById('criticalChance'),
+    criticalCost: document.getElementById('criticalCost'),
+    achievementList: document.getElementById('achievementList'),
+    minigameScore: document.getElementById('minigameScore')
+};
+
 let money = 0;
 let clickPower = 1;
 let autoClickLevel = 0;
@@ -12,48 +24,50 @@ const upgrades = {
     critical: { cost: 200, baseCost: 200 }
 };
 
-const achievements = [
+let achievements = [
     { id: 1, name: 'Первые шаги', desc: 'Заработайте 100 монет', goal: 100, unlocked: false },
     { id: 2, name: 'Автоматизация', desc: 'Купите авто-кликер', goal: 1, unlocked: false },
     { id: 3, name: 'Критик', desc: 'Достигните 20% шанса крита', goal: 20, unlocked: false }
 ];
 
-// Инициализация игры
 function init() {
     loadGame();
     setupEventListeners();
     renderAchievements();
     updateDisplay();
     startAutoClicker();
+    particlesJS.load('particles-js', 'particles.json');
 }
 
 function setupEventListeners() {
-    // Клик по основной кнопке
     document.getElementById('clickArea').addEventListener('click', handleClick);
-    
-    // Кнопки улучшений
     document.getElementById('buyClickPower').addEventListener('click', buyClickPower);
     document.getElementById('buyAutoClick').addEventListener('click', buyAutoClick);
     document.getElementById('buyCritical').addEventListener('click', buyCritical);
     
-    // Вкладки
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => switchTab(tab.dataset.tab));
     });
     
-    // Сброс прогресса
     document.getElementById('resetProgress').addEventListener('click', resetProgress);
-    
-    // Мини-игра
     document.getElementById('minigameArea').addEventListener('click', handleMinigameClick);
+    document.getElementById('themeButton').addEventListener('click', toggleTheme);
 }
 
-function handleClick() {
-    addMoney(clickPower * multiplier);
+function handleClick(event) {
+    let amount = clickPower * multiplier;
+    if (Math.random() * 100 < criticalChance) amount *= 2;
+    addMoney(amount);
     createClickEffect(event);
 }
 
-// Система улучшений
+function addMoney(amount) {
+    money += Math.floor(amount);
+    updateDisplay();
+    checkAchievements();
+    saveGame();
+}
+
 function buyClickPower() {
     if (money >= upgrades.clickPower.cost) {
         money -= upgrades.clickPower.cost;
@@ -77,14 +91,26 @@ function buyAutoClick() {
     }
 }
 
-function startAutoClicker() {
-    if (autoClickInterval) clearInterval(autoClickInterval);
-    autoClickInterval = setInterval(() => {
-        addMoney(clickPower * autoClickLevel);
-    }, 1000);
+function buyCritical() {
+    if (money >= upgrades.critical.cost) {
+        money -= upgrades.critical.cost;
+        criticalChance += 5;
+        upgrades.critical.cost = Math.floor(upgrades.critical.baseCost * Math.pow(1.15, criticalChance / 5));
+        updateDisplay();
+        checkAchievements();
+        saveGame();
+    }
 }
 
-// Система достижений
+function startAutoClicker() {
+    if (autoClickInterval) clearInterval(autoClickInterval);
+    if (autoClickLevel > 0) {
+        autoClickInterval = setInterval(() => {
+            addMoney(clickPower * autoClickLevel);
+        }, 1000);
+    }
+}
+
 function renderAchievements() {
     elements.achievementList.innerHTML = achievements.map(ach => `
         <div class="achievement ${ach.unlocked ? 'unlocked' : 'locked'}">
@@ -104,7 +130,47 @@ function getAchievementProgress(achievement) {
     }
 }
 
-// Сохранение/загрузка
+function checkAchievements() {
+    achievements.forEach(ach => {
+        if (!ach.unlocked && getAchievementProgress(ach) >= ach.goal) {
+            ach.unlocked = true;
+            showNotification(`Достижение разблокировано: ${ach.name}`);
+        }
+    });
+    renderAchievements();
+}
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    document.getElementById('notifications').appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.getElementById(tabName).classList.add('active');
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+}
+
+function resetProgress() {
+    if (confirm('Вы уверены, что хотите сбросить прогресс?')) {
+        localStorage.removeItem('gameSave');
+        location.reload();
+    }
+}
+
+function createClickEffect(event) {
+    const effect = document.createElement('div');
+    effect.className = 'click-effect';
+    effect.style.left = `${event.offsetX - 15}px`;
+    effect.style.top = `${event.offsetY - 15}px`;
+    document.getElementById('clickArea').appendChild(effect);
+    setTimeout(() => effect.remove(), 1000);
+}
+
 function saveGame() {
     const saveData = {
         money,
@@ -120,45 +186,22 @@ function saveGame() {
 function loadGame() {
     const saveData = JSON.parse(localStorage.getItem('gameSave'));
     if (saveData) {
-        money = saveData.money;
-        clickPower = saveData.clickPower;
-        autoClickLevel = saveData.autoClickLevel;
-        criticalChance = saveData.criticalChance;
-        upgrades.clickPower.cost = saveData.upgrades.clickPower.cost;
-        upgrades.autoClick.cost = saveData.upgrades.autoClick.cost;
-        upgrades.critical.cost = saveData.upgrades.critical.cost;
-        achievements = saveData.achievements;
+        money = saveData.money || 0;
+        clickPower = saveData.clickPower || 1;
+        autoClickLevel = saveData.autoClickLevel || 0;
+        criticalChance = saveData.criticalChance || 5;
+        upgrades.clickPower.cost = saveData.upgrades?.clickPower?.cost || 50;
+        upgrades.autoClick.cost = saveData.upgrades?.autoClick?.cost || 100;
+        upgrades.critical.cost = saveData.upgrades?.critical?.cost || 200;
+        achievements = saveData.achievements || achievements;
     }
 }
 
-// Мини-игра
-function handleMinigameClick(event) {
-    if (event.target.classList.contains('falling-object')) {
-        minigameScore++;
-        elements.minigameScore.textContent = `Счет: ${minigameScore}`;
-        event.target.remove();
-    }
+function toggleTheme() {
+    document.body.classList.toggle('light-theme');
+    document.getElementById('themeButton').textContent = 
+        document.body.classList.contains('light-theme') ? '☀️' : '🌙';
 }
 
-// Вспомогательные функции
-function updateDisplay() {
-    elements.money.textContent = money;
-    elements.clickPowerValue.textContent = clickPower;
-    elements.clickPowerCost.textContent = upgrades.clickPower.cost;
-    elements.autoClickLevel.textContent = autoClickLevel;
-    elements.autoClickCost.textContent = upgrades.autoClick.cost;
-    elements.criticalChance.textContent = `${criticalChance}%`;
-    elements.criticalCost.textContent = upgrades.critical.cost;
-}
-
-function createClickEffect(event) {
-    const effect = document.createElement('div');
-    effect.className = 'click-effect';
-    effect.style.left = `${event.offsetX - 15}px`;
-    effect.style.top = `${event.offsetY - 15}px`;
-    document.getElementById('clickArea').appendChild(effect);
-    setTimeout(() => effect.remove(), 1000);
-}
-
-// Запуск игры
+// Инициализация игры
 window.addEventListener('load', init);
