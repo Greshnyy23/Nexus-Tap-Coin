@@ -16,7 +16,13 @@ const $superClickerButton = document.getElementById('superClickerButton');
 const $coin = document.getElementById('coin');
 const $minigameScore = document.getElementById('minigameScore');
 const $themeToggle = document.getElementById('themeToggle');
-const $minigameArea = document.getElementById('minigameArea');
+
+// Динамическое подтверждение
+const $confirmModal = document.getElementById('confirmModal');
+const $modalMessage = document.getElementById('modalMessage');
+const $confirmYes = document.getElementById('confirmYes');
+const $confirmNo = document.getElementById('confirmNo');
+const $closeModal = document.getElementById('closeModal');
 
 let money = 0;
 let level = 1;
@@ -32,7 +38,7 @@ let minigameScore = 0;
 const upgrades = {
     doubleCoins: { level: 1, cost: 50 },
     levelUp: { level: 1, cost: 100 },
-    autoClicker: { level: 0, cost: 200 },  // Уровень авто-кликера
+    autoClicker: { level: 0, cost: 200 },
     coinMultiplier: { level: 1, cost: 300 }
 };
 
@@ -48,7 +54,12 @@ const localization = {
         autoClicker: "Авто-кликер (200 монет)",
         coinMultiplier: "Множитель монет (300 монет)",
         resetProgress: "Сбросить прогресс",
-        language: "Язык"
+        language: "Язык",
+        newbie: "Новичок",
+        experienced: "Опытный",
+        master: "Мастер",
+        autoClickerAchievement: "Авто-кликер",
+        multiplierAchievement: "Множитель"
     },
     en: {
         money: "Coins",
@@ -61,7 +72,30 @@ const localization = {
         autoClicker: "Auto-clicker (200 coins)",
         coinMultiplier: "Coin multiplier (300 coins)",
         resetProgress: "Reset progress",
-        language: "Language"
+        language: "Language",
+        newbie: "Newbie",
+        experienced: "Experienced",
+        master: "Master",
+        autoClickerAchievement: "Auto-clicker",
+        multiplierAchievement: "Multiplier"
+    },
+    uk: {
+        money: "Монети",
+        level: "Рівень",
+        upgrades: "Покращення",
+        achievements: "Досягнення",
+        settings: "Налаштування",
+        doubleCoins: "Подвійні монети (50 монет)",
+        levelUp: "Рівень вищий (100 монет)",
+        autoClicker: "Авто-кілкер (200 монет)",
+        coinMultiplier: "Множник монет (300 монет)",
+        resetProgress: "Скинути прогрес",
+        language: "Мова",
+        newbie: "Новачок",
+        experienced: "Досвідчений",
+        master: "Майстер",
+        autoClickerAchievement: "Авто-клік",
+        multiplierAchievement: "Множник"
     }
 };
 
@@ -77,10 +111,7 @@ function start() {
     updateTexts();
     languageSelect.value = currentLanguage;
 
-    // Показываем первую вкладку по умолчанию
     document.querySelector('.tab-button.active').click();
-
-    // Инициализация частиц
     particlesJS.load('particles-js', 'particles.json');
 }
 
@@ -116,8 +147,6 @@ $circle.addEventListener('click', (event) => {
     setTimeout(() => wave.remove(), 500);
 
     addMoney(upgrades.doubleCoins.level > 0 ? 2 : 1);
-
-    document.getElementById('clickSound').play();
 });
 
 // Добавление монет
@@ -132,7 +161,6 @@ $upgradeButton.addEventListener('click', () => {
         upgrades.doubleCoins.level++;
         upgrades.doubleCoins.cost *= 2;
         setMoney(money);
-        updateUpgradeButtons();
         showNotification('Улучшение "Двойные монеты" куплено!', 'success');
     } else {
         showNotification('Недостаточно монет для улучшения!', 'error');
@@ -146,7 +174,6 @@ $levelUpButton.addEventListener('click', () => {
         upgrades.levelUp.cost *= 2;
         setMoney(money);
         setLevel(level);
-        updateUpgradeButtons();
         showNotification('Уровень повышен!', 'success');
     } else {
         showNotification('Недостаточно монет для повышения уровня!', 'error');
@@ -163,7 +190,6 @@ $autoClickerButton.addEventListener('click', () => {
         autoClickerInterval = setInterval(() => {
             addMoney(1);
         }, 1000);
-        updateUpgradeButtons();
         showNotification('Авто-кликер активирован!', 'success');
     } else {
         showNotification('Недостаточно монет для улучшения или авто-кликер уже активен!', 'error');
@@ -205,7 +231,6 @@ function checkAchievements() {
             const achievementItem = document.createElement('div');
             achievementItem.textContent = achievement.name;
             $achievementList.appendChild(achievementItem);
-            document.getElementById('achievementSound').play();
         }
     });
 }
@@ -239,73 +264,71 @@ function updateTexts() {
 
 // Сброс прогресса
 $resetButton.addEventListener('click', () => {
-    if (confirm('Вы уверены, что хотите сбросить прогресс?')) {
-        localStorage.clear();
-        money = 0;
-        level = 1;
-        autoClickerActive = false;
-        coinMultiplierActive = false;
-        clearInterval(autoClickerInterval);
-        clearTimeout(coinMultiplierTimer);
-        setMoney(money);
-        setLevel(level);
-        checkAchievements();
-        updateTexts();
-        showNotification('Прогресс сброшен!', 'info');
-    }
+    showConfirmModal('Сбросить прогресс?', 'Вы уверены, что хотите сбросить прогресс?');
 });
 
 // Престиж
 $prestigeButton.addEventListener('click', () => {
-    if (confirm('Вы уверены, что хотите престижнуться?')) {
-        prestigeLevel++;
-        localStorage.clear();
-        money = 0;
-        level = 1;
-        autoClickerActive = false;
-        coinMultiplierActive = false;
-        clearInterval(autoClickerInterval);
-        clearTimeout(coinMultiplierTimer);
-        setMoney(money);
-        setLevel(level);
-        checkAchievements();
-        updateTexts();
-        showNotification(`Престиж ${prestigeLevel} активирован! Вы получили бонусы.`, 'success');
-    }
+    showConfirmModal('Престиж', 'Вы уверены, что хотите престижнуться?');
 });
 
-// Персонажи
-$frogButton.addEventListener('click', () => {
-    currentCharacter = 'Лягушка';
-    showNotification('Выбрана лягушка!', 'success');
-});
+// Открывает модальное окно подтверждения
+function showConfirmModal(title, message) {
+    $confirmModal.style.display = 'block';
+    $modalMessage.textContent = message;
 
-$snakeButton.addEventListener('click', () => {
-    currentCharacter = 'Змея';
-    showNotification('Выбрана змея!', 'success');
-});
+    $confirmYes.onclick = function() {
+        if (title === 'Сбросить прогресс?') {
+            // Реализация сброса прогресса
+            localStorage.clear();
+            money = 0;
+            level = 1;
+            autoClickerActive = false;
+            coinMultiplierActive = false;
+            clearInterval(autoClickerInterval);
+            clearTimeout(coinMultiplierTimer);
+            setMoney(money);
+            setLevel(level);
+            checkAchievements();
+            updateTexts();
+            showNotification('Прогресс сброшен!', 'info');
+        } else if (title === 'Престиж') {
+            // Реализация механики престижа
+            prestigeLevel++;
+            money = Math.floor(money * 0.1); // Игрок получает 10% от своих текущих денег как бонус
+            level = 1; // Сбрасываем уровень
+            upgrades.doubleCoins.level = 0; // Сбрасываем улучшения
+            upgrades.autoClicker.level = 0;
+            upgrades.coinMultiplier.level = 0;
+            upgrades.levelUp.level = 0;
 
-$lizardButton.addEventListener('click', () => {
-    currentCharacter = 'Ящерица';
-    showNotification('Выбран ящерица!', 'success');
-});
+            localStorage.clear();
+            setMoney(money); // Устанавливаем новые деньги
+            setLevel(level);
+            checkAchievements();
+            updateTexts();
+            showNotification(`Престиж ${prestigeLevel} активирован! Вы получили бонус: ${money} монет!`, 'success');
+        }
+        $confirmModal.style.display = 'none'; // Закрытие модала
+    };
 
-// Крафт
-$superClickerButton.addEventListener('click', () => {
-    if (upgrades.doubleCoins.level > 0 && upgrades.autoClicker.level > 0) {
-        upgrades.doubleCoins.level--;
-        upgrades.autoClicker.level--;
-        showNotification('Супер-кликер создан!', 'success');
-    } else {
-        showNotification('Недостаточно улучшений для создания супер-кликера!', 'error');
-    }
-});
+    $confirmNo.onclick = function() {
+        $confirmModal.style.display = 'none'; // Закрытие модала
+    };
+};
+
+// Закрытие модального окна
+$closeModal.onclick = function() {
+    $confirmModal.style.display = 'none'; // Закрытие модала
+};
 
 // Мини-игра
 $coin.addEventListener('click', () => {
+    addMoney(1); // Добавление монеты к общему количеству
     minigameScore++;
     $minigameScore.textContent = `Счет: ${minigameScore}`;
-    $coin.style.top = `${Math.random() * 150}px`; // Перемещение монеты
+    // Перемещение монеты в случайное место
+    $coin.style.top = `${Math.random() * 150}px`;
     $coin.style.left = `${Math.random() * 90}%`;
     showNotification('Монета поймана! +1 к счету', 'success');
 });
@@ -314,7 +337,6 @@ $coin.addEventListener('click', () => {
 $themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('light-theme');
     $themeToggle.textContent = document.body.classList.contains('light-theme') ? '🌞' : '🌙';
-    showNotification(`Тема изменена на ${document.body.classList.contains('light-theme') ? 'светлую' : 'темную'}!`, 'info');
 });
 
 // Уведомления
@@ -333,7 +355,7 @@ function showNotification(message, type = 'info') {
     notificationContainer.appendChild(notification);
     setTimeout(() => {
         notification.remove();
-    }, 3000);
+    }, 4000); // Удаляем уведомление через 4 секунды
 }
 
 // Переключение вкладок
