@@ -7,7 +7,6 @@
     <title>Neon Clicker</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 
 <body>
@@ -65,6 +64,33 @@
                     <button class="buy-button" id="multiplierButton">Купить</button>
                 </div>
             </div>
+        </div>
+
+        <div class="tab-content" id="achievements">
+            <div class="achievement-list" id="achievementList">
+                <!-- Достижения будут добавлены через JavaScript -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="minigame">
+            <div class="minigame-area" id="minigameArea">
+                <div class="falling-object" id="fallingObject"></div>
+                <div class="score-display" id="minigameScore">Счет: 0</div>
+                <button id="startMinigameButton">Начать мини-игру</button>
+                <div id="minigameEnd" style="display:none;">
+                    <p id="finalScore"></p>
+                    <button id="restartMinigameButton">Начать заново</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="settings">
+            <div class="setting-item">
+                <label>Звуки:</label>
+                <input type="checkbox" id="soundToggle" checked>
+            </div>
+            <button class="danger-button" id="resetProgress">Сбросить прогресс</button>
+            <div class="credits">Версия 1.0 · Neon Clicker</div>
         </div>
 
         <div id="notifications"></div>
