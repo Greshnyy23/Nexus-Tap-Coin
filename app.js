@@ -145,8 +145,17 @@ $circle.addEventListener('click', (event) => {
     setTimeout(() => wave.remove(), 500);
 
     // Учет монеты в счете и в балансе
-    addMoney(upgrades.doubleCoins.level > 0 ? 2 : 1);
+    addMoney(calculateCoinsPerClick());
 });
+
+// Функция для расчета монет за клик
+function calculateCoinsPerClick() {
+    let coinsPerClick = 1 + level; // Базовая монета + уровень игрока
+    if (upgrades.doubleCoins.level > 0) {
+        coinsPerClick *= 2; // Удвоение монет, если улучшение куплено
+    }
+    return coinsPerClick;
+}
 
 // Добавление монет
 function addMoney(amount) {
@@ -168,7 +177,7 @@ $upgradeButton.addEventListener('click', () => {
 });
 
 $levelUpButton.addEventListener('click', () => {
-    if (money >= upgrades.levelUp.cot) {
+    if (money >= upgrades.levelUp.cost) {
         money -= upgrades.levelUp.cost;
         level++;
         upgrades.levelUp.cost *= 2;
@@ -189,7 +198,7 @@ $autoClickerButton.addEventListener('click', () => {
         setMoney(money);
         autoClickerActive = true;
         autoClickerInterval = setInterval(() => {
-            addMoney(1);
+            addMoney(calculateCoinsPerClick());
         }, 1000);
         updateUpgradeButtons();
         showNotification('Авто-кликер активирован!', 'success');
@@ -311,7 +320,7 @@ function showConfirmModal(title, message) {
             updateTexts();
             showNotification(`Престиж ${prestigeLevel} активирован! Вы получили бонус: ${money} монет!`, 'success');
         }
-        
+
         $confirmModal.style.display = 'none'; // Закрытие модала
     };
 
