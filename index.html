@@ -1,162 +1,66 @@
-:root {
-    --neon-blue: #00ccff;
-    --dark-bg: #0d0d0d;
-    --medium-bg: #282828;
-    --light-text: #e0e0e0;
-    --glow: rgba(0, 204, 255, 0.5);
-}
+<!DOCTYPE html>
+<html lang="ru">
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Звездный Кликер</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+</head>
 
-body {
-    background: var(--dark-bg);
-    color: var(--light-text);
-    height: 100vh;
-    overflow: hidden;
-    font-family: 'Poppins', sans-serif;
-}
+<body>
+    <div id="particles-js"></div>
 
-.game-container {
-    background: var(--medium-bg);
-    max-width: 450px;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 0 30px var(--glow);
-}
+    <div class="game-container">
+        <div class="header">
+            <h1 class="money-counter" id="money">0 Звёздных очков</h1>
+        </div>
 
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-}
+        <div class="main-circle" id="circle">
+            <img src="./assets/star.png" alt="Star" class="star-image">
+            <div class="click-effect" id="clickEffect"></div>
+        </div>
 
-.money-counter {
-    color: var(--neon-blue);
-    font-size: 2.5em;
-}
+        <div class="tabs">
+            <button class="tab active" data-tab="achievements">🏆 Достижения</button>
+            <button class="tab" data-tab="minigame">🎮 Мини-игра</button>
+            <button class="tab" data-tab="settings">⚙ Настройки</button>
+        </div>
 
-.main-circle {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 20px;
-    cursor: pointer;
-    overflow: hidden;
-}
+        <div class="tab-content active" id="achievements">
+            <div class="achievement-list" id="achievementList">
+                <!-- Достижения будут добавлены через JavaScript -->
+            </div>
+        </div>
 
-.star-image {
-    width: 100%;
-    height: 100%;
-    animation: rotate 5s linear infinite; /* Вращение звезды для эффекта */
-}
+        <div class="tab-content" id="minigame">
+            <button id="startMinigameButton">Начать мини-игру</button>
+            <div class="minigame-area" id="minigameArea" style="display:none;">
+                <div class="falling-object" id="fallingObject"></div>
+                <div class="score-display" id="minigameScore">Счет: 0</div>
+                <div id="minigameEnd" style="display:none;">
+                    <p>Ваш финальный счет: <span id="finalScore"></span></p>
+                    <button id="restartMinigameButton">Начать заново</button>
+                </div>
+            </div>
+        </div>
 
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
+        <div class="tab-content" id="settings">
+            <div class="setting-item">
+                <label>Звуки:</label>
+                <input type="checkbox" id="soundToggle" checked>
+            </div>
+            <button class="danger-button" id="resetProgress">Сбросить прогресс</button>
+            <div class="credits">Версия 1.0 · Звездный Кликер</div>
+        </div>
 
-.click-effect {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    pointer-events: none;
-}
+        <div id="notifications"></div>
+    </div>
 
-.tabs {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
-}
+    <button id="themeButton" class="theme-toggle">🌙</button>
 
-.tab {
-    background: none;
-    border: none;
-    color: var(--light-text);
-    cursor: pointer;
-    padding: 10px;
-    transition: color 0.3s;
-}
+    <script src="script.js"></script>
+</body>
 
-.tab.active {
-    color: var(--neon-blue);
-    text-shadow: 0 0 10px var(--glow);
-}
-
-.tab-content {
-    display: none;
-    padding: 15px;
-    background: rgba(40, 40, 40, 0.9);
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-.achievement-list {
-    margin: 10px 0;
-}
-
-.achievement {
-    background: rgba(50, 50, 50, 0.8);
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.minigame-area {
-    height: 200px;
-    position: relative;
-    background: rgba(40, 40, 40, 0.9);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.falling-object {
-    width: 30px;
-    height: 30px;
-    background: var(--neon-blue);
-    position: absolute;
-    border-radius: 50%;
-    box-shadow: 0 0 15px var(--neon-blue);
-}
-
-#minigameScore {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-}
-
-#notifications {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.notification {
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--dark-bg);
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-}
-
-.theme-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--medium-bg);
-    border: none;
-    color: var(--light-text);
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    cursor: pointer;
-}
+</html>
