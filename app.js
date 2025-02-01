@@ -33,7 +33,7 @@ function loadGame() {
     lastSaveTime = Number(localStorage.getItem('lastSaveTime')) || Date.now();
     offlineTime = Number(localStorage.getItem('offlineTime')) || 0;
 
-    // Подробнее о времени в оффлайне
+    // Процесс получения монет за время, проведенное в игре
     const currentTime = Date.now();
     onlineTime += Math.floor((currentTime - lastSaveTime) / 1000); // Время в секундах
 
@@ -63,7 +63,6 @@ function increaseUpgradeCost(upgrade) {
 function start() {
     loadGame(); // Загрузка сохраненных данных
     updateUpgradeInterface(); // Обновление интерфейса улучшений
-    saveGame(); // Сохраняем игру каждую секунду
     setInterval(() => {
         lastSaveTime = Date.now(); // Обновление времени последнего сохранения
         offlineTime += 1000; // Увеличиваем время оффлайна на 1 секунду
@@ -80,7 +79,7 @@ function setMoney(newMoney) {
 
 // Увеличение монет за клик
 $circle.addEventListener('click', (event) => {
-    addMoney(clickMultiplier); // Добавляем монеты, зависящие от множителя
+    addMoney(clickMultiplier);
 });
 
 // Добавление монет
@@ -92,7 +91,7 @@ function addMoney(amount) {
 $clickSpeedButton.addEventListener('click', () => {
     if (checkResources(upgrades.clickSpeed.cost)) {
         clickMultiplier++;
-        upgrades.clickSpeed.cost = increaseUpgradeCost(upgrades.clickSpeed); // Увеличение цены
+        upgrades.clickSpeed.cost = increaseUpgradeCost(upgrades.clickSpeed);
         updateUpgradeInterface();
         showNotification('Увеличение скорости клика приобретено!', 'success');
     } else {
@@ -130,6 +129,30 @@ $multiplierButton.addEventListener('click', () => {
     } else {
         showNotification('Недостаточно монет для улучшения!', 'error');
     }
+});
+
+// Функция для переключения вкладок
+const tabButtons = document.querySelectorAll('.tab-button');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const tabName = button.getAttribute('data-tab');
+        const content = document.getElementById(tabName);
+        
+        // Сворачивает и разворачивает вкладки
+        if (content.style.display === 'none' || content.style.display === '') {
+            tabContents.forEach(tc => tc.style.display = 'none');
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+
+        // Убираем активный класс у всех кнопок
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        // Добавляем активный класс к текущей кнопке
+        button.classList.toggle('active');
+    });
 });
 
 // Инициализация на загрузке страницы
