@@ -121,6 +121,17 @@ body {
     cursor: pointer;
 }
 
+.card {
+    background: rgba(50, 50, 70, 0.8);
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
 #notifications {
     position: absolute;
     top: 20px;
