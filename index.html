@@ -35,13 +35,13 @@
         </div>
 
         <div class="tab-content" id="minigame">
-            <button id="startMinigameButton">Начать мини-игру</button>
+            <button id="startMinigameButton" class="btn">Начать мини-игру</button>
             <div class="minigame-area" id="minigameArea" style="display:none;">
                 <div class="falling-object" id="fallingObject"></div>
                 <div class="score-display" id="minigameScore">Счет: 0</div>
                 <div id="minigameEnd" style="display:none;">
                     <p>Ваш финальный счет: <span id="finalScore"></span></p>
-                    <button id="restartMinigameButton">Начать заново</button>
+                    <button id="restartMinigameButton" class="btn">Начать заново</button>
                 </div>
             </div>
         </div>
@@ -59,6 +59,16 @@
     </div>
 
     <button id="themeButton" class="theme-toggle">🌙</button>
+
+    <!-- Modal for confirmation -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <p>Вы уверены, что хотите сбросить прогресс?</p>
+            <button id="confirmReset" class="btn">Да</button>
+            <button id="cancelReset" class="btn">Нет</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
