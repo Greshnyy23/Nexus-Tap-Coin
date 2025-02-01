@@ -6,7 +6,8 @@ class Game {
         this.money = 0;
         this.clickMultiplier = 1;
         this.autoClickerActive = false;
-
+        this.minigameScore = 0;
+        this.isMinigameActive = false;
         this.achievements = [];
 
         this.init();
@@ -18,12 +19,12 @@ class Game {
         document.getElementById('startMinigameButton').addEventListener('click', () => this.startMinigame());
         document.getElementById('restartMinigameButton').addEventListener('click', () => this.restartMinigame());
         document.getElementById('resetProgress').addEventListener('click', () => this.resetProgress());
-        
+
         this.setupTabSwitching();
 
         setInterval(() => {
             this.saveGame();
-        }, 10000); // Save every 10 seconds
+        }, 10000);
     }
 
     loadGame() {
@@ -38,17 +39,19 @@ class Game {
 
     addMoney(amount) {
         this.money += amount;
-        this.$moneyDisplay.textContent = `${this.money}`;
+        this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
         this.checkForAchievements();
     }
 
     checkForAchievements() {
-        // Определение достижений
-        if (this.money >= 100 && !this.achievements.includes("Собрано 100 монет")) {
-            this.achievements.push("Собрано 100 монет");
-            this.showAchievement("Собрано 100 монет");
+        if (this.money >= 100 && !this.achievements.includes("Собрано 100 звёздных очков")) {
+            this.achievements.push("Собрано 100 звёздных очков");
+            this.showAchievement("Собрано 100 звёздных очков");
         }
-        // Добавьте больше достижений по необходимости
+        if (this.money >= 500 && !this.achievements.includes("Собрано 500 звёздных очков")) {
+            this.achievements.push("Собрано 500 звёздных очков");
+            this.showAchievement("Собрано 500 звёздных очков");
+        }
         this.saveGame();
     }
 
@@ -86,13 +89,13 @@ class Game {
 
     spawnFallingObject() {
         const fallingObject = document.getElementById('fallingObject');
-        fallingObject.style.left = Math.random() * (200 - 30) + 'px'; // Положение в рамках игрового круга
+        fallingObject.style.left = Math.random() * (200 - 30) + 'px';
         fallingObject.style.top = '0px';
         fallingObject.style.display = 'block';
 
         let fallInterval = setInterval(() => {
             let currentTop = parseInt(fallingObject.style.top);
-            if (currentTop >= 180) { // Если объект достиг основания
+            if (currentTop >= 180) {
                 clearInterval(fallInterval);
                 fallingObject.style.display = 'none';
                 this.endMinigame();
@@ -101,12 +104,11 @@ class Game {
             }
         }, 100);
 
-        // Слушаем клик по падающему объекту
         fallingObject.addEventListener('click', () => {
             this.minigameScore++;
             this.updateMinigameScore();
-            fallingObject.style.display = 'none'; // скрыть объект
-            this.spawnFallingObject(); // спавнить новый объект
+            fallingObject.style.display = 'none';
+            this.spawnFallingObject();
         });
     }
 
@@ -129,10 +131,10 @@ class Game {
     resetProgress() {
         if (confirm('Вы уверены, что хотите сбросить прогресс?')) {
             this.money = 0;
-            this.achievements = []; // Сброс достижений
+            this.achievements = [];
             this.saveGame();
-            this.$moneyDisplay.textContent = `${this.money}`;
-            document.getElementById('achievementList').innerHTML = ''; // Очистка списка достижений
+            this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
+            document.getElementById('achievementList').innerHTML = '';
             this.showNotification('Прогресс сброшен!', 'success');
         }
     }
