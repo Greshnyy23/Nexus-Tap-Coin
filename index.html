@@ -36,10 +36,30 @@
 
         <div class="tab-content" id="upgrades">
             <h3>Улучшения:</h3>
-            <button id="upgradeButton" class="upgrade-button">Двойные монеты (50 монет)</button>
-            <button id="levelUpButton" class="upgrade-button">Уровень выше (100 монет)</button>
-            <button id="autoClickerButton" class="upgrade-button">Авто-кликер (200 монет)</button>
-            <button id="coinMultiplierButton" class="upgrade-button">Множитель монет (300 монет)</button>
+            <div class="upgrade" id="doubleCoinsUpgrade">
+                <h4>Двойные монеты</h4>
+                <p>Уровень: <span id="doubleCoinsLevel">1</span></p>
+                <p>Стоимость: <span id="doubleCoinsCost">50</span> монет</p>
+                <button id="upgradeButton" class="upgrade-button">Купить</button>
+            </div>
+            <div class="upgrade" id="levelUpUpgrade">
+                <h4>Уровень выше</h4>
+                <p>Уровень: <span id="levelUpLevel">1</span></p>
+                <p>Стоимость: <span id="levelUpCost">100</span> монет</p>
+                <button id="levelUpButton" class="upgrade-button">Купить</button>
+            </div>
+            <div class="upgrade" id="autoClickerUpgrade">
+                <h4>Авто-кликер</h4>
+                <p>Уровень: <span id="autoClickerLevel">0</span></p>
+                <p>Стоимость: <span id="autoClickerCost">200</span> монет</p>
+                <button id="autoClickerButton" class="upgrade-button">Купить</button>
+            </div>
+            <div class="upgrade" id="coinMultiplierUpgrade">
+                <h4>Множитель монет</h4>
+                <p>Уровень: <span id="coinMultiplierLevel">1</span></p>
+                <p>Стоимость: <span id="coinMultiplierCost">300</span> монет</p>
+                <button id="coinMultiplierButton" class="upgrade-button">Купить</button>
+            </div>
         </div>
 
         <div class="tab-content" id="achievements" style="display: none;">
