@@ -208,7 +208,7 @@ html, body {
     width: 100%;
     height: 100%;
     overflow: auto; /* Страница прокручивается, если необходимо */
-    background-color: rgba(0, 0, 0, 0.4); /* Полупрозрачный фон */
+    background-color: rgba(0, 0, 0, 0.6); /* Полупрозрачный фон */
 }
 
 .modal-content {
@@ -219,6 +219,13 @@ html, body {
     width: 80%; /* Ширина окна */
     border-radius: 10px; /* Радиус границы */
     text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Добавляем тени */
+    animation: fadeIn 0.3s; /* Плавное появление модального окна */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .close-button {
