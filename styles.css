@@ -8,7 +8,7 @@ html, body {
     justify-content: center;
     align-items: center;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+    background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
     animation: gradientShift 10s infinite alternate;
     color: #e0e0e0;
 }
@@ -19,15 +19,14 @@ html, body {
 }
 
 .game {
-    background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(0, 0, 0, 0.7));
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(20, 20, 20, 0.7));
     border-radius: 15px;
+    border: 2px solid #444;
     padding: 30px;
     text-align: center;
     box-shadow: 0 10px 50px rgba(0, 0, 0, 0.7);
     width: 90%;
     max-width: 450px;
-    margin-top: 60px;
-    position: relative;
 }
 
 /* Оформление заголовка */
@@ -54,6 +53,7 @@ html, body {
     position: relative;
     margin-bottom: 20px;
     cursor: pointer;
+    transition: transform 0.1s;
 }
 
 .circle img {
@@ -63,14 +63,12 @@ html, body {
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
 }
 
-.circle img:active {
-    animation: pulse 0.2s ease;
+.circle.img:hover {
+    transform: scale(1.05);
 }
 
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+.circle img:active {
+    transform: scale(0.95);
 }
 
 .level-display {
@@ -82,7 +80,7 @@ html, body {
 .upgrade-button {
     padding: 12px 18px;
     font-size: 16px;
-    background: linear-gradient(90deg, #444, #222);
+    background: #5c5c5c;
     color: #e0e0e0;
     border: 1px solid #666;
     border-radius: 5px;
@@ -93,7 +91,7 @@ html, body {
 }
 
 .upgrade-button:hover {
-    background: linear-gradient(90deg, #666, #444);
+    background: #666;
     transform: scale(1.05);
 }
 
@@ -116,7 +114,7 @@ html, body {
 }
 
 .tab-button.active {
-    background: #666;
+    background: #888;
 }
 
 .tab-content {
@@ -131,7 +129,7 @@ html, body {
 .character-button, .craft-button {
     padding: 12px 18px;
     font-size: 16px;
-    background: linear-gradient(90deg, #555, #333);
+    background: #5c5c5c;
     color: #e0e0e0;
     border: 1px solid #666;
     border-radius: 5px;
@@ -142,7 +140,7 @@ html, body {
 }
 
 .character-button:hover, .craft-button:hover {
-    background: linear-gradient(90deg, #666, #444);
+    background: #666;
     transform: scale(1.05);
 }
 
@@ -165,7 +163,7 @@ html, body {
     top: -30px;
     left: 50%;
     transform: translateX(-50%);
-    animation: fall 2s linear infinite;
+    animation: fall 3s linear infinite;
 }
 
 @keyframes fall {
@@ -216,7 +214,6 @@ html, body {
     font-size: 24px;
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    border: 1px solid #666;
 }
 
 body.light-theme {
