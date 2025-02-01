@@ -9,6 +9,7 @@ class Game {
         this.minigameScore = 0;
         this.isMinigameActive = false;
         this.achievements = [];
+
         this.init();
     }
 
@@ -21,10 +22,11 @@ class Game {
 
         this.setupTabSwitching();
 
+        // Ежесекундное обновление интерфейса
         setInterval(() => {
             this.saveGame();
             this.updateInterface();
-        }, 1000); // Auto-update every second
+        }, 1000);
     }
 
     loadGame() {
@@ -89,13 +91,13 @@ class Game {
 
     spawnFallingObject() {
         const fallingObject = document.getElementById('fallingObject');
-        fallingObject.style.left = Math.random() * (200 - 30) + 'px'; // Положение в рамках игрового круга
+        fallingObject.style.left = Math.random() * (200 - 30) + 'px';
         fallingObject.style.top = '0px';
         fallingObject.style.display = 'block';
 
         let fallInterval = setInterval(() => {
             let currentTop = parseInt(fallingObject.style.top);
-            if (currentTop >= 180) { // Если объект достиг основания
+            if (currentTop >= 180) {
                 clearInterval(fallInterval);
                 fallingObject.style.display = 'none';
                 this.endMinigame();
@@ -104,12 +106,11 @@ class Game {
             }
         }, 100);
 
-        // Слушаем клик по падающему объекту
         fallingObject.addEventListener('click', () => {
             this.minigameScore++;
             this.updateMinigameScore();
-            fallingObject.style.display = 'none'; // скрыть объект
-            this.spawnFallingObject(); // спавнить новый объект
+            fallingObject.style.display = 'none';
+            this.spawnFallingObject();
         });
     }
 
@@ -129,14 +130,9 @@ class Game {
         document.getElementById('minigameEnd').style.display = 'none';
     }
 
-    resetProgress() {
-        const modal = document.getElementById('confirmationModal');
-        modal.style.display = 'block';
-    }
-
     openConfirmationModal() {
         const modal = document.getElementById('confirmationModal');
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
     }
 
     closeConfirmationModal() {
@@ -169,12 +165,11 @@ class Game {
     }
 }
 
-// Модальное окно для подтверждения сброса
+// Инициализация модального окна
 document.addEventListener('DOMContentLoaded', () => {
     const game = new Game();
 
     // Закрытие модального окна
-    const modal = document.getElementById('confirmationModal');
     document.querySelector('.close-modal').addEventListener('click', () => game.closeConfirmationModal());
     document.getElementById('cancelReset').addEventListener('click', () => game.closeConfirmationModal());
     document.getElementById('confirmReset').addEventListener('click', () => game.confirmReset());
