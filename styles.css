@@ -1,9 +1,9 @@
 :root {
-    --neon-green: #00ffaa;
-    --dark-bg: #1a1a1a;
-    --medium-bg: #2a2a2a;
+    --neon-blue: #00ccff;
+    --dark-bg: #0d0d0d;
+    --medium-bg: #282828;
     --light-text: #e0e0e0;
-    --glow: rgba(0, 255, 170, 0.5);
+    --glow: rgba(0, 204, 255, 0.5);
 }
 
 * {
@@ -36,14 +36,8 @@ body {
     margin-bottom: 20px;
 }
 
-.coin-icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-}
-
 .money-counter {
-    color: var(--neon-green);
+    color: var(--neon-blue);
     font-size: 2.5em;
 }
 
@@ -53,22 +47,26 @@ body {
     height: 200px;
     margin: 0 auto 20px;
     cursor: pointer;
+    overflow: hidden;
 }
 
-.circle-glow {
+.star-image {
+    width: 100%;
+    height: 100%;
+    animation: rotate 5s linear infinite; /* Вращение звезды для эффекта */
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.click-effect {
     position: absolute;
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: rgba(0, 255, 170, 0.3);
-    box-shadow: 0 0 20px var(--glow);
-    z-index: 1;
-}
-
-.core-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    pointer-events: none;
 }
 
 .tabs {
@@ -87,7 +85,7 @@ body {
 }
 
 .tab.active {
-    color: var(--neon-green);
+    color: var(--neon-blue);
     text-shadow: 0 0 10px var(--glow);
 }
 
@@ -124,10 +122,10 @@ body {
 .falling-object {
     width: 30px;
     height: 30px;
-    background: var(--neon-green);
+    background: var(--neon-blue);
     position: absolute;
     border-radius: 50%;
-    box-shadow: 0 0 15px var(--neon-green);
+    box-shadow: 0 0 15px var(--neon-blue);
 }
 
 #minigameScore {
