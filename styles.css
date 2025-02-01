@@ -71,12 +71,6 @@ body {
     object-fit: contain;
 }
 
-.stats-container {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
 .tabs {
     display: flex;
     justify-content: space-around;
@@ -109,46 +103,14 @@ body {
     display: block;
 }
 
-.upgrade-card {
-    background: rgba(50, 50, 50, 0.8);
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-}
-
-.buy-button {
-    background: var(--neon-green);
-    color: var(--dark-bg);
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.card {
-    background: rgba(50, 50, 70, 0.8);
+.achievement-list {
     margin: 10px 0;
+}
+
+.achievement {
+    background: rgba(50, 50, 50, 0.8);
     padding: 10px;
-    border-radius: 8px;
-}
-
-.card h3 {
-    margin-bottom: 10px;
-}
-
-#notifications {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.notification {
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--dark-bg);
-    padding: 10px;
-    margin: 5px 0;
     border-radius: 5px;
-    position: relative;
 }
 
 .minigame-area {
@@ -172,6 +134,20 @@ body {
     position: absolute;
     top: 10px;
     left: 10px;
+}
+
+#notifications {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.notification {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--dark-bg);
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
 }
 
 .theme-toggle {
