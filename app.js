@@ -1,5 +1,5 @@
 const $circle = document.querySelector('#circle');
-const $money = document.querySelector('#money');
+const $money = document.getElementById('money');
 const $levelDisplay = document.getElementById('levelDisplay');
 const $upgradeButton = document.getElementById('upgradeButton');
 const $levelUpButton = document.getElementById('levelUpButton');
@@ -16,10 +16,10 @@ const $superClickerButton = document.getElementById('superClickerButton');
 const $coin = document.getElementById('coin');
 const $minigameScore = document.getElementById('minigameScore');
 const $themeToggle = document.getElementById('themeToggle');
+const $clickableArea = document.getElementById('clickable-area'); // Новая переменная для кликабельной зоны
 
 let money = 0;
 let level = 1;
-let upgradeActive = false;
 let autoClickerActive = false;
 let coinMultiplierActive = false;
 let currentLanguage = 'ru';
@@ -48,12 +48,7 @@ const localization = {
         autoClicker: "Авто-кликер (200 монет)",
         coinMultiplier: "Множитель монет (300 монет)",
         resetProgress: "Сбросить прогресс",
-        language: "Язык",
-        newbie: "Новичок",
-        experienced: "Опытный",
-        master: "Мастер",
-        autoClickerAchievement: "Автокликер",
-        multiplierAchievement: "Множитель"
+        language: "Язык"
     },
     en: {
         money: "Coins",
@@ -66,12 +61,7 @@ const localization = {
         autoClicker: "Auto-clicker (200 coins)",
         coinMultiplier: "Coin multiplier (300 coins)",
         resetProgress: "Reset progress",
-        language: "Language",
-        newbie: "Newbie",
-        experienced: "Experienced",
-        master: "Master",
-        autoClickerAchievement: "Auto-clicker",
-        multiplierAchievement: "Multiplier"
+        language: "Language"
     }
 };
 
@@ -91,12 +81,10 @@ function start() {
     document.querySelector('.tab-button.active').click();
 
     // Инициализация частиц
-    particlesJS.load('particles-js', 'particles.json', function() {
-        console.log('Particles loaded!');
-    });
+    particlesJS.load('particles-js', 'particles.json');
 }
 
-// Функции для работы с монетами и уровнем
+// Установка и обновление значений
 function setMoney(newMoney) {
     money = newMoney;
     localStorage.setItem('money', money);
@@ -119,46 +107,38 @@ function getLevel() {
 }
 
 // Логика клика по кружку
-$circle.addEventListener('click', (event) => {
-    const rect = $circle.getBoundingClientRect();
-    const offsetX = event.clientX - rect.left;
-    const offsetY = event.clientY - rect.top;
-
-    // Анимация волны
+$clickableArea.addEventListener('click', function (event) {
+    // Эффект волн
     const wave = document.createElement('div');
-    wave.id = 'click-wave';
-    wave.style.left = `${offsetX - 100}px`;
-    wave.style.top = `${offsetY - 100}px`;
-    $circle.appendChild(wave);
-
-    setTimeout(() => {
-        wave.remove();
-    }, 500);
-
-    wave.style.animation = 'wave 0.5s ease-out';
+    wave.className = 'click-wave';
+    const rect = $clickableArea.getBoundingClientRect();
+    wave.style.left = `${event.clientX - rect.left - 100}px`;
+    wave.style.top = `${event.clientY - rect.top - 100}px`;
+    $clickableArea.appendChild(wave);
+    setTimeout(() => wave.remove(), 500);
 
     // Добавление монет
     addMoney(upgradeActive ? 2 : 1);
 
-    // Воспроизведение звука клика
+    // Звук клика
     document.getElementById('clickSound').play();
 });
 
 // Добавление монет
 function addMoney(amount) {
-    if (coinMultiplierActive) {
-        amount *= 2;
-    }
-    setMoney(money + amount);
+    amount = coinMultiplierActive ? amount * 2 : amount;
+    setMoney(money + amount); // Установка новой суммы монет
+    animateCoins(amount); // Анимация монет
+}
 
-    // Анимация монет
+// Анимация добавления монет
+function animateCoins(amount) {
     for (let i = 0; i < amount; i++) {
         const coin = document.createElement('div');
-        coin.classList.add('coin-animation');
+        coin.className = 'coin-animation';
         coin.style.left = `${Math.random() * 100}%`;
         coin.style.top = `${Math.random() * 100}%`;
-        $circle.appendChild(coin);
-
+        $clickableArea.appendChild(coin);
         setTimeout(() => {
             coin.remove();
         }, 1000);
@@ -166,113 +146,49 @@ function addMoney(amount) {
 }
 
 // Улучшения
-$upgradeButton.addEventListener('click', () => {
-    if (money >= upgrades.doubleCoins.cost) {
-        money -= upgrades.doubleCoins.cost;
-        upgrades.doubleCoins.level++;
-        upgrades.doubleCoins.cost *= 2;
+function handleUpgrade(button, upgradeType) {
+    if (money >= upgrades[upgradeType].cost) {
+        money -= upgrades[upgradeType].cost;
+        upgrades[upgradeType].level++;
+        upgrades[upgradeType].cost *= 2;
         setMoney(money);
         updateUpgradeButtons();
         document.getElementById('upgradeSound').play();
-
-        // Анимация улучшения
-        const upgradeEffect = document.createElement('div');
-        upgradeEffect.classList.add('upgrade-animation');
-        $upgradeButton.appendChild(upgradeEffect);
-
-        setTimeout(() => {
-            upgradeEffect.remove();
-        }, 500);
-
-        showNotification('Улучшение "Двойные монеты" куплено!', 'success');
+        showNotification(`Улучшение "${localization[currentLanguage][upgradeType]}" куплено!`, 'success');
     } else {
         showNotification('Недостаточно монет для улучшения!', 'error');
     }
-});
+}
 
-$levelUpButton.addEventListener('click', () => {
-    if (money >= upgrades.levelUp.cost) {
-        money -= upgrades.levelUp.cost;
-        upgrades.levelUp.level++;
-        upgrades.levelUp.cost *= 2;
-        setMoney(money);
-        setLevel(level + 1);
-        updateUpgradeButtons();
-        document.getElementById('upgradeSound').play();
-        showNotification('Уровень повышен!', 'success');
-    } else {
-        showNotification('Недостаточно монет для повышения уровня!', 'error');
-    }
-});
+$upgradeButton.addEventListener('click', () => handleUpgrade($upgradeButton, 'doubleCoins'));
+$levelUpButton.addEventListener('click', () => handleUpgrade($levelUpButton, 'levelUp'));
+$autoClickerButton.addEventListener('click', () => handleUpgrade($autoClickerButton, 'autoClicker'));
+$coinMultiplierButton.addEventListener('click', () => handleUpgrade($coinMultiplierButton, 'coinMultiplier'));
 
-$autoClickerButton.addEventListener('click', () => {
-    if (money >= upgrades.autoClicker.cost && !autoClickerActive) {
-        money -= upgrades.autoClicker.cost;
-        upgrades.autoClicker.level++;
-        upgrades.autoClicker.cost *= 2;
-        setMoney(money);
-        autoClickerActive = true;
-        autoClickerInterval = setInterval(() => {
-            addMoney(1);
-        }, 1000);
-        updateUpgradeButtons();
-        document.getElementById('upgradeSound').play();
-        showNotification('Авто-кликер активирован!', 'success');
-    } else {
-        showNotification('Недостаточно монет для улучшения или авто-кликер уже активен!', 'error');
-    }
-});
-
-$coinMultiplierButton.addEventListener('click', () => {
-    if (money >= upgrades.coinMultiplier.cost && !coinMultiplierActive) {
-        money -= upgrades.coinMultiplier.cost;
-        upgrades.coinMultiplier.level++;
-        upgrades.coinMultiplier.cost *= 2;
-        setMoney(money);
-        coinMultiplierActive = true;
-        document.getElementById('upgradeSound').play();
-
-        let timeLeft = 10;
-        coinMultiplierTimer = setInterval(() => {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                clearInterval(coinMultiplierTimer);
-                coinMultiplierActive = false;
-                showNotification('Множитель монет закончился!', 'info');
-            }
-        }, 1000);
-        updateUpgradeButtons();
-        showNotification('Множитель монет активирован на 10 секунд!', 'success');
-    } else {
-        showNotification('Недостаточно монет для улучшения или множитель уже активен!', 'error');
-    }
-});
-
-// Достижения
+// Проверка достижений
 function checkAchievements() {
-    const achievements = [
-        { name: localization[currentLanguage].newbie, condition: () => money >= 100 },
-        { name: localization[currentLanguage].experienced, condition: () => money >= 500 },
-        { name: localization[currentLanguage].master, condition: () => money >= 1000 },
-        { name: localization[currentLanguage].autoClickerAchievement, condition: () => autoClickerActive },
-        { name: localization[currentLanguage].multiplierAchievement, condition: () => coinMultiplierActive }
-    ];
+    const achievements = {
+        newbie: () => money >= 100,
+        experienced: () => money >= 500,
+        master: () => money >= 1000,
+        autoClicker: () => autoClickerActive,
+        multiplier: () => coinMultiplierActive
+    };
 
     $achievementList.innerHTML = '';
-    achievements.forEach(achievement => {
-        if (achievement.condition()) {
+    for (const [key, condition] of Object.entries(achievements)) {
+        if (condition()) {
             const achievementItem = document.createElement('div');
-            achievementItem.textContent = achievement.name;
+            achievementItem.textContent = localization[currentLanguage][key];
             $achievementList.appendChild(achievementItem);
             document.getElementById('achievementSound').play();
         }
-    });
+    }
 }
 
 // Смена языка
 languageSelect.addEventListener('change', (event) => {
-    const selectedLanguage = event.target.value;
-    changeLanguage(selectedLanguage);
+    changeLanguage(event.target.value);
 });
 
 function changeLanguage(lang) {
@@ -283,21 +199,17 @@ function changeLanguage(lang) {
 
 function updateTexts() {
     const texts = localization[currentLanguage];
-
-    // Обновляем тексты
-    document.querySelector('.money').textContent = `${texts.money}: ${money}`;
-    document.querySelector('#levelDisplay').textContent = `${texts.level}: ${level}`;
+    $money.textContent = `${texts.money}: ${money}`;
+    $levelDisplay.textContent = `${texts.level}: ${level}`;
     document.querySelector('#upgrades h3').textContent = texts.upgrades;
     document.querySelector('#achievements h3').textContent = texts.achievements;
     document.querySelector('#settings h3').textContent = texts.settings;
-    document.querySelector('#upgradeButton').textContent = texts.doubleCoins;
-    document.querySelector('#levelUpButton').textContent = texts.levelUp;
-    document.querySelector('#autoClickerButton').textContent = texts.autoClicker;
-    document.querySelector('#coinMultiplierButton').textContent = texts.coinMultiplier;
-    document.querySelector('#resetButton').textContent = texts.resetProgress;
+    $upgradeButton.textContent = texts.doubleCoins;
+    $levelUpButton.textContent = texts.levelUp;
+    $autoClickerButton.textContent = texts.autoClicker;
+    $coinMultiplierButton.textContent = texts.coinMultiplier;
+    $resetButton.textContent = texts.resetProgress;
     document.querySelector('label[for="languageSelect"]').textContent = texts.language;
-    document.querySelector('#languageSelect option[value="ru"]').textContent = "Русский";
-    document.querySelector('#languageSelect option[value="en"]').textContent = "English";
 }
 
 // Сброс прогресса
@@ -306,7 +218,6 @@ $resetButton.addEventListener('click', () => {
         localStorage.clear();
         money = 0;
         level = 1;
-        upgradeActive = false;
         autoClickerActive = false;
         coinMultiplierActive = false;
         clearInterval(autoClickerInterval);
@@ -326,7 +237,6 @@ $prestigeButton.addEventListener('click', () => {
         localStorage.clear();
         money = 0;
         level = 1;
-        upgradeActive = false;
         autoClickerActive = false;
         coinMultiplierActive = false;
         clearInterval(autoClickerInterval);
@@ -339,20 +249,13 @@ $prestigeButton.addEventListener('click', () => {
     }
 });
 
-// Персонажи
-$frogButton.addEventListener('click', () => {
-    currentCharacter = 'frog';
-    showNotification('Выбран персонаж: Лягушка', 'success');
-});
-
-$snakeButton.addEventListener('click', () => {
-    currentCharacter = 'snake';
-    showNotification('Выбран персонаж: Змея', 'success');
-});
-
-$lizardButton.addEventListener('click', () => {
-    currentCharacter = 'lizard';
-    showNotification('Выбран персонаж: Ящерица', 'success');
+// Работа с персонажами
+[$frogButton, $snakeButton, $lizardButton].forEach((button, index) => {
+    button.addEventListener('click', () => {
+        const characters = ['Лягушка', 'Змея', 'Ящерица'];
+        currentCharacter = characters[index];
+        showNotification(`Выбран персонаж: ${currentCharacter}`, 'success');
+    });
 });
 
 // Крафт
@@ -394,7 +297,6 @@ function showNotification(message, type = 'info') {
     }
 
     notificationContainer.appendChild(notification);
-
     setTimeout(() => {
         notification.remove();
     }, 3000);
@@ -409,17 +311,13 @@ tabButtons.forEach(button => {
         const tabName = button.getAttribute('data-tab');
 
         // Скрыть все вкладки
-        tabContents.forEach(content => {
-            content.style.display = 'none';
-        });
+        tabContents.forEach(content => content.style.display = 'none');
 
         // Показать выбранную вкладку
         document.getElementById(tabName).style.display = 'block';
 
         // Убрать активный класс у всех кнопок
-        tabButtons.forEach(btn => {
-            btn.classList.remove('active');
-        });
+        tabButtons.forEach(btn => btn.classList.remove('active'));
 
         // Добавить активный класс к текущей кнопке
         button.classList.add('active');
