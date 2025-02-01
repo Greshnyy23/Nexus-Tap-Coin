@@ -9,10 +9,6 @@ const $achievementList = document.getElementById('achievementList');
 const $resetButton = document.getElementById('resetButton');
 const $prestigeButton = document.getElementById('prestigeButton');
 const languageSelect = document.getElementById('languageSelect');
-const $frogButton = document.getElementById('frogButton');
-const $snakeButton = document.getElementById('snakeButton');
-const $lizardButton = document.getElementById('lizardButton');
-const $superClickerButton = document.getElementById('superClickerButton');
 const $coin = document.getElementById('coin');
 const $minigameScore = document.getElementById('minigameScore');
 const $themeToggle = document.getElementById('themeToggle');
@@ -32,7 +28,6 @@ let currentLanguage = 'ru';
 let autoClickerInterval;
 let coinMultiplierTimer;
 let prestigeLevel = 0;
-let currentCharacter = 'frog';
 let minigameScore = 0;
 
 const upgrades = {
@@ -50,8 +45,6 @@ const localization = {
         achievements: "Достижения",
         settings: "Настройки",
         miniGame: "Мини-игра",
-        crafting: "Крафт",
-        characters: "Персонажи",
         doubleCoins: "Двойные монеты (50 монет)",
         levelUp: "Уровень выше (100 монет)",
         autoClicker: "Авто-кликер (200 монет)",
@@ -71,8 +64,6 @@ const localization = {
         achievements: "Achievements",
         settings: "Settings",
         miniGame: "Mini-game",
-        crafting: "Crafting",
-        characters: "Characters",
         doubleCoins: "Double coins (50 coins)",
         levelUp: "Level up (100 coins)",
         autoClicker: "Auto-clicker (200 coins)",
@@ -92,8 +83,6 @@ const localization = {
         achievements: "Досягнення",
         settings: "Налаштування",
         miniGame: "Міні-гра",
-        crafting: "Крафт",
-        characters: "Персонажі",
         doubleCoins: "Подвійні монети (50 монет)",
         levelUp: "Рівень вищий (100 монет)",
         autoClicker: "Авто-кілкер (200 монет)",
@@ -122,11 +111,6 @@ function start() {
 
     document.querySelector('.tab-button.active').click();
     particlesJS.load('particles-js', 'particles.json');
-
-    // Инициализация Telegram Web App
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Раскрыть на весь экран
-    tg.enableClosingConfirmation(); // Подтверждение закрытия
 }
 
 function setMoney(newMoney) {
@@ -184,7 +168,7 @@ $upgradeButton.addEventListener('click', () => {
 });
 
 $levelUpButton.addEventListener('click', () => {
-    if (money >= upgrades.levelUp.cost) {
+    if (money >= upgrades.levelUp.cot) {
         money -= upgrades.levelUp.cost;
         level++;
         upgrades.levelUp.cost *= 2;
@@ -327,7 +311,7 @@ function showConfirmModal(title, message) {
             updateTexts();
             showNotification(`Престиж ${prestigeLevel} активирован! Вы получили бонус: ${money} монет!`, 'success');
         }
-
+        
         $confirmModal.style.display = 'none'; // Закрытие модала
     };
 
