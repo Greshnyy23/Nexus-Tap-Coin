@@ -16,7 +16,7 @@ const $superClickerButton = document.getElementById('superClickerButton');
 const $coin = document.getElementById('coin');
 const $minigameScore = document.getElementById('minigameScore');
 const $themeToggle = document.getElementById('themeToggle');
-const $minigameArea = document.getElementById('minigameArea'); // Добавлено для мини-игры
+const $minigameArea = document.getElementById('minigameArea');
 
 let money = 0;
 let level = 1;
@@ -29,15 +29,13 @@ let prestigeLevel = 0;
 let currentCharacter = 'frog';
 let minigameScore = 0;
 
-// Улучшения
 const upgrades = {
     doubleCoins: { level: 1, cost: 50 },
     levelUp: { level: 1, cost: 100 },
-    autoClicker: { level: 0, cost: 200 },  // Уровень авто-кликера
+    autoClicker: { level: 0, cost: 200 },
     coinMultiplier: { level: 1, cost: 300 }
 };
 
-// Локализация
 const localization = {
     ru: {
         money: "Монеты",
@@ -86,7 +84,6 @@ function start() {
     particlesJS.load('particles-js', 'particles.json');
 }
 
-// Установка и обновление значений
 function setMoney(newMoney) {
     money = newMoney;
     localStorage.setItem('money', money);
@@ -108,9 +105,8 @@ function getLevel() {
     return Number(localStorage.getItem('level')) || 1;
 }
 
-// Логика клика по кругу для получения монет
+// Логика клика по кругу
 $circle.addEventListener('click', (event) => {
-    // Эффект волн
     const wave = document.createElement('div');
     wave.className = 'click-wave';
     const rect = $circle.getBoundingClientRect();
@@ -120,15 +116,15 @@ $circle.addEventListener('click', (event) => {
     setTimeout(() => wave.remove(), 500);
 
     // Добавление монет
-    addMoney(upgrades.doubleCoins.level > 0 ? 2 : 1); // Учитываем уровень двойных монет
+    addMoney(upgrades.doubleCoins.level > 0 ? 2 : 1);
 
-    // Воспроизведение звука клика
+    // Звук клика
     document.getElementById('clickSound').play();
 });
 
 // Добавление монет
 function addMoney(amount) {
-    setMoney(money + amount); // Устанавливаем новую сумму монет
+    setMoney(money + amount); 
 }
 
 // Улучшения
@@ -148,8 +144,8 @@ $upgradeButton.addEventListener('click', () => {
 $levelUpButton.addEventListener('click', () => {
     if (money >= upgrades.levelUp.cost) {
         money -= upgrades.levelUp.cost;
-        level++;
-        upgrades.levelUp.cost *= 2;
+        level++; 
+        upgrades.levelUp.cost *= 2; 
         setMoney(money);
         setLevel(level);
         updateUpgradeButtons();
@@ -185,12 +181,11 @@ $coinMultiplierButton.addEventListener('click', () => {
         coinMultiplierActive = true;
         showNotification('Множитель монет активирован!', 'success');
 
-        // Применение эффекта множителя на 10 секунд
+        // Время для действия множителя
         coinMultiplierTimer = setTimeout(() => {
             coinMultiplierActive = false;
             showNotification('Множитель монет закончился!', 'info');
         }, 10000);
-        
     } else {
         showNotification('Недостаточно монет для улучшения или множитель уже активен!', 'error');
     }
@@ -231,7 +226,6 @@ function changeLanguage(lang) {
 function updateTexts() {
     const texts = localization[currentLanguage];
 
-    // Обновление текстов
     $money.textContent = `${texts.money}: ${money}`;
     $levelDisplay.textContent = `${texts.level}: ${level}`;
     document.querySelector('#upgrades h3').textContent = texts.upgrades;
@@ -282,7 +276,7 @@ $prestigeButton.addEventListener('click', () => {
     }
 });
 
-// Работа с персонажами
+// Персонажи
 $frogButton.addEventListener('click', () => {
     currentCharacter = 'Лягушка';
     showNotification('Выбрана лягушка!', 'success');
@@ -301,8 +295,8 @@ $lizardButton.addEventListener('click', () => {
 // Крафт
 $superClickerButton.addEventListener('click', () => {
     if (upgrades.doubleCoins.level > 0 && upgrades.autoClicker.level > 0) {
-        upgrades.doubleCoins.level--; // Уменьшаем уровень двойных монет на 1
-        upgrades.autoClicker.level--; // Уменьшаем уровень авто-кликера на 1
+        upgrades.doubleCoins.level--;
+        upgrades.autoClicker.level--;
         showNotification('Супер-кликер создан!', 'success');
     } else {
         showNotification('Недостаточно улучшений для создания супер-кликера!', 'error');
@@ -313,8 +307,9 @@ $superClickerButton.addEventListener('click', () => {
 $coin.addEventListener('click', () => {
     minigameScore++;
     $minigameScore.textContent = `Счет: ${minigameScore}`;
-    $coin.style.top = `${Math.random() * 150}px`; // Изменение позиции при попадании
-    $coin.style.left = `${Math.random() * 90}%`;;
+    // Перемещаем монету в случайное место
+    $coin.style.top = `${Math.random() * 150}px`;
+    $coin.style.left = `${Math.random() * 90}%`;
     showNotification('Монета поймана! +1 к счету', 'success');
 });
 
