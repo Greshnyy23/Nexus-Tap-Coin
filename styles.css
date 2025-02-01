@@ -124,25 +124,6 @@ html, body {
     border: 1px solid #444;
 }
 
-/* Кнопки персонажей и крафта */
-.character-button, .craft-button {
-    padding: 12px 18px;
-    font-size: 16px;
-    background: #5c5c5c;
-    color: #e0e0e0;
-    border: 1px solid #666;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    font-weight: 600;
-    margin: 5px;
-}
-
-.character-button:hover, .craft-button:hover {
-    background: #666;
-    transform: scale(1.05);
-}
-
 /* Мини-игра */
 #minigameArea {
     width: 100%;
