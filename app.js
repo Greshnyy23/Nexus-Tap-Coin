@@ -1,159 +1,150 @@
-const $circle = document.querySelector('#circle');
-const $money = document.getElementById('money');
-const $levelDisplay = document.getElementById('levelDisplay');
-const $clickSpeedButton = document.getElementById('clickSpeedButton');
-const $autoClickButton = document.getElementById('autoClickButton');
-const $multiplierButton = document.getElementById('multiplierButton');
-
+// Инициализация игры
 let money = 0;
-let level = 1;
-let autoClickerActive = false;
-let clickMultiplier = 1;
-let autoClickerInterval;
-let lastSaveTime = Date.now(); // Время последнего сохранения
-let onlineTime = 0; // Время, проведенное в игре, в секундах
-let offlineTime = 0; // Время, прошедшее в оффлайне, в миллисекундах
+let clickPower = 1;
+let autoClickLevel = 0;
+let criticalChance = 5;
+let multiplier = 1;
+let minigameScore = 0;
 
 const upgrades = {
-    clickSpeed: { cost: 50, baseCost: 50 },
+    clickPower: { cost: 50, baseCost: 50 },
     autoClick: { cost: 100, baseCost: 100 },
-    multiplier: { cost: 150, baseCost: 150 }
+    critical: { cost: 200, baseCost: 200 }
 };
 
-// Сохранение текущего времени игры (для оффлайн сбора валюты)
-function saveGame() {
-    localStorage.setItem('money', money);
-    localStorage.setItem('lastSaveTime', lastSaveTime);
-    localStorage.setItem('offlineTime', offlineTime);
+const achievements = [
+    { id: 1, name: 'Первые шаги', desc: 'Заработайте 100 монет', goal: 100, unlocked: false },
+    { id: 2, name: 'Автоматизация', desc: 'Купите авто-кликер', goal: 1, unlocked: false },
+    { id: 3, name: 'Критик', desc: 'Достигните 20% шанса крита', goal: 20, unlocked: false }
+];
+
+// Элементы интерфейса
+const elements = {
+    money: document.getElementById('money'),
+    clickPowerValue: document.getElementById('clickPowerValue'),
+    clickPowerCost: document.getElementById('clickPowerCost'),
+    autoClickLevel: document.getElementById('autoClickLevel'),
+    autoClickCost: document.getElementById('autoClickCost'),
+    criticalChance: document.getElementById('criticalChance'),
+    criticalCost: document.getElementById('criticalCost'),
+    minigameScore: document.getElementById('minigameScore')
+};
+
+// Инициализация частиц
+particlesJS('particles-js', {
+    particles: {
+        number: { value: 80 },
+        color: { value: '#00ffaa' },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        move: { enable: true, speed: 2 }
+    }
+});
+
+// Основные функции
+function updateDisplay() {
+    elements.money.textContent = money;
+    elements.clickPowerValue.textContent = clickPower;
+    elements.clickPowerCost.textContent = upgrades.clickPower.cost;
+    elements.autoClickLevel.textContent = autoClickLevel;
+    elements.autoClickCost.textContent = upgrades.autoClick.cost;
+    elements.criticalChance.textContent = `${criticalChance}%`;
+    elements.criticalCost.textContent = upgrades.critical.cost;
 }
 
-// Загрузка сохраненных данных
-function loadGame() {
-    money = Number(localStorage.getItem('money')) || 0;
-    lastSaveTime = Number(localStorage.getItem('lastSaveTime')) || Date.now();
-    offlineTime = Number(localStorage.getItem('offlineTime')) || 0;
-
-    // Процесс получения монет за время, проведенное в игре
-    const currentTime = Date.now();
-    onlineTime += Math.floor((currentTime - lastSaveTime) / 1000); // Время в секундах
-
-    // Получение монет за время, проведенное в игре
-    money += onlineTime * 5;
-    setMoney(money);
-
-    // Получение монет за время, проведенное в оффлайне
-    const offlineSeconds = Math.floor(offlineTime / 1000);
-    money += Math.floor(offlineSeconds / 5); // 1 монета за каждые 5 секунд оффлайна
-    setMoney(money);
+function addMoney(amount) {
+    const isCritical = Math.random() < criticalChance / 100;
+    const finalAmount = isCritical ? amount * 2 : amount;
+    money += finalAmount;
+    
+    showNotification(isCritical ? `Критический удар! +${finalAmount}` : `+${finalAmount}`, 
+                    isCritical ? 'critical' : 'success');
+    updateDisplay();
+    checkAchievements();
 }
 
-// Обновление интерфейса для улучшений
-function updateUpgradeInterface() {
-    document.getElementById('clickSpeedCost').textContent = upgrades.clickSpeed.cost;
-    document.getElementById('autoClickCost').textContent = upgrades.autoClick.cost;
-    document.getElementById('multiplierCost').textContent = upgrades.multiplier.cost;
+// Обработчики событий
+document.getElementById('clickArea').addEventListener('click', () => {
+    addMoney(clickPower * multiplier);
+    animateClick();
+});
+
+document.getElementById('buyClickPower').addEventListener('click', () => {
+    if (money >= upgrades.clickPower.cost) {
+        money -= upgrades.clickPower.cost;
+        clickPower++;
+        upgrades.clickPower.cost = Math.floor(upgrades.clickPower.baseCost * 1.15);
+        updateDisplay();
+    }
+});
+
+// Система достижений
+function checkAchievements() {
+    achievements.forEach(ach => {
+        if (!ach.unlocked) {
+            if ((ach.id === 1 && money >= ach.goal) ||
+                (ach.id === 2 && autoClickLevel >= ach.goal) ||
+                (ach.id === 3 && criticalChance >= ach.goal)) {
+                unlockAchievement(ach);
+            }
+        }
+    });
 }
 
-// Функция для изменения стоимости улучшений
-function increaseUpgradeCost(upgrade) {
-    return Math.round(upgrade.baseCost * 1.15);
+function unlockAchievement(achievement) {
+    achievement.unlocked = true;
+    showNotification(`Достижение: ${achievement.name}`, 'achievement');
+    renderAchievements();
 }
 
-// Инициализация
-function start() {
-    loadGame(); // Загрузка сохраненных данных
-    updateUpgradeInterface(); // Обновление интерфейса улучшений
-    setInterval(() => {
-        lastSaveTime = Date.now(); // Обновление времени последнего сохранения
-        offlineTime += 1000; // Увеличиваем время оффлайна на 1 секунду
-        saveGame(); // Сохранение данных каждую секунду
+// Мини-игра
+let fallingObjectInterval;
+document.querySelector('[data-tab="minigame"]').addEventListener('click', startMinigame);
+
+function startMinigame() {
+    minigameScore = 0;
+    elements.minigameScore.textContent = 'Счет: 0';
+    
+    fallingObjectInterval = setInterval(() => {
+        const object = document.createElement('div');
+        object.className = 'falling-object';
+        object.style.left = `${Math.random() * 90}%`;
+        document.getElementById('minigameArea').appendChild(object);
+        
+        setTimeout(() => {
+            object.remove();
+        }, 2000);
     }, 1000);
 }
 
-// Установка денег
-function setMoney(newMoney) {
-    money = newMoney;
-    localStorage.setItem('money', money);
-    $money.textContent = `Монеты: ${money}`;
+// Сохранение и загрузка
+function saveGame() {
+    localStorage.setItem('save', JSON.stringify({
+        money,
+        clickPower,
+        autoClickLevel,
+        criticalChance,
+        upgrades,
+        achievements
+    }));
 }
 
-// Увеличение монет за клик
-$circle.addEventListener('click', (event) => {
-    addMoney(clickMultiplier);
-});
-
-// Добавление монет
-function addMoney(amount) {
-    setMoney(money + amount);
+function loadGame() {
+    const save = JSON.parse(localStorage.getItem('save'));
+    if (save) {
+        money = save.money;
+        clickPower = save.clickPower;
+        autoClickLevel = save.autoClickLevel;
+        criticalChance = save.criticalChance;
+        upgrades = save.upgrades;
+        achievements = save.achievements;
+        updateDisplay();
+    }
 }
 
-// Улучшения
-$clickSpeedButton.addEventListener('click', () => {
-    if (checkResources(upgrades.clickSpeed.cost)) {
-        clickMultiplier++;
-        upgrades.clickSpeed.cost = increaseUpgradeCost(upgrades.clickSpeed); // Увеличение цены
-        updateUpgradeInterface();
-        showNotification('Увеличение скорости клика приобретено!', 'success');
-    } else {
-        showNotification('Недостаточно монет для улучшения!', 'error');
-    }
+// Запуск игры
+window.addEventListener('load', () => {
+    loadGame();
+    setInterval(saveGame, 30000);
+    updateDisplay();
 });
-
-// Проверка ресурсов
-function checkResources(cost) {
-    return money >= cost;
-}
-
-// Увеличение авто-клика
-$autoClickButton.addEventListener('click', () => {
-    if (checkResources(upgrades.autoClick.cost) && !autoClickerActive) {
-        autoClickerActive = true;
-        autoClickerInterval = setInterval(() => {
-            addMoney(1); // Получение монет автоматически
-        }, 1000);
-        upgrades.autoClick.cost = increaseUpgradeCost(upgrades.autoClick);
-        updateUpgradeInterface();
-        showNotification('Авто-кликер активирован!', 'success');
-    } else {
-        showNotification('Недостаточно монет для улучшения или авто-кликер уже активен!', 'error');
-    }
-});
-
-// Увеличение множителя
-$multiplierButton.addEventListener('click', () => {
-    if (checkResources(upgrades.multiplier.cost)) {
-        clickMultiplier *= 2; // Увеличение множителя
-        upgrades.multiplier.cost = increaseUpgradeCost(upgrades.multiplier);
-        updateUpgradeInterface();
-        showNotification('Увеличение множителя приобретено!', 'success');
-    } else {
-        showNotification('Недостаточно монет для улучшения!', 'error');
-    }
-});
-
-// Функция для переключения вкладок
-const tabButtons = document.querySelectorAll('.tab-button');
-const tabContents = document.querySelectorAll('.tab-content');
-
-tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const tabName = button.getAttribute('data-tab');
-        const content = document.getElementById(tabName);
-        
-        // Сворачивает и разворачивает вкладки
-        if (content.style.display === 'none' || content.style.display === '') {
-            tabContents.forEach(tc => tc.style.display = 'none');
-            content.style.display = 'block';
-        } else {
-            content.style.display = 'none';
-        }
-
-        // Убирать активный класс у всех кнопок
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        // Добавление активного класса текущей кнопке
-        button.classList.toggle('active');
-    });
-});
-
-// Инициализация на загрузке страницы
-document.addEventListener('DOMContentLoaded', start);
