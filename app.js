@@ -32,7 +32,7 @@ let minigameScore = 0;
 const upgrades = {
     doubleCoins: { level: 1, cost: 50 },
     levelUp: { level: 1, cost: 100 },
-    autoClicker: { level: 0, cost: 200 },
+    autoClicker: { level: 0, cost: 200 },  // Уровень авто-кликера
     coinMultiplier: { level: 1, cost: 300 }
 };
 
@@ -115,16 +115,14 @@ $circle.addEventListener('click', (event) => {
     $circle.appendChild(wave);
     setTimeout(() => wave.remove(), 500);
 
-    // Добавление монет
     addMoney(upgrades.doubleCoins.level > 0 ? 2 : 1);
 
-    // Звук клика
     document.getElementById('clickSound').play();
 });
 
 // Добавление монет
 function addMoney(amount) {
-    setMoney(money + amount); 
+    setMoney(money + amount);
 }
 
 // Улучшения
@@ -144,8 +142,8 @@ $upgradeButton.addEventListener('click', () => {
 $levelUpButton.addEventListener('click', () => {
     if (money >= upgrades.levelUp.cost) {
         money -= upgrades.levelUp.cost;
-        level++; 
-        upgrades.levelUp.cost *= 2; 
+        level++;
+        upgrades.levelUp.cost *= 2;
         setMoney(money);
         setLevel(level);
         updateUpgradeButtons();
@@ -307,8 +305,7 @@ $superClickerButton.addEventListener('click', () => {
 $coin.addEventListener('click', () => {
     minigameScore++;
     $minigameScore.textContent = `Счет: ${minigameScore}`;
-    // Перемещаем монету в случайное место
-    $coin.style.top = `${Math.random() * 150}px`;
+    $coin.style.top = `${Math.random() * 150}px`; // Перемещение монеты
     $coin.style.left = `${Math.random() * 90}%`;
     showNotification('Монета поймана! +1 к счету', 'success');
 });
