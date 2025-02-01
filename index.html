@@ -19,7 +19,7 @@
             <h1 class="money-counter" id="money">0</h1>
         </div>
 
-        <div class="main-circle" id="clickArea">
+        <div class="main-circle" id="circle">
             <div class="circle-glow"></div>
             <img src="./assets/core.png" alt="Core" class="core-image">
             <div class="click-effect" id="clickEffect"></div>
@@ -28,11 +28,11 @@
         <div class="stats-container">
             <div class="level-box">
                 <span class="level-label">Уровень</span>
-                <span class="level-value" id="level">1</span>
+                <span class="level-value" id="levelDisplay">1</span>
             </div>
             <div class="multiplier-box">
                 <span class="multiplier-label">Множитель</span>
-                <span class="multiplier-value" id="multiplier">1x</span>
+                <span class="multiplier-value" id="multiplierValue">1x</span>
             </div>
         </div>
 
@@ -47,52 +47,32 @@
             <div class="upgrade-card">
                 <h3>Сила клика</h3>
                 <div class="upgrade-info">
-                    <span class="current-value" id="clickPowerValue">1</span>
-                    <button class="buy-button" id="buyClickPower">Купить (<span id="clickPowerCost">50</span>)</button>
+                    <span class="current-value" id="clickSpeedCost">50</span>
+                    <button class="buy-button" id="clickSpeedButton">Купить</button>
                 </div>
             </div>
             <div class="upgrade-card">
                 <h3>Авто-кликер</h3>
                 <div class="upgrade-info">
-                    <span class="current-value" id="autoClickLevel">0</span>
-                    <button class="buy-button" id="buyAutoClick">Купить (<span id="autoClickCost">100</span>)</button>
+                    <span class="current-value" id="autoClickCost">100</span>
+                    <button class="buy-button" id="autoClickButton">Купить</button>
                 </div>
             </div>
             <div class="upgrade-card">
-                <h3>Критический удар</h3>
+                <h3>Множитель кликов</h3>
                 <div class="upgrade-info">
-                    <span class="current-value" id="criticalChance">5%</span>
-                    <button class="buy-button" id="buyCritical">Купить (<span id="criticalCost">200</span>)</button>
+                    <span class="current-value" id="multiplierCost">150</span>
+                    <button class="buy-button" id="multiplierButton">Купить</button>
                 </div>
             </div>
         </div>
 
-        <div class="tab-content" id="achievements">
-            <div class="achievement-list" id="achievementList">
-                <!-- Достижения будут добавлены через JS -->
-            </div>
-        </div>
-
-        <div class="tab-content" id="minigame">
-            <div class="minigame-area" id="minigameArea">
-                <div class="falling-object" id="fallingObject"></div>
-                <div class="score-display" id="minigameScore">Счет: 0</div>
-            </div>
-        </div>
-
-        <div class="tab-content" id="settings">
-            <div class="setting-item">
-                <label>Звуки:</label>
-                <input type="checkbox" id="soundToggle" checked>
-            </div>
-            <button class="danger-button" id="resetProgress">Сбросить прогресс</button>
-            <div class="credits">Версия 1.0 · Neon Clicker</div>
-        </div>
+        <div id="notifications"></div>
     </div>
 
-    <div id="notifications"></div>
     <button id="themeButton" class="theme-toggle">🌙</button>
 
     <script src="script.js"></script>
 </body>
+
 </html>
