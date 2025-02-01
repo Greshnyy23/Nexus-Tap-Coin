@@ -11,7 +11,6 @@
 </head>
 
 <body>
-    <!-- Контейнер для частиц -->
     <div id="particles-js"></div>
 
     <div class="game">
@@ -22,13 +21,12 @@
         <div class="circle" id="clickable-area">
             <img id="circle" src="./assets/frog.png" alt="frog" />
             <div class="plus-one-container"></div>
-            <div id="click-wave"></div> <!-- Контейнер для волны -->
+            <div id="click-wave"></div>
         </div>
         <div class="level-display">
             <h3 id="levelDisplay">Уровень: 1</h3>
         </div>
 
-        <!-- Вкладки -->
         <div class="tabs">
             <button class="tab-button active" data-tab="upgrades">🛠️</button>
             <button class="tab-button" data-tab="achievements">🏆</button>
@@ -38,7 +36,6 @@
             <button class="tab-button" data-tab="minigame">🎮</button>
         </div>
 
-        <!-- Контент вкладок -->
         <div class="tab-content" id="upgrades">
             <h3>Улучшения:</h3>
             <button id="upgradeButton" class="upgrade-button">Двойные монеты (50 монет)</button>
@@ -85,13 +82,9 @@
         </div>
     </div>
 
-    <!-- Контейнер для уведомлений -->
     <div id="notification-container"></div>
-
-    <!-- Кнопка переключения темы -->
     <button id="themeToggle">🌙</button>
 
-    <!-- Звуковые эффекты -->
     <audio id="clickSound" src="./assets/click.mp3"></audio>
     <audio id="upgradeSound" src="./assets/upgrade.mp3"></audio>
     <audio id="achievementSound" src="./assets/achievement.mp3"></audio>
