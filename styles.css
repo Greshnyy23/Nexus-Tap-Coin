@@ -3,6 +3,7 @@
     --dark-bg: #1a1a1a;
     --medium-bg: #2a2a2a;
     --light-text: #e0e0e0;
+    --glow: rgba(0, 255, 170, 0.5);
 }
 
 * {
@@ -25,7 +26,7 @@ body {
     margin: 20px auto;
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 0 30px rgba(0, 255, 170, 0.2);
+    box-shadow: 0 0 30px var(--glow);
 }
 
 .header {
@@ -60,7 +61,7 @@ body {
     height: 100%;
     border-radius: 50%;
     background: rgba(0, 255, 170, 0.3);
-    box-shadow: 0 0 20px rgba(0, 255, 170, 0.7);
+    box-shadow: 0 0 20px var(--glow);
     z-index: 1;
 }
 
@@ -87,10 +88,13 @@ body {
     border: none;
     color: var(--light-text);
     cursor: pointer;
+    padding: 10px;
+    transition: color 0.3s;
 }
 
 .tab.active {
     color: var(--neon-green);
+    text-shadow: 0 0 10px var(--glow);
 }
 
 .tab-content {
