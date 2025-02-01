@@ -122,6 +122,11 @@ function start() {
 
     document.querySelector('.tab-button.active').click();
     particlesJS.load('particles-js', 'particles.json');
+
+    // Инициализация Telegram Web App
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Раскрыть на весь экран
+    tg.enableClosingConfirmation(); // Подтверждение закрытия
 }
 
 function setMoney(newMoney) {
@@ -322,7 +327,7 @@ function showConfirmModal(title, message) {
             updateTexts();
             showNotification(`Престиж ${prestigeLevel} активирован! Вы получили бонус: ${money} монет!`, 'success');
         }
-        
+
         $confirmModal.style.display = 'none'; // Закрытие модала
     };
 
