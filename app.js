@@ -5,7 +5,7 @@ const $clickSpeedButton = document.getElementById('clickSpeedButton');
 const $autoClickButton = document.getElementById('autoClickButton');
 const $multiplierButton = document.getElementById('multiplierButton');
 
-let money = 0;
+let money = 100;
 let level = 1;
 let autoClickerActive = false;
 let clickMultiplier = 1;
