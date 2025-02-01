@@ -91,7 +91,7 @@ function addMoney(amount) {
 $clickSpeedButton.addEventListener('click', () => {
     if (checkResources(upgrades.clickSpeed.cost)) {
         clickMultiplier++;
-        upgrades.clickSpeed.cost = increaseUpgradeCost(upgrades.clickSpeed);
+        upgrades.clickSpeed.cost = increaseUpgradeCost(upgrades.clickSpeed); // Увеличение цены
         updateUpgradeInterface();
         showNotification('Увеличение скорости клика приобретено!', 'success');
     } else {
@@ -148,9 +148,9 @@ tabButtons.forEach(button => {
             content.style.display = 'none';
         }
 
-        // Убираем активный класс у всех кнопок
+        // Убирать активный класс у всех кнопок
         tabButtons.forEach(btn => btn.classList.remove('active'));
-        // Добавляем активный класс к текущей кнопке
+        // Добавление активного класса текущей кнопке
         button.classList.toggle('active');
     });
 });
