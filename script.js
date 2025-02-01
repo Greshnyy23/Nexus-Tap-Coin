@@ -12,15 +12,16 @@ class Game {
         this.autoClickerActive = false;
         this.clickMultiplier = 1;
         this.autoClickerInterval;
-        this.lastSaveTime = Date.now();
-        this.onlineTime = 0;
-        this.offlineTime = 0;
 
         this.upgrades = {
             clickSpeed: { cost: 50, baseCost: 50 },
             autoClick: { cost: 100, baseCost: 100 },
             multiplier: { cost: 150, baseCost: 150 }
         };
+
+        this.achievements = [];
+        this.minigameScore = 0;
+        this.isMinigameActive = false;
 
         this.init();
     }
@@ -32,64 +33,35 @@ class Game {
         this.$clickSpeedButton.addEventListener('click', () => this.buyUpgrade('clickSpeed'));
         this.$autoClickButton.addEventListener('click', () => this.buyUpgrade('autoClick'));
         this.$multiplierButton.addEventListener('click', () => this.buyUpgrade('multiplier'));
+        document.getElementById('startMinigameButton').addEventListener('click', () => this.startMinigame());
+        document.getElementById('restartMinigameButton').addEventListener('click', () => this.restartMinigame());
+        document.getElementById('resetProgress').addEventListener('click', () => this.resetProgress());
         this.setupTabSwitching();
         
         setInterval(() => {
-            this.lastSaveTime = Date.now();
-            this.offlineTime += 1000;
             this.saveGame();
-        }, 1000);
-        
-        document.addEventListener('DOMContentLoaded', this.startAutoClicker.bind(this));
-    }
-
-    startAutoClicker() {
-        if (this.autoClickerActive) {
-            this.autoClickerInterval = setInterval(() => {
-                this.addMoney(1); // Automatically earn money
-            }, 1000);
-        }
+        }, 10000); // Save every 10 seconds
     }
 
     loadGame() {
         this.money = Number(localStorage.getItem('money')) || 0;
-        this.lastSaveTime = Number(localStorage.getItem('lastSaveTime')) || Date.now();
-        this.offlineTime = Number(localStorage.getItem('offlineTime')) || 0;
-
-        const currentTime = Date.now();
-        this.onlineTime += Math.floor((currentTime - this.lastSaveTime) / 1000);
-        this.money += this.onlineTime * 5; // Earn money based on time spent in the game
-        this.setMoney(this.money);
-
-        const offlineSeconds = Math.floor(this.offlineTime / 1000);
-        this.money += Math.floor(offlineSeconds / 5); // Earn money while offline
-        this.setMoney(this.money);
+        this.upgrades = {
+            clickSpeed: { cost: Number(localStorage.getItem('clickSpeedCost')) || 50, baseCost: 50 },
+            autoClick: { cost: Number(localStorage.getItem('autoClickCost')) || 100, baseCost: 100 },
+            multiplier: { cost: Number(localStorage.getItem('multiplierCost')) || 150, baseCost: 150 }
+        };
     }
 
     saveGame() {
         localStorage.setItem('money', this.money);
-        localStorage.setItem('lastSaveTime', this.lastSaveTime);
-        localStorage.setItem('offlineTime', this.offlineTime);
-    }
-
-    setMoney(newMoney) {
-        this.money = newMoney;
-        localStorage.setItem('money', this.money);
-        this.$moneyDisplay.textContent = `${this.money}`;
+        localStorage.setItem('clickSpeedCost', this.upgrades.clickSpeed.cost);
+        localStorage.setItem('autoClickCost', this.upgrades.autoClick.cost);
+        localStorage.setItem('multiplierCost', this.upgrades.multiplier.cost);
     }
 
     addMoney(amount) {
-        this.setMoney(this.money + amount);
-        this.showNotification(`Вы получили ${amount} монет!`, 'success');
-        this.animateClickEffect();
-    }
-
-    animateClickEffect() {
-        const clickEffect = document.getElementById('clickEffect');
-        clickEffect.classList.add('animate');
-        setTimeout(() => {
-            clickEffect.classList.remove('animate');
-        }, 300);
+        this.money += amount;
+        this.$moneyDisplay.textContent = `${this.money}`;
     }
 
     updateUpgradeInterface() {
@@ -98,31 +70,26 @@ class Game {
         document.getElementById('multiplierCost').textContent = this.upgrades.multiplier.cost;
     }
 
-    increaseUpgradeCost(upgrade) {
-        return Math.round(upgrade.baseCost * 1.15);
-    }
-
     buyUpgrade(upgradeType) {
         const upgrade = this.upgrades[upgradeType];
-        if (this.checkResources(upgrade.cost)) {
+        if (this.money >= upgrade.cost) {
+            this.money -= upgrade.cost;
             if (upgradeType === 'clickSpeed') {
                 this.clickMultiplier++;
-            } else if (upgradeType === 'autoClick' && !this.autoClickerActive) {
+            } else if (upgradeType === 'autoClick') {
                 this.autoClickerActive = true;
                 this.startAutoClicker();
             } else if (upgradeType === 'multiplier') {
-                this.clickMultiplier *= 2; // Дважды увеличить множитель
+                this.clickMultiplier *= 2;
             }
-            upgrade.cost = this.increaseUpgradeCost(upgrade); // Увеличение цены
-            this.updateUpgradeInterface();
-            this.showNotification(`${upgradeType} улучшение куплено!`, 'success');
-        } else {
-            this.showNotification('Недостаточно монет для улучшения!', 'error');
-        }
-    }
 
-    checkResources(cost) {
-        return this.money >= cost;
+            upgrade.cost = Math.round(upgrade.baseCost * 1.15);
+            this.updateUpgradeInterface();
+            this.$moneyDisplay.textContent = `${this.money}`;
+            this.showNotification(`${upgradeType} куплено!`, 'success');
+        } else {
+            this.showNotification('Недостаточно монет!', 'error');
+        }
     }
 
     showNotification(message, type) {
@@ -130,10 +97,15 @@ class Game {
         notification.className = `notification ${type}`;
         notification.textContent = message;
         document.getElementById('notifications').appendChild(notification);
-        
         setTimeout(() => {
             notification.remove();
-        }, 3000);
+        }, 2000);
+    }
+
+    startAutoClicker() {
+        this.autoClickerInterval = setInterval(() => {
+            this.addMoney(1);
+        }, 1000);
     }
 
     setupTabSwitching() {
@@ -143,18 +115,74 @@ class Game {
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabName = button.getAttribute('data-tab');
-                const content = document.getElementById(tabName);
-                
-                // Сворачивает и разворачивает вкладки
                 tabContents.forEach(tc => tc.classList.remove('active'));
-                content.classList.add('active');
-
+                document.getElementById(tabName).classList.add('active');
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
             });
         });
     }
+
+    startMinigame() {
+        this.isMinigameActive = true;
+        this.minigameScore = 0;
+        this.spawnFallingObject();
+        this.updateMinigameScore();
+        document.getElementById('minigameArea').style.display = 'block';
+        document.getElementById('restartMinigameButton').style.display = 'none';
+    }
+
+    spawnFallingObject() {
+        const fallingObject = document.getElementById('fallingObject');
+        fallingObject.style.left = Math.random() * (this.$circle.offsetWidth - 30) + 'px';
+        fallingObject.style.top = '0px';
+        fallingObject.style.display = 'block';
+
+        let fallInterval = setInterval(() => {
+            let currentTop = parseInt(fallingObject.style.top);
+            if (currentTop >= this.$circle.offsetHeight - 30) {
+                clearInterval(fallInterval);
+                fallingObject.style.display = 'none';
+                this.endMinigame();
+            } else {
+                fallingObject.style.top = (currentTop + 5) + 'px';
+            }
+        }, 100);
+    }
+
+    updateMinigameScore() {
+        document.getElementById('minigameScore').textContent = `Счет: ${this.minigameScore}`;
+    }
+
+    endMinigame() {
+        this.isMinigameActive = false;
+        document.getElementById('fallingObject').style.display = 'none';
+        document.getElementById('finalScore').textContent = `Ваш финальный счет: ${this.minigameScore}`;
+        document.getElementById('minigameEnd').style.display = 'block';
+    }
+
+    restartMinigame() {
+        this.startMinigame();
+        document.getElementById('minigameEnd').style.display = 'none';
+    }
+
+    resetProgress() {
+        if (confirm('Вы уверены, что хотите сбросить прогресс?')) {
+            this.money = 0;
+            this.upgrades = {
+                clickSpeed: { cost: 50, baseCost: 50 },
+                autoClick: { cost: 100, baseCost: 100 },
+                multiplier: { cost: 150, baseCost: 150 }
+            };
+            this.saveGame();
+            this.updateUpgradeInterface();
+            this.$moneyDisplay.textContent = `${this.money}`;
+            this.showNotification('Прогресс сброшен!', 'success');
+        }
+    }
 }
 
-// Инициализация игры
-const game = new Game();
+// Инициализация
+document.addEventListener('DOMContentLoaded', () => {
+    const game = new Game();
+});
