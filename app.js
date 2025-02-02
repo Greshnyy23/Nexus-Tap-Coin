@@ -5,9 +5,11 @@ class Game {
 
         this.money = 0;
         this.clickMultiplier = 1;
-        this.coinScore = 0; // Счет в мини-игре
-        this.coinInterval = null; // Интервал для спавна монет
+        this.coinScore = 0;
+        this.coinInterval = null;
         this.achievements = [];
+        this.prestigeCount = 0; // Счетчик престижа
+
         this.upgrades = [
             { name: 'Добавить 1 монету за клик', cost: 50, effect: () => { this.clickMultiplier += 1; } },
             { name: 'Удвоить скорость клика', cost: 100, effect: () => { this.clickMultiplier *= 2; } },
@@ -16,7 +18,7 @@ class Game {
             { name: 'Снижение времени спавна монет', cost: 250, effect: () => { /* Логика тут */ } },
             { name: 'Увеличить скорость спавна монет', cost: 300, effect: () => { /* Логика здесь */ } },
             { name: 'Бонус за поимку монеты', cost: 350, effect: () => { this.clickMultiplier += 1; } },
-            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Можно добавить еще логику */ } },
+            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { } },
             { name: 'Случайная награда', cost: 450, effect: () => { this.money += Math.floor(Math.random() * 100) + 1; } },
             { name: 'Увеличить прибыль от автокликера', cost: 500, effect: () => { this.clickMultiplier += 1; } }
         ];
@@ -26,35 +28,63 @@ class Game {
 
     init() {
         this.loadGame();
-        this.$circle.addEventListener('click', () => this.addMoney(this.clickMultiplier));
-        document.getElementById('restartCoinGameButton').addEventListener('click', () => this.restartCoinCollector());
-        document.getElementById('resetProgress').addEventListener('click', () => this.openConfirmationModal());
-        this.setupTabSwitching();
-        this.setupUpgrades(); // Устанавливаем улучшения при запуске
-        document.getElementById('themeButton').addEventListener('click', () => this.toggleTheme());
-        this.setupCoinCollector(); // Инициализируем игру с монетами
+        this.setupEventListeners();
+        this.setupCoinCollector();
+        this.setupUpgrades();
+        this.updatePrestigeDisplay();
     }
 
     loadGame() {
         this.money = Number(localStorage.getItem('money')) || 0;
         this.achievements = JSON.parse(localStorage.getItem('achievements')) || [];
+        this.prestigeCount = Number(localStorage.getItem('prestigeCount')) || 0;
+        this.updateMoneyDisplay();
     }
 
-    saveGame() {
-        localStorage.setItem('money', this.money);
-        localStorage.setItem('achievements', JSON.stringify(this.achievements));
+    setupEventListeners() {
+        this.$circle.addEventListener('click', () => this.addMoney(this.clickMultiplier));
+        document.getElementById('restartCoinGameButton').addEventListener('click', () => this.restartCoinCollector());
+        document.getElementById('resetProgress').addEventListener('click', () => this.confirmReset());
+        document.getElementById('themeButton').addEventListener('click', () => this.toggleTheme());
+
+        // Tab Switching
+        this.setupTabSwitching();
+        
+        // Престиж
+        document.getElementById('prestigeButton').addEventListener('click', () => this.checkPrestige());
+    }
+
+    setupTabSwitching() {
+        const tabButtons = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabName = button.getAttribute('data-tab');
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                document.getElementById(tabName).classList.add('active');
+
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
     }
 
     addMoney(amount) {
         this.money += amount;
-        this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
         this.checkForAchievements();
+        this.updateMoneyDisplay();
+    }
+
+    updateMoneyDisplay() {
+        this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
+        this.updatePrestigeDisplay(); // обновляем отображение престижа
     }
 
     checkForAchievements() {
         if (this.money >= 100 && !this.achievements.includes("Собрано 100 звёздных очков")) {
             this.achievements.push("Собрано 100 звёздных очков");
-            this.showAchievement("Собрано 500 звёздных очков");
+            this.showAchievement("Собрано 500 звёздных очков"); // Пример достижения
         }
         this.saveGame();
     }
@@ -67,27 +97,9 @@ class Game {
         achievementList.appendChild(achievementItem);
     }
 
-    setupTabSwitching() {
-        const tabButtons = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabName = button.getAttribute('data-tab');
-                tabContents.forEach(tc => tc.classList.remove('active'));
-                document.getElementById(tabName).classList.add('active');
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-            });
-        });
-    }
-
-    // Инициализация игры "Поймай монету"
     setupCoinCollector() {
         this.coinScore = 0;
         document.getElementById('coinScore').textContent = `Счет: ${this.coinScore}`;
-        document.getElementById('coinGameArea').innerHTML = '';
-        document.getElementById('restartCoinGameButton').style.display = 'none';
         this.startCoinCollector();
     }
 
@@ -104,9 +116,9 @@ class Game {
 
         coin.addEventListener('click', () => {
             this.coinScore++;
-            this.addMoney(1);  // При добавлении очков в счет, также добавляем 1 звезду к валюте
+            this.addMoney(1);
             document.getElementById('coinScore').textContent = `Счет: ${this.coinScore}`;
-            coin.remove(); // Удаляем монету после клика
+            coin.remove();
         });
 
         document.getElementById('coinGameArea').appendChild(coin);
@@ -121,19 +133,17 @@ class Game {
     }
 
     restartCoinCollector() {
-        clearInterval(this.coinInterval);  // Останавливаем интервал
-        this.setupCoinCollector(); // Настраиваем заново
+        clearInterval(this.coinInterval);
+        this.setupCoinCollector();
     }
 
-    // Система улучшений
     setupUpgrades() {
         const upgradeList = document.getElementById('upgradeList');
-        upgradeList.innerHTML = '';  // Очистка списка перед обновлением
+        upgradeList.innerHTML = '';
 
         this.upgrades.forEach((upgrade, index) => {
             const upgradeCard = document.createElement('div');
             upgradeCard.className = 'upgrade-card';
-            
             upgradeCard.innerHTML = `
                 <div class="upgrade-name">${upgrade.name}</div>
                 <div class="upgrade-cost">Цена: ${upgrade.cost} Звёздных очков</div>
@@ -150,11 +160,11 @@ class Game {
         if (this.money >= upgrade.cost) {
             this.money -= upgrade.cost;
             upgrade.effect();
-            this.showNotification(`Улучшение "${upgrade.name}" приобретено!`, 'success'); // Показ всплывающего уведомления
-            this.updateInterface();
-            this.setupUpgrades(); // Обновление списка улучшений
+            this.showNotification(`Улучшение "${upgrade.name}" приобретено!`, 'success');
+            this.setupUpgrades();
+            this.updateMoneyDisplay();
         } else {
-            this.showNotification('Недостаточно Звёздных очков для этого улучшения!', 'error'); // Показ уведомления при недостаточности
+            this.showNotification('Недостаточно Звёздных очков для этого улучшения!', 'error');
         }
     }
 
@@ -168,6 +178,53 @@ class Game {
         }, 2000);
     }
 
+    confirmReset() {
+        const confirmed = confirm("Вы уверены, что хотите сбросить прогресс?");
+        if (confirmed) {
+            this.resetProgress();
+        }
+    }
+
+    resetProgress() {
+        this.money = 0;
+        this.achievements = [];
+        this.saveGame();
+        this.updateMoneyDisplay();
+        document.getElementById('achievementList').innerHTML = '';
+        this.showNotification('Прогресс сброшен!', 'success');
+    }
+
+    checkPrestige() {
+        if (this.money >= 5000) {
+            this.performPrestige();
+        } else {
+            this.showNotification('Нужно 5000 Звёздных очков для престижа!', 'error');
+        }
+    }
+
+    performPrestige() {
+        this.prestigeCount++;
+        this.money = 0; // Сбросить деньги при престиже
+        this.clickMultiplier += 1; // Увеличить награду за клик
+        this.saveGame();
+        this.updateMoneyDisplay();
+        this.showNotification(`Престиж успешно выполнен! Получено +1 к награде за клик. Престиж: ${this.prestigeCount}`, 'success');
+        this.updatePrestigeDisplay();
+    }
+
+    updatePrestigeDisplay() {
+        const prestigeDisplay = document.createElement('div');
+        prestigeDisplay.textContent = `Престиж: ${this.prestigeCount}, Награда за клик: ${this.clickMultiplier}`;
+        document.getElementById('prestigeStatus').innerHTML = ''; // Очищаем предыдущий контент
+        document.getElementById('prestigeStatus').appendChild(prestigeDisplay);
+    }
+
+    saveGame() {
+        localStorage.setItem('money', this.money);
+        localStorage.setItem('achievements', JSON.stringify(this.achievements));
+        localStorage.setItem('prestigeCount', this.prestigeCount);
+    }
+
     toggleTheme() {
         document.body.classList.toggle('light-theme');
         const currentTheme = document.body.classList.contains('light-theme') ? '🌙' : '🌞';
@@ -178,9 +235,4 @@ class Game {
 // Инициализация игры
 document.addEventListener('DOMContentLoaded', () => {
     const game = new Game();
-
-    // Закрытие модального окна
-    document.querySelector('.close-modal').addEventListener('click', () => game.closeConfirmationModal());
-    document.getElementById('cancelReset').addEventListener('click', () => game.closeConfirmationModal());
-    document.getElementById('confirmReset').addEventListener('click', () => game.confirmReset());
 });
