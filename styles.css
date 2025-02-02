@@ -6,12 +6,6 @@
     --glow: rgba(0, 204, 255, 0.5);
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     background: var(--dark-bg);
     color: var(--light-text);
@@ -124,6 +118,7 @@ body {
     overflow: hidden;
 }
 
+/* Охота на монеты */
 .coin {
     position: absolute;
     width: 30px;
@@ -231,4 +226,34 @@ body {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* Переключатель темы */
+.theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--medium-bg);
+    border: none;
+    color: var(--light-text);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Опционально: светлая тема */
+.light-theme {
+    --dark-bg: #ffffff;
+    --medium-bg: rgba(240, 240, 240, 0.9);
+    --light-text: #000000;
+    --neon-blue: #007bff;
+}
+
+.notification {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--dark-bg);
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
 }
