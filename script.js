@@ -5,13 +5,12 @@ class Game {
 
         this.money = 0;
         this.clickMultiplier = 1;
-        this.autoClickerActive = false;
         this.coinScore = 0; // Счет в мини-игре
         this.coinInterval = null; // Интервал для спавна монет
         this.achievements = [];
         this.upgrades = [
             { name: 'Увеличить значение клика', cost: 50, effect: () => { this.clickMultiplier *= 2; } },
-            { name: 'Увеличить скорость спавна монет', cost: 100, effect: () => { /* Здесь можно добавить логику */ } },
+            { name: 'Увеличить скорость спавна монет на 1 секунду', cost: 100, effect: () => { // Логика улучшения } },
             { name: 'Увеличить максимальный счет', cost: 150, effect: () => { /* Здесь можно добавить логику */ } }
         ];
 
@@ -26,6 +25,7 @@ class Game {
         this.setupTabSwitching();
         this.setupUpgrades();
         document.getElementById('themeButton').addEventListener('click', () => this.toggleTheme());
+        this.setupCoinCollector(); // Инициализируем игру с монетами
     }
 
     loadGame() {
@@ -124,6 +124,8 @@ class Game {
     // Система улучшений
     setupUpgrades() {
         const upgradeList = document.getElementById('upgradeList');
+        upgradeList.innerHTML = '';  // Очистка списка перед обновлением
+
         this.upgrades.forEach((upgrade, index) => {
             const upgradeItem = document.createElement('div');
             upgradeItem.className = 'upgrade';
@@ -140,7 +142,6 @@ class Game {
             upgrade.effect();
             alert(`Улучшение "${upgrade.name}" приобретено!`);
             this.updateInterface();
-            document.getElementById('upgradeList').innerHTML = ''; // Очистка списка улучшений
             this.setupUpgrades(); // Обновление списка улучшений
         } else {
             alert('Недостаточно Звёздных очков для этого улучшения!');
