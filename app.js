@@ -7,7 +7,7 @@ class Game {
         this.clickMultiplier = 1;
         this.autoClickerActive = false;
         this.minigameScore = 0;
-        this.isMinigameActive = false;
+        this.currentMinigame = null;
         this.achievements = [];
 
         this.init();
@@ -16,17 +16,12 @@ class Game {
     init() {
         this.loadGame();
         this.$circle.addEventListener('click', () => this.addMoney(this.clickMultiplier));
-        document.getElementById('startMinigameButton').addEventListener('click', () => this.startMinigame());
-        document.getElementById('restartMinigameButton').addEventListener('click', () => this.restartMinigame());
+        document.getElementById('restartCoinGameButton').addEventListener('click', () => this.startCoinCollector());
+        document.getElementById('restart2048Button').addEventListener('click', () => this.start2048());
+        document.getElementById('restartTicTacToeButton').addEventListener('click', () => this.startTicTacToe());
         document.getElementById('resetProgress').addEventListener('click', () => this.openConfirmationModal());
-
         this.setupTabSwitching();
-
-        // Ежесекундное обновление интерфейса
-        setInterval(() => {
-            this.saveGame();
-            this.updateInterface();
-        }, 1000); // Auto-update every second
+        this.setupMinigameTabs();
     }
 
     loadGame() {
@@ -80,54 +75,163 @@ class Game {
         });
     }
 
-    startMinigame() {
-        this.isMinigameActive = true;
-        this.minigameScore = 0;
-        this.spawnFallingObject();
-        this.updateMinigameScore();
-        document.getElementById('minigameArea').style.display = 'block';
-        document.getElementById('restartMinigameButton').style.display = 'none';
-    }
+    setupMinigameTabs() {
+        const minigameButtons = document.querySelectorAll('.minigame-tab');
+        const minigameContents = document.querySelectorAll('.tab-content[id^="coinCollector"], .tab-content[id^="game"], .tab-content[id^="ticTacToe"]');
 
-    spawnFallingObject() {
-        const fallingObject = document.getElementById('fallingObject');
-        fallingObject.style.left = Math.random() * (200 - 30) + 'px';
-        fallingObject.style.top = '0px';
-        fallingObject.style.display = 'block';
-
-        let fallInterval = setInterval(() => {
-            let currentTop = parseInt(fallingObject.style.top);
-            if (currentTop >= 180) {
-                clearInterval(fallInterval);
-                fallingObject.style.display = 'none';
-                this.endMinigame();
-            } else {
-                fallingObject.style.top = (currentTop + 5) + 'px';
-            }
-        }, 100);
-
-        fallingObject.addEventListener('click', () => {
-            this.minigameScore++;
-            this.updateMinigameScore();
-            fallingObject.style.display = 'none';
-            this.spawnFallingObject();
+        minigameButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const minigameName = button.getAttribute('data-minigame');
+                minigameContents.forEach(mc => mc.style.display = 'none');
+                document.getElementById(minigameName).style.display = 'block';
+                minigameButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
         });
     }
 
-    updateMinigameScore() {
-        document.getElementById('minigameScore').textContent = `Счет: ${this.minigameScore}`;
+    // Охота на монеты
+    startCoinCollector() {
+        this.setupCoinCollector();
+        this.initCoinCollectorGame();
     }
 
-    endMinigame() {
-        this.isMinigameActive = false;
-        document.getElementById('fallingObject').style.display = 'none';
-        document.getElementById('finalScore').textContent = `Ваш финальный счет: ${this.minigameScore}`;
-        document.getElementById('minigameEnd').style.display = 'block';
+    setupCoinCollector() {
+        this.score = 0;
+        document.getElementById('coinScore').textContent = `Счет: ${this.score}`;
+        document.getElementById('coinGameArea').innerHTML = '';
+        document.getElementById('restartCoinGameButton').style.display = 'none';
     }
 
-    restartMinigame() {
-        this.startMinigame();
-        document.getElementById('minigameEnd').style.display = 'none';
+    initCoinCollectorGame() {
+        this.createCoin();
+        this.coinInterval = setInterval(() => this.createCoin(), 2000);
+    }
+
+    createCoin() {
+        const coin = document.createElement('div');
+        coin.className = 'coin';
+        coin.style.top = Math.random() * (200 - 30) + 'px';
+        coin.style.left = Math.random() * (200 - 30) + 'px';
+
+        coin.addEventListener('click', () => {
+            this.score++;
+            document.getElementById('coinScore').textContent = `Счет: ${this.score}`;
+            coin.remove();
+        });
+
+        document.getElementById('coinGameArea').appendChild(coin);
+    }
+
+    start2048() {
+        this.setup2048();
+        this.init2048Game();
+    }
+
+    setup2048() {
+        this.board = Array.from({ length: 4 }, () => Array(4).fill(0));
+        this.score = 0;
+        this.addTile();
+        this.addTile();
+        this.update2048Board();
+        document.getElementById('restart2048Button').style.display = 'none';
+    }
+
+    init2048Game() {
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowUp') this.move2048('up');
+            else if (event.key === 'ArrowDown') this.move2048('down');
+            else if (event.key === 'ArrowLeft') this.move2048('left');
+            else if (event.key === 'ArrowRight') this.move2048('right');
+        });
+    }
+
+    addTile() {
+        const emptyTiles = [];
+        for (let r = 0; r < 4; r++) {
+            for (let c = 0; c < 4; c++) {
+                if (this.board[r][c] === 0) emptyTiles.push([r, c]);
+            }
+        }
+        const [row, col] = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
+        this.board[row][col] = Math.random() < 0.9 ? 2 : 4;
+    }
+
+    move2048(direction) {
+        // TODO: Implement moving and merging tiles based on direction
+        this.addTile(); // Add a new tile after a move
+        this.update2048Board();
+    }
+
+    update2048Board() {
+        const boardElement = document.getElementById('board');
+        boardElement.innerHTML = '';
+        this.board.forEach((row) => {
+            row.forEach((value) => {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.textContent = value !== 0 ? value : '';
+                tile.style.backgroundColor = value !== 0 ? `hsl(${Math.log2(value) * 30}, 100%, 50%)` : '#eee';
+                boardElement.appendChild(tile);
+            });
+        });
+        document.getElementById('gameScore').textContent = `Счет: ${this.score}`;
+    }
+
+    startTicTacToe() {
+        this.setupTicTacToe();
+        this.initTicTacToeGame();
+    }
+
+    setupTicTacToe() {
+        this.ticTacToeBoard = Array(3).fill(null).map(() => Array(3).fill(null));
+        this.currentPlayer = 'X';
+        this.updateTicTacToeBoard();
+        document.getElementById('restartTicTacToeButton').style.display = 'none';
+    }
+
+    initTicTacToeGame() {
+        // no additional initialization needed
+    }
+
+    updateTicTacToeBoard() {
+        const boardElement = document.getElementById('ticTacToeBoard');
+        boardElement.innerHTML = '';
+        this.ticTacToeBoard.forEach((row, rowIndex) => {
+            row.forEach((cell, colIndex) => {
+                const cellElement = document.createElement('div');
+                cellElement.className = 'ticTacToeCell';
+                cellElement.textContent = cell;
+                cellElement.addEventListener('click', () => this.makeMove(rowIndex, colIndex));
+                boardElement.appendChild(cellElement);
+            });
+        });
+        document.getElementById('ticTacToeStatus').textContent = `Текущий игрок: ${this.currentPlayer}`;
+    }
+
+    makeMove(rowIndex, colIndex) {
+        if (this.ticTacToeBoard[rowIndex][colIndex] === null) {
+            this.ticTacToeBoard[rowIndex][colIndex] = this.currentPlayer;
+            if (this.checkTicTacToeWinner()) {
+                alert(`Игрок ${this.currentPlayer} выиграл!`);
+                document.getElementById('restartTicTacToeButton').style.display = 'block';
+            } else {
+                this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+                this.updateTicTacToeBoard();
+            }
+        }
+    }
+
+    checkTicTacToeWinner() {
+        const winningCombinations = [
+            [[0,0],[0,1],[0,2]], [[1,0],[1,1],[1,2]], [[2,0],[2,1],[2,2]],
+            [[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]],
+            [[0,0],[1,1],[2,2]], [[0,2],[1,1],[2,0]]
+        ];
+        return winningCombinations.some(combination => {
+            const [[a,b],[c,d],[e,f]] = combination;
+            return this.ticTacToeBoard[a][b] && this.ticTacToeBoard[a][b] === this.ticTacToeBoard[c][d] && this.ticTacToeBoard[a][b] === this.ticTacToeBoard[e][f];
+        });
     }
 
     openConfirmationModal() {
@@ -165,7 +269,7 @@ class Game {
     }
 }
 
-// Инициализация модального окна
+// Инициализация игры
 document.addEventListener('DOMContentLoaded', () => {
     const game = new Game();
 
