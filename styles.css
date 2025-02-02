@@ -28,7 +28,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 0 50px var(--glow);
     position: relative;
-    margin-top: 120px; /* Новый верхний отступ в 200 пикселей */
+    margin-top: 200px; /* Новый верхний отступ в 200 пикселей */
 }
 
 .header {
