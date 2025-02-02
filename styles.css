@@ -1,10 +1,9 @@
 :root {
     --neon-blue: #00ccff;
     --dark-bg: #0d0d0d;
-    --medium-bg: #282828;
+    --medium-bg: rgba(40, 40, 40, 0.9);
     --light-text: #e0e0e0;
     --glow: rgba(0, 204, 255, 0.5);
-    --modal-bg: rgba(50, 50, 70, 0.9);
 }
 
 * {
@@ -22,12 +21,12 @@ body {
 }
 
 .game-container {
-    background: var(--medium-bg);
+    background: rgba(0, 0, 0, 0.8);
     max-width: 450px;
     margin: 20px auto;
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 0 30px var(--glow);
+    box-shadow: 0 0 50px var(--glow);
     position: relative;
 }
 
@@ -49,10 +48,11 @@ body {
     position: relative;
     width: 200px;
     height: 200px;
-    margin: 0 auto;
+    margin: 0 auto 20px;
     cursor: pointer;
     overflow: hidden;
     border-radius: 50%;
+    box-shadow: 0 0 20px var(--glow);
 }
 
 .star-image {
@@ -69,9 +69,10 @@ body {
 .tabs {
     display: flex;
     justify-content: space-around;
-    margin: 20px 0;
     background: var(--medium-bg);
     border-radius: 8px;
+    padding: 5px;
+    margin: 20px 0;
 }
 
 .tab {
@@ -92,7 +93,7 @@ body {
 .tab-content {
     display: none;
     padding: 15px;
-    background: var(--modal-bg);
+    background: var(--medium-bg);
     border-radius: 10px;
     margin-top: 10px;
 }
@@ -106,7 +107,7 @@ body {
 }
 
 .achievement {
-    background: rgba(50, 50, 50, 0.8);
+    background: rgba(50, 50, 50, 0.85);
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 5px;
@@ -115,9 +116,13 @@ body {
 .minigame-area {
     height: 200px;
     position: relative;
-    background: var(--modal-bg);
+    background: rgba(40, 40, 40, 0.9);
     border-radius: 10px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .falling-object {
@@ -135,6 +140,7 @@ body {
     left: 10px;
     color: var(--neon-blue);
     font-size: 1.2em;
+    font-weight: bold;
 }
 
 #notifications {
@@ -173,7 +179,7 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 .modal-content {
@@ -182,6 +188,7 @@ body {
     padding: 20px;
     width: 80%;
     border-radius: 10px;
+    text-align: center;
 }
 
 .close-modal {
@@ -200,7 +207,7 @@ body {
 
 /* Кнопки */
 .btn {
-    background: var(--primary-color);
+    background: var(--neon-blue);
     color: black; /* Жирный черный текст */
     padding: 10px 15px;
     border: none;
@@ -208,6 +215,7 @@ body {
     cursor: pointer;
     margin-top: 10px;
     transition: background-color 0.3s, color 0.3s;
+    font-weight: bold; /* Жирный текст */
 }
 
 .btn:hover {
