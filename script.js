@@ -8,7 +8,7 @@ class Game {
         this.coinScore = 0;
         this.coinInterval = null;
         this.achievements = [];
-        this.prestigeCount = 0;
+        this.prestigeCount = 0; // Счетчик престижа
 
         this.upgrades = [
             { name: 'Добавить 1 монету за клик', cost: 50, effect: () => { this.clickMultiplier += 1; } },
@@ -31,7 +31,7 @@ class Game {
         this.setupEventListeners();
         this.setupCoinCollector();
         this.setupUpgrades();
-        this.updatePrestigeDisplay();
+        this.updatePrestigeDisplay(); // Обновляем отображение престижа
     }
 
     loadGame() {
@@ -59,11 +59,16 @@ class Game {
                 const tabName = button.getAttribute('data-tab');
 
                 // Убираем активный класс у всех вкладок и содержимого
-                tabContents.forEach(tc => tc.classList.remove('active'));
-                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(tc => {
+                    tc.classList.remove('active');
+                });
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
                 
                 // Устанавливаем новый активный класс
-                document.getElementById(tabName).classList.add('active');
+                const currentTabContent = document.getElementById(tabName);
+                currentTabContent.classList.add('active');
                 button.classList.add('active');
             });
         });
@@ -78,7 +83,7 @@ class Game {
 
     updateMoneyDisplay() {
         this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
-        this.updatePrestigeDisplay();
+        this.updatePrestigeDisplay(); // Обновляем отображение престижа
     }
 
     checkForAchievements() {
@@ -192,7 +197,7 @@ class Game {
         this.saveGame();
         this.updateMoneyDisplay();
         document.getElementById('achievementList').innerHTML = '';
-        this.updatePrestigeDisplay();
+        this.updatePrestigeDisplay(); // Обновляем отображение
         this.showNotification('Прогресс сброшен!', 'success');
     }
 
