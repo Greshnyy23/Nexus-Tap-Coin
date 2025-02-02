@@ -9,7 +9,7 @@ class Game {
         this.coinInterval = null; // Интервал для спавна монет
         this.achievements = [];
         this.upgrades = [
-            { name: 'Увеличить значение клика', cost: 50, effect: () => { this.clickMultiplier *= 2; } },
+            { name: 'Добавить 1 монету за клик', cost: 50, effect: () => { this.clickMultiplier += 1; } },
             { name: 'Удвоить скорость клика', cost: 100, effect: () => { this.clickMultiplier *= 2; } },
             { name: 'Увеличить заработок за клик', cost: 150, effect: () => { this.clickMultiplier += 1; } },
             { name: 'Добавить авто-кликер (1 в секунду)', cost: 200, effect: () => { /* Логика для авто-кликера */ } },
@@ -54,10 +54,6 @@ class Game {
     checkForAchievements() {
         if (this.money >= 100 && !this.achievements.includes("Собрано 100 звёздных очков")) {
             this.achievements.push("Собрано 100 звёздных очков");
-            this.showAchievement("Собрано 100 звёздных очков");
-        }
-        if (this.money >= 500 && !this.achievements.includes("Собрано 500 звёздных очков")) {
-            this.achievements.push("Собрано 500 звёздных очков");
             this.showAchievement("Собрано 500 звёздных очков");
         }
         this.saveGame();
@@ -135,11 +131,17 @@ class Game {
         upgradeList.innerHTML = '';  // Очистка списка перед обновлением
 
         this.upgrades.forEach((upgrade, index) => {
-            const upgradeItem = document.createElement('div');
-            upgradeItem.className = 'upgrade';
-            upgradeItem.innerHTML = `${upgrade.name}<br/><strong>Цена: ${upgrade.cost} Звёздных очков</strong>`;
-            upgradeItem.addEventListener('click', () => this.purchaseUpgrade(index));
-            upgradeList.appendChild(upgradeItem);
+            const upgradeCard = document.createElement('div');
+            upgradeCard.className = 'upgrade-card';
+            
+            upgradeCard.innerHTML = `
+                <div class="upgrade-name">${upgrade.name}</div>
+                <div class="upgrade-cost">Цена: ${upgrade.cost} Звёздных очков</div>
+                <button class="upgrade-btn" data-index="${index}">Купить</button>
+            `;
+
+            upgradeCard.querySelector('.upgrade-btn').addEventListener('click', () => this.purchaseUpgrade(index));
+            upgradeList.appendChild(upgradeCard);
         });
     }
 
@@ -148,36 +150,12 @@ class Game {
         if (this.money >= upgrade.cost) {
             this.money -= upgrade.cost;
             upgrade.effect();
-            alert(`Улучшение "${upgrade.name}" приобретено!`);
+            this.showNotification(`Улучшение "${upgrade.name}" приобретено!`, 'success'); // Показ всплывающего уведомления
             this.updateInterface();
             this.setupUpgrades(); // Обновление списка улучшений
         } else {
-            alert('Недостаточно Звёздных очков для этого улучшения!');
+            this.showNotification('Недостаточно Звёздных очков для этого улучшения!', 'error'); // Показ уведомления при недостаточности
         }
-    }
-
-    openConfirmationModal() {
-        const modal = document.getElementById('confirmationModal');
-        modal.style.display = 'flex';
-    }
-
-    closeConfirmationModal() {
-        const modal = document.getElementById('confirmationModal');
-        modal.style.display = 'none';
-    }
-
-    confirmReset() {
-        this.money = 0;
-        this.achievements = [];
-        this.saveGame();
-        this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
-        document.getElementById('achievementList').innerHTML = '';
-        this.showNotification('Прогресс сброшен!', 'success');
-        this.closeConfirmationModal();
-    }
-
-    updateInterface() {
-        this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
     }
 
     showNotification(message, type) {
