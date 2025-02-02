@@ -6,8 +6,6 @@ class Game {
         this.money = 0;
         this.clickMultiplier = 1;
         this.autoClickerActive = false;
-        this.minigameScore = 0;
-        this.currentMinigame = null;
         this.achievements = [];
 
         this.init();
@@ -22,6 +20,7 @@ class Game {
         document.getElementById('resetProgress').addEventListener('click', () => this.openConfirmationModal());
         this.setupTabSwitching();
         this.setupMinigameTabs();
+        document.getElementById('themeButton').addEventListener('click', () => this.toggleTheme());
     }
 
     loadGame() {
@@ -77,7 +76,7 @@ class Game {
 
     setupMinigameTabs() {
         const minigameButtons = document.querySelectorAll('.minigame-tab');
-        const minigameContents = document.querySelectorAll('.tab-content[id^="coinCollector"], .tab-content[id^="game"], .tab-content[id^="ticTacToe"]');
+        const minigameContents = document.querySelectorAll('.tab-content[id^="coinCollector"], .tab-content[id^="game2048"], .tab-content[id^="ticTacToe"]');
 
         minigameButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -123,6 +122,7 @@ class Game {
         document.getElementById('coinGameArea').appendChild(coin);
     }
 
+    // Игра 2048
     start2048() {
         this.setup2048();
         this.init2048Game();
@@ -138,12 +138,14 @@ class Game {
     }
 
     init2048Game() {
-        document.addEventListener('keydown', (event) => {
+        document.removeEventListener('keydown', this.keydownHandler); // Отменяем старый обработчик
+        this.keydownHandler = (event) => {
             if (event.key === 'ArrowUp') this.move2048('up');
             else if (event.key === 'ArrowDown') this.move2048('down');
             else if (event.key === 'ArrowLeft') this.move2048('left');
             else if (event.key === 'ArrowRight') this.move2048('right');
-        });
+        };
+        document.addEventListener('keydown', this.keydownHandler);
     }
 
     addTile() {
@@ -158,16 +160,16 @@ class Game {
     }
 
     move2048(direction) {
-        // TODO: Implement moving and merging tiles based on direction
-        this.addTile(); // Add a new tile after a move
+        // Реализуйте логику перемещения и объединения плиток
+        this.addTile(); // Добавляем новую плитку после движения
         this.update2048Board();
     }
 
     update2048Board() {
         const boardElement = document.getElementById('board');
         boardElement.innerHTML = '';
-        this.board.forEach((row) => {
-            row.forEach((value) => {
+        this.board.forEach(row => {
+            row.forEach(value => {
                 const tile = document.createElement('div');
                 tile.className = 'tile';
                 tile.textContent = value !== 0 ? value : '';
@@ -178,6 +180,7 @@ class Game {
         document.getElementById('gameScore').textContent = `Счет: ${this.score}`;
     }
 
+    // Крестики-нолики
     startTicTacToe() {
         this.setupTicTacToe();
         this.initTicTacToeGame();
@@ -191,27 +194,27 @@ class Game {
     }
 
     initTicTacToeGame() {
-        // no additional initialization needed
+        // No additional initialization needed
     }
 
     updateTicTacToeBoard() {
         const boardElement = document.getElementById('ticTacToeBoard');
         boardElement.innerHTML = '';
-        this.ticTacToeBoard.forEach((row, rowIndex) => {
-            row.forEach((cell, colIndex) => {
+        this.ticTacToeBoard.forEach((row, i) => {
+            row.forEach((cell, j) => {
                 const cellElement = document.createElement('div');
                 cellElement.className = 'ticTacToeCell';
                 cellElement.textContent = cell;
-                cellElement.addEventListener('click', () => this.makeMove(rowIndex, colIndex));
+                cellElement.addEventListener('click', () => this.makeMove(i, j));
                 boardElement.appendChild(cellElement);
             });
         });
         document.getElementById('ticTacToeStatus').textContent = `Текущий игрок: ${this.currentPlayer}`;
     }
 
-    makeMove(rowIndex, colIndex) {
-        if (this.ticTacToeBoard[rowIndex][colIndex] === null) {
-            this.ticTacToeBoard[rowIndex][colIndex] = this.currentPlayer;
+    makeMove(i, j) {
+        if (this.ticTacToeBoard[i][j] === null) {
+            this.ticTacToeBoard[i][j] = this.currentPlayer;
             if (this.checkTicTacToeWinner()) {
                 alert(`Игрок ${this.currentPlayer} выиграл!`);
                 document.getElementById('restartTicTacToeButton').style.display = 'block';
@@ -228,6 +231,7 @@ class Game {
             [[0,0],[1,0],[2,0]], [[0,1],[1,1],[2,1]], [[0,2],[1,2],[2,2]],
             [[0,0],[1,1],[2,2]], [[0,2],[1,1],[2,0]]
         ];
+
         return winningCombinations.some(combination => {
             const [[a,b],[c,d],[e,f]] = combination;
             return this.ticTacToeBoard[a][b] && this.ticTacToeBoard[a][b] === this.ticTacToeBoard[c][d] && this.ticTacToeBoard[a][b] === this.ticTacToeBoard[e][f];
@@ -266,6 +270,12 @@ class Game {
         setTimeout(() => {
             notification.remove();
         }, 2000);
+    }
+
+    toggleTheme() {
+        document.body.classList.toggle('light-theme');
+        const currentTheme = document.body.classList.contains('light-theme') ? '🌙' : '🌞';
+        document.getElementById('themeButton').textContent = currentTheme;
     }
 }
 
