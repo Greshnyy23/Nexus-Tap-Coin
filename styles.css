@@ -39,7 +39,7 @@ body {
 
 .money-counter {
     color: var(--neon-blue);
-    font-size: 2.5em;
+    font-size: 2.5rem; /* Используем rem для размера шрифта */
     text-shadow: 0 0 10px var(--glow);
     font-weight: bold;
 }
@@ -82,13 +82,13 @@ body {
     cursor: pointer;
     padding: 8px;
     transition: color 0.3s, transform 0.3s;
-    font-size: 1.2em; /* Увеличенный размер текста */
+    font-size: 1.2rem; /* Используем rem для размера шрифта */
 }
 
 .tab.active {
     color: var(--neon-blue);
     text-shadow: 0 0 10px var(--glow);
-    transform: scale(1.1); /* Увеличение активной вкладки */
+    transform: scale(1.1);
 }
 
 .tab-content {
@@ -104,24 +104,33 @@ body {
 }
 
 .section-title {
-    font-size: 1.8em;
+    font-size: 1.8rem;
     text-align: center;
     margin-bottom: 15px;
     color: var(--neon-blue);
 }
 
-.achievement-list {
+.achievement-list,
+.upgrade-list {
     margin: 10px 0;
+    max-height: 150px;
+    overflow-y: auto; /* Позволяем прокрутку */
 }
 
-.achievement {
+.achievement, .upgrade {
     background: rgba(50, 50, 50, 0.85);
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 5px;
-    font-size: 1.1em; /* Увеличенный размер текста */
+    font-size: 1.1rem;
+    transition: background 0.3s;
 }
 
+.upgrade:hover {
+    background: rgba(240, 240, 240, 0.7);
+}
+
+/* Мини-игры и кнопки */
 .minigame-area {
     height: 300px;
     position: relative;
@@ -130,35 +139,6 @@ body {
     overflow: hidden;
 }
 
-/* Улучшения */
-.upgrades-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.upgrade-list {
-    overflow-y: auto;
-    max-height: 150px; /* Устанавливаем максимальную высоту для списка улучшений */
-}
-
-.upgrade {
-    background: rgba(240, 240, 240, 0.9);
-    color: var(--dark-bg);
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    transition: background 0.3s, transform 0.2s;
-}
-
-.upgrade:hover {
-    background: rgba(200, 200, 200, 0.6);
-    transform: scale(1.05);
-}
-
-/* Охота на монеты */
 .coin {
     position: absolute;
     width: 30px;
@@ -173,16 +153,15 @@ body {
     transform: scale(1.1);
 }
 
-/* Кнопки */
 .btn {
     background: var(--neon-blue);
-    color: black; /* Жирный черный текст */
+    color: black;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background 0.3s;
     font-weight: bold;
 }
 
@@ -205,7 +184,7 @@ body {
 
 /* Модальные окна */
 .modal {
-    display: none; /* Скрыто по умолчанию */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -234,7 +213,6 @@ body {
 .close-modal:hover,
 .close-modal:focus {
     color: #000;
-    text-decoration: none;
     cursor: pointer;
 }
 
@@ -252,14 +230,7 @@ body {
     cursor: pointer;
 }
 
-/* Опционально: светлая тема */
-.light-theme {
-    --dark-bg: #ffffff;
-    --medium-bg: rgba(240, 240, 240, 0.9);
-    --light-text: #000000;
-    --neon-blue: #007bff;
-}
-
+/* Уведомления */
 .notification {
     background: rgba(255, 255, 255, 0.9);
     color: var(--dark-bg);
