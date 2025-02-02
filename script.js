@@ -9,6 +9,11 @@ class Game {
         this.coinScore = 0; // Счет в мини-игре
         this.coinInterval = null; // Интервал для спавна монет
         this.achievements = [];
+        this.upgrades = [
+            { name: 'Увеличить значение клика', cost: 50, effect: () => { this.clickMultiplier *= 2; } },
+            { name: 'Увеличить скорость спавна монет', cost: 100, effect: () => { /* Здесь можно добавить логику */ } },
+            { name: 'Увеличить максимальный счет', cost: 150, effect: () => { /* Здесь можно добавить логику */ } }
+        ];
 
         this.init();
     }
@@ -19,8 +24,8 @@ class Game {
         document.getElementById('restartCoinGameButton').addEventListener('click', () => this.restartCoinCollector());
         document.getElementById('resetProgress').addEventListener('click', () => this.openConfirmationModal());
         this.setupTabSwitching();
+        this.setupUpgrades();
         document.getElementById('themeButton').addEventListener('click', () => this.toggleTheme());
-        this.setupCoinCollector(); // Инициализируем игру с монетами
     }
 
     loadGame() {
@@ -116,6 +121,32 @@ class Game {
         this.setupCoinCollector(); // Настраиваем заново
     }
 
+    // Система улучшений
+    setupUpgrades() {
+        const upgradeList = document.getElementById('upgradeList');
+        this.upgrades.forEach((upgrade, index) => {
+            const upgradeItem = document.createElement('div');
+            upgradeItem.className = 'upgrade';
+            upgradeItem.textContent = `${upgrade.name} (Цена: ${upgrade.cost} Звёздных очков)`;
+            upgradeItem.addEventListener('click', () => this.purchaseUpgrade(index));
+            upgradeList.appendChild(upgradeItem);
+        });
+    }
+
+    purchaseUpgrade(index) {
+        const upgrade = this.upgrades[index];
+        if (this.money >= upgrade.cost) {
+            this.money -= upgrade.cost;
+            upgrade.effect();
+            alert(`Улучшение "${upgrade.name}" приобретено!`);
+            this.updateInterface();
+            document.getElementById('upgradeList').innerHTML = ''; // Очистка списка улучшений
+            this.setupUpgrades(); // Обновление списка улучшений
+        } else {
+            alert('Недостаточно Звёздных очков для этого улучшения!');
+        }
+    }
+
     openConfirmationModal() {
         const modal = document.getElementById('confirmationModal');
         modal.style.display = 'flex';
@@ -134,6 +165,10 @@ class Game {
         document.getElementById('achievementList').innerHTML = '';
         this.showNotification('Прогресс сброшен!', 'success');
         this.closeConfirmationModal();
+    }
+
+    updateInterface() {
+        this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
     }
 
     showNotification(message, type) {
