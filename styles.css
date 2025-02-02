@@ -28,6 +28,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 0 50px var(--glow);
     position: relative;
+    margin-top: 200px; /* Новый верхний отступ в 200 пикселей */
 }
 
 .header {
@@ -39,7 +40,7 @@ body {
 
 .money-counter {
     color: var(--neon-blue);
-    font-size: 2.5rem; /* Используем rem для размера шрифта */
+    font-size: 2.5em;
     text-shadow: 0 0 10px var(--glow);
     font-weight: bold;
 }
@@ -82,7 +83,7 @@ body {
     cursor: pointer;
     padding: 8px;
     transition: color 0.3s, transform 0.3s;
-    font-size: 1.2rem; /* Используем rem для размера шрифта */
+    font-size: 1.2em;
 }
 
 .tab.active {
@@ -104,33 +105,24 @@ body {
 }
 
 .section-title {
-    font-size: 1.8rem;
+    font-size: 1.8em;
     text-align: center;
     margin-bottom: 15px;
     color: var(--neon-blue);
 }
 
-.achievement-list,
-.upgrade-list {
+.achievement-list {
     margin: 10px 0;
-    max-height: 150px;
-    overflow-y: auto; /* Позволяем прокрутку */
 }
 
-.achievement, .upgrade {
+.achievement {
     background: rgba(50, 50, 50, 0.85);
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 5px;
-    font-size: 1.1rem;
-    transition: background 0.3s;
+    font-size: 1.1em;
 }
 
-.upgrade:hover {
-    background: rgba(240, 240, 240, 0.7);
-}
-
-/* Мини-игры и кнопки */
 .minigame-area {
     height: 300px;
     position: relative;
@@ -139,18 +131,53 @@ body {
     overflow: hidden;
 }
 
-.coin {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background-color: gold;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 0.2s;
+.upgrade-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 20px 0;
 }
 
-.coin:hover {
-    transform: scale(1.1);
+.upgrade-card {
+    background: rgba(70, 70, 70, 0.85);
+    padding: 20px;
+    border-radius: 10px;
+    width: calc(48% - 10px);
+    box-shadow: 0 0 15px var(--glow);
+    transition: transform 0.3s;
+}
+
+.upgrade-card:hover {
+    transform: scale(1.05);
+}
+
+.upgrade-name {
+    font-size: 1.2em;
+    color: var(--neon-blue);
+    margin-bottom: 10px;
+}
+
+.upgrade-cost {
+    font-size: 0.9em;
+    color: var(--light-text);
+    margin-bottom: 15px;
+}
+
+.upgrade-btn {
+    background: var(--neon-blue);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s;
+    font-weight: bold;
+}
+
+.upgrade-btn:hover {
+    background: rgba(0, 204, 255, 0.8);
 }
 
 .btn {
@@ -161,7 +188,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
-    transition: background 0.3s;
+    transition: background-color 0.3s, color 0.3s;
     font-weight: bold;
 }
 
@@ -182,9 +209,31 @@ body {
     background: #ff4444;
 }
 
+/* Уведомления */
+.notification {
+    position: fixed;
+    top: 20px; /* Отступ сверху */
+    right: 20px; /* Отступ справа */
+    background: rgba(50, 50, 50, 0.85);
+    color: white;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    z-index: 1000;
+    transition: opacity 0.5s;
+}
+
+.notification.success {
+    background: rgba(0, 204, 0, 0.8);
+}
+
+.notification.error {
+    background: rgba(204, 0, 0, 0.8);
+}
+
 /* Модальные окна */
 .modal {
-    display: none;
+    display: none; /* Скрыто по умолчанию */
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -213,6 +262,7 @@ body {
 .close-modal:hover,
 .close-modal:focus {
     color: #000;
+    text-decoration: none;
     cursor: pointer;
 }
 
@@ -228,13 +278,4 @@ body {
     height: 45px;
     border-radius: 50%;
     cursor: pointer;
-}
-
-/* Уведомления */
-.notification {
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--dark-bg);
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
 }
