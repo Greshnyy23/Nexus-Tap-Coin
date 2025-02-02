@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Звездный Кликер - Поймай монету</title>
+    <title>Звездный Кликер</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <script src="https://cdn.jsdelivr.net/npm/howler"></script>
@@ -24,9 +24,10 @@
         </div>
 
         <div class="tabs">
-            <button class="tab active" data-tab="achievements">🏆</button>
-            <button class="tab" data-tab="minigames">🎮</button>
-            <button class="tab" data-tab="settings">⚙</button>
+            <button class="tab active" data-tab="achievements">🏆 Достижения</button>
+            <button class="tab" data-tab="minigames">🎮 Мини-игры</button>
+            <button class="tab" data-tab="upgrades">⚙️ Улучшения</button>
+            <button class="tab" data-tab="settings">⚙ Настройки</button>
         </div>
 
         <div class="tab-content active" id="achievements">
@@ -37,10 +38,19 @@
 
         <div class="tab-content" id="minigames">
             <h2>Мини-игра: Поймай монету</h2>
-            <div class="minigame-area" id="coinGameArea" style="position: relative; width: 300px; height: 300px; border: 2px solid var(--neon-blue); bor; border-radius: 10px; margin: 0 auto;">
-            </div>
+            <div class="minigame-area" id="coinGameArea" style="position: relative; width: 300px; height: 300px; border: 2px solid var(--neon-blue);"></div>
             <div id="coinScore">Счет: 0</div>
             <button id="restartCoinGameButton" class="btn" style="display:none;">Начать заново</button>
+        </div>
+
+        <div class="tab-content" id="upgrades" style="display:none;">
+            <h2>Улучшения</h2>
+            <div class="upgrades-container">
+                <div id="upgradeList" class="upgrade-list">
+                    <!-- Здесь будут улучшения -->
+                </div>
+            </div>
+            <button id="upgradeButton" class="btn">Потратить Звёздные очки</button>
         </div>
 
         <div class="tab-content" id="settings">
