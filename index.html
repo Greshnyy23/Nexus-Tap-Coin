@@ -25,7 +25,7 @@
 
         <div class="tabs">
             <button class="tab active" data-tab="achievements">🏆</button>
-            <button class="tab" data-tab="minigame">🎮</button>
+            <button class="tab" data-tab="minigames">🎮</button>
             <button class="tab" data-tab="settings">⚙</button>
         </div>
 
@@ -35,15 +35,33 @@
             </div>
         </div>
 
-        <div class="tab-content" id="minigame">
-            <button id="startMinigameButton" class="btn">Начать мини-игру</button>
-            <div class="minigame-area" id="minigameArea" style="display:none;">
-                <div class="falling-object" id="fallingObject"></div>
-                <div class="score-display" id="minigameScore">Счет: 0</div>
-                <div id="minigameEnd" style="display:none;">
-                    <p>Ваш финальный счет: <span id="finalScore"></span></p>
-                    <button id="restartMinigameButton" class="btn">Начать заново</button>
-                </div>
+        <div class="tab-content" id="minigames">
+            <h2>Мини-игры</h2>
+            <div class="tabs">
+                <button class="minigame-tab" data-minigame="coinCollector">💰 Охота на монеты</button>
+                <button class="minigame-tab" data-minigame="game2048">🟩 2048</button>
+                <button class="minigame-tab" data-minigame="ticTacToe">❌⭕ Крестики-нолики</button>
+            </div>
+
+            <div class="tab-content active" id="coinCollector">
+                <h2>Охота на монеты</h2>
+                <div id="coinGameArea" style="position: relative; width: 300px; height: 300px; border: 2px solid var(--neon-blue);"></div>
+                <div id="coinScore">Счет: 0</div>
+                <button id="restartCoinGameButton" class="btn" style="display:none;">Начать заново</button>
+            </div>
+
+            <div class="tab-content" id="game2048" style="display:none;">
+                <h2>2048</h2>
+                <div id="board" style="display: grid; grid-template-columns: repeat(4, 100px); grid-gap: 5px; margin: 10px auto; width: fit-content;"></div>
+                <div id="gameScore">Счет: 0</div>
+                <button id="restart2048Button" class="btn" style="display:none;">Начать заново</button>
+            </div>
+
+            <div class="tab-content" id="ticTacToe" style="display:none;">
+                <h2>Крестики-нолики</h2>
+                <div id="ticTacToeBoard" style="display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 5px; margin: 10px auto; width: fit-content;"></div>
+                <div id="ticTacToeStatus">Текущий игрок: X</div>
+                <button id="restartTicTacToeButton" class="btn" style="display:none;">Начать заново</button>
             </div>
         </div>
 
