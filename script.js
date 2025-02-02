@@ -26,7 +26,7 @@ class Game {
         setInterval(() => {
             this.saveGame();
             this.updateInterface();
-        }, 1000);
+        }, 1000); // Auto-update every second
     }
 
     loadGame() {
