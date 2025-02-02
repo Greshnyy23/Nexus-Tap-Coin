@@ -123,7 +123,6 @@ body {
     overflow: hidden;
 }
 
-/* Улучшения */
 .upgrades-container {
     height: auto;
     display: flex;
@@ -144,6 +143,12 @@ body {
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.upgrade:hover {
+    background: rgba(200, 200, 200, 0.6);
 }
 
 /* Охота на монеты */
