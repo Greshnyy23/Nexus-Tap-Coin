@@ -1,14 +1,16 @@
 :root {
-    --primary-color: #00ccff;
-    --secondary-color: #ff7777;
+    --neon-blue: #00ccff;
     --dark-bg: #0d0d0d;
     --medium-bg: #282828;
     --light-text: #e0e0e0;
     --glow: rgba(0, 204, 255, 0.5);
+    --modal-bg: rgba(50, 50, 70, 0.9);
 }
 
-html {
-    scroll-behavior: smooth;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -33,23 +35,24 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .money-counter {
-    color: var(--primary-color);
+    color: var(--neon-blue);
     font-size: 2.5em;
     text-shadow: 0 0 10px var(--glow);
+    font-weight: bold;
 }
 
 .main-circle {
     position: relative;
     width: 200px;
     height: 200px;
-    margin: 0 auto 20px;
+    margin: 0 auto;
     cursor: pointer;
     overflow: hidden;
-    border-radius: 50%; /* Добавленный закругленный эффект */
+    border-radius: 50%;
 }
 
 .star-image {
@@ -66,10 +69,9 @@ body {
 .tabs {
     display: flex;
     justify-content: space-around;
-    background: rgba(50, 50, 70, 0.8); /* Небольшой фон для вкладок */
-    border-radius: 8px;
-    padding: 5px;
     margin: 20px 0;
+    background: var(--medium-bg);
+    border-radius: 8px;
 }
 
 .tab {
@@ -82,7 +84,7 @@ body {
 }
 
 .tab.active {
-    color: var(--primary-color);
+    color: var(--neon-blue);
     text-shadow: 0 0 10px var(--glow);
     transform: scale(1.1); /* Увеличение активной вкладки */
 }
@@ -90,7 +92,7 @@ body {
 .tab-content {
     display: none;
     padding: 15px;
-    background: rgba(40, 40, 40, 0.9);
+    background: var(--modal-bg);
     border-radius: 10px;
     margin-top: 10px;
 }
@@ -113,28 +115,26 @@ body {
 .minigame-area {
     height: 200px;
     position: relative;
-    background: rgba(40, 40, 40, 0.9);
+    background: var(--modal-bg);
     border-radius: 10px;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 .falling-object {
     width: 30px;
     height: 30px;
-    background: var(--primary-color);
+    background: var(--neon-blue);
     position: absolute;
     border-radius: 50%;
-    box-shadow: 0 0 15px var(--primary-color);
+    box-shadow: 0 0 15px var(--neon-blue);
 }
 
 #minigameScore {
     position: absolute;
     top: 10px;
     left: 10px;
+    color: var(--neon-blue);
+    font-size: 1.2em;
 }
 
 #notifications {
@@ -164,7 +164,7 @@ body {
     cursor: pointer;
 }
 
-/* Модальное окно подтверждения */
+/* Модальные окна */
 .modal {
     display: none; /* Скрыто по умолчанию */
     position: fixed;
@@ -173,7 +173,6 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: rgba(0, 0, 0, 0.8);
 }
 
@@ -181,9 +180,8 @@ body {
     background-color: var(--medium-bg);
     margin: 15% auto;
     padding: 20px;
-    border-radius: 10px;
     width: 80%;
-    text-align: center;
+    border-radius: 10px;
 }
 
 .close-modal {
@@ -210,7 +208,6 @@ body {
     cursor: pointer;
     margin-top: 10px;
     transition: background-color 0.3s, color 0.3s;
-    font-weight: bold; /* Жирный текст */
 }
 
 .btn:hover {
