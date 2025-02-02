@@ -8,7 +8,7 @@ class Game {
         this.coinScore = 0;
         this.coinInterval = null;
         this.achievements = [];
-        this.prestigeCount = 0; // Счетчик престижа
+        this.prestigeCount = 0;
 
         this.upgrades = [
             { name: 'Добавить 1 монету за клик', cost: 50, effect: () => { this.clickMultiplier += 1; } },
@@ -18,7 +18,7 @@ class Game {
             { name: 'Снижение времени спавна монет', cost: 250, effect: () => { /* Логика тут */ } },
             { name: 'Увеличить скорость спавна монет', cost: 300, effect: () => { /* Логика здесь */ } },
             { name: 'Бонус за поимку монеты', cost: 350, effect: () => { this.clickMultiplier += 1; } },
-            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { } },
+            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Можно добавить еще логику */ } },
             { name: 'Случайная награда', cost: 450, effect: () => { this.money += Math.floor(Math.random() * 100) + 1; } },
             { name: 'Увеличить прибыль от автокликера', cost: 500, effect: () => { this.clickMultiplier += 1; } }
         ];
@@ -46,12 +46,8 @@ class Game {
         document.getElementById('restartCoinGameButton').addEventListener('click', () => this.restartCoinCollector());
         document.getElementById('resetProgress').addEventListener('click', () => this.confirmReset());
         document.getElementById('themeButton').addEventListener('click', () => this.toggleTheme());
-
-        // Tab Switching
-        this.setupTabSwitching();
-        
-        // Престиж
         document.getElementById('prestigeButton').addEventListener('click', () => this.checkPrestige());
+        this.setupTabSwitching();
     }
 
     setupTabSwitching() {
@@ -61,16 +57,20 @@ class Game {
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabName = button.getAttribute('data-tab');
-                tabContents.forEach(tc => tc.classList.remove('active'));
-                document.getElementById(tabName).classList.add('active');
 
+                // Убираем активный класс у всех вкладок и содержимого
+                tabContents.forEach(tc => tc.classList.remove('active'));
                 tabButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Устанавливаем новый активный класс
+                document.getElementById(tabName).classList.add('active');
                 button.classList.add('active');
             });
         });
     }
 
     addMoney(amount) {
+        if (amount < 0) return; // Проверка на отрицательные значения
         this.money += amount;
         this.checkForAchievements();
         this.updateMoneyDisplay();
@@ -78,7 +78,7 @@ class Game {
 
     updateMoneyDisplay() {
         this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
-        this.updatePrestigeDisplay(); // обновляем отображение престижа
+        this.updatePrestigeDisplay();
     }
 
     checkForAchievements() {
@@ -188,9 +188,11 @@ class Game {
     resetProgress() {
         this.money = 0;
         this.achievements = [];
+        this.prestigeCount = 0; // Сбрасываем величину престижа
         this.saveGame();
         this.updateMoneyDisplay();
         document.getElementById('achievementList').innerHTML = '';
+        this.updatePrestigeDisplay();
         this.showNotification('Прогресс сброшен!', 'success');
     }
 
@@ -213,10 +215,8 @@ class Game {
     }
 
     updatePrestigeDisplay() {
-        const prestigeDisplay = document.createElement('div');
-        prestigeDisplay.textContent = `Престиж: ${this.prestigeCount}, Награда за клик: ${this.clickMultiplier}`;
-        document.getElementById('prestigeStatus').innerHTML = ''; // Очищаем предыдущий контент
-        document.getElementById('prestigeStatus').appendChild(prestigeDisplay);
+        const prestigeDisplay = document.getElementById('prestigeStatus');
+        prestigeDisplay.innerHTML = `Престиж: ${this.prestigeCount}, Награда за клик: ${this.clickMultiplier}`;
     }
 
     saveGame() {
