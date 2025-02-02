@@ -10,8 +10,15 @@ class Game {
         this.achievements = [];
         this.upgrades = [
             { name: 'Увеличить значение клика', cost: 50, effect: () => { this.clickMultiplier *= 2; } },
-            { name: 'Увеличить скорость спавна монет на 1 секунду', cost: 100, effect: () => { // Логика улучшения } },
-            { name: 'Увеличить максимальный счет', cost: 150, effect: () => { /* Здесь можно добавить логику */ } }
+            { name: 'Увеличить скорость клика', cost: 100, effect: () => { this.clickMultiplier += 1; } },
+            { name: 'Увеличить максимальный счет', cost: 150, effect: () => { /* Логика для максимального счета */ } },
+            { name: 'Добавить авто-кликер', cost: 200, effect: () => { /* Логика для авто-кликера */ } },
+            { name: 'Уменьшить время на спавн монет', cost: 250, effect: () => { /* Логика для ускорения спавна */ } },
+            { name: 'Получить дополнительное очко за клик', cost: 300, effect: () => { this.clickMultiplier += 0.5; } },
+            { name: 'Увеличить любимое число', cost: 400, effect: () => { /* Логика тут */ } },
+            { name: 'Случайная награда', cost: 500, effect: () => { this.money += Math.floor(Math.random() * 100) + 1; } },
+            { name: 'Бонус за удачное кликание', cost: 600, effect: () => { this.money += 10; } },
+            { name: 'Заблокировать спавн монет на 2 ч', cost: 700, effect: () => { /* Логика тут */ } }
         ];
 
         this.init();
@@ -129,7 +136,7 @@ class Game {
         this.upgrades.forEach((upgrade, index) => {
             const upgradeItem = document.createElement('div');
             upgradeItem.className = 'upgrade';
-            upgradeItem.textContent = `${upgrade.name} (Цена: ${upgrade.cost} Звёздных очков)`;
+            upgradeItem.innerHTML = `${upgrade.name}<br/><strong>Цена: ${upgrade.cost} Звёздных очков</strong>`;
             upgradeItem.addEventListener('click', () => this.purchaseUpgrade(index));
             upgradeList.appendChild(upgradeItem);
         });
