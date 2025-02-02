@@ -1,72 +1,229 @@
-<!DOCTYPE html>
-<html lang="ru">
+:root {
+    --neon-blue: #00ccff;
+    --dark-bg: #0d0d0d;
+    --medium-bg: rgba(40, 40, 40, 0.9);
+    --light-text: #e0e0e0;
+    --glow: rgba(0, 204, 255, 0.5);
+    --accent-color: #ffba00; /* акцентный цвет */
+}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Звездный Кликер</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-</head>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-<body>
-    <div id="particles-js"></div>
+body {
+    background: var(--dark-bg);
+    color: var(--light-text);
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+}
 
-    <div class="game-container">
-        <div class="header">
-            <h1 class="money-counter" id="money">0 Звёздных очков</h1>
-        </div>
+.game-container {
+    background: rgba(0, 0, 0, 0.8);
+    max-width: 450px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 50px var(--glow);
+    position: relative;
+}
 
-        <div class="main-circle" id="circle">
-            <img src="./assets/star.png" alt="Star" class="star-image">
-            <div class="click-effect" id="clickEffect"></div>
-        </div>
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
 
-        <div class="tabs">
-            <button class="tab active" data-tab="achievements">🏆</button>
-            <button class="tab" data-tab="minigame">🎮</button>
-            <button class="tab" data-tab="settings">⚙</button>
-        </div>
+.money-counter {
+    color: var(--neon-blue);
+    font-size: 2.5em;
+    text-shadow: 0 0 10px var(--glow);
+    font-weight: bold;
+}
 
-        <div class="tab-content active" id="achievements">
-            <div class="achievement-list" id="achievementList">
-                <!-- Достижения будут добавлены через JavaScript -->
-            </div>
-        </div>
+.main-circle {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--glow);
+}
 
-        <div class="tab-content" id="minigame">
-            <button id="startMinigameButton" class="btn">Начать мини-игру</button>
-            <div class="minigame-area" id="minigameArea" style="display:none;">
-                <div class="falling-object" id="fallingObject"></div>
-                <div class="score-display" id="minigameScore">Счет: 0</div>
-                <div id="minigameEnd" style="display:none;">
-                    <p>Ваш финальный счет: <span id="finalScore"></span></p>
-                    <button id="restartMinigameButton" class="btn">Начать заново</button>
-                </div>
-            </div>
-        </div>
+.star-image {
+    width: 100%;
+    height: 100%;
+    animation: rotate 5s linear infinite; /* Вращение звезды для эффекта */
+}
 
-        <div class="tab-content" id="settings">
-            <h2 class="tab-title">Настройки</h2>
-            <div class="setting-item">
-                <label for="soundToggle">Звуки:</label>
-                <input type="checkbox" id="soundToggle" checked>
-            </div>
-            <button class="danger-button" id="resetProgress">Сбросить прогресс</button>
-            <div class="credits">Версия 1.0 · Звездный Кликер</div>
-        </div>
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 
-        <div id="notifications"></div>
-    </div>
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    background: var(--medium-bg);
+    border-radius: 8px;
+    padding: 5px;
+}
 
-    <div id="confirmationModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <p>Вы уверены, что хотите сбросить прогресс?</p>
-            <button id="confirmReset" class="btn">Да</button>
-            <button id="cancelReset" class="btn">Нет</button>
-        </div>
-    </div>
+.tab {
+    background: none;
+    border: none;
+    color: var(--light-text);
+    cursor: pointer;
+    padding: 10px;
+    transition: color 0.3s, transform 0.3s;
+    font-size: 1.5em; /* Увеличенный размер текста */
+}
+
+.tab.active {
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px var(--glow);
+    transform: scale(1.1); /* Увеличение активной вкладки */
+}
+
+.tab-content {
+    display: none;
+    padding: 15px;
+    background: var(--medium-bg);
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.achievement-list {
+    margin: 10px 0;
+}
+
+.achievement {
+    background: rgba(50, 50, 50, 0.85);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    font-size: 1.1em; /* Увеличенный размер текста */
+}
+
+.minigame-area {
+    height: 200px;
+    position: relative;
+    background: var(--medium-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.falling-object {
+    width: 30px;
+    height: 30px;
+    background: var(--neon-blue);
+    position: absolute;
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--neon-blue);
+}
+
+#minigameScore {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: var(--neon-blue);
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#notifications {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.notification {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--dark-bg);
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--medium-bg);
+    border: none;
+    color: var(--light-text);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Модальные окна */
+.modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    background-color: var(--medium-bg);
+    margin: 15% auto;
+    padding: 20px;
+    width: 80%;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Кнопки */
+.btn {
+    background: var(--neon-blue);
+    color: black; /* Жирный черный текст */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: bold; /* Жирный текст */
+}
+
+.btn:hover {
+    background: rgba(0, 204, 255, 0.8);
+}
 
 .achievement {
     background: rgba(50, 50, 50, 0.85);
@@ -85,9 +242,15 @@
     background: rgba(255, 100, 100, 0.7); /* Красный цвет для неполученных достижений */
 }
 
-    <button id="themeButton" class="theme-toggle">🌙</button>
+.danger-button {
+    background: #ff5555;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-    <script src="script.js"></script>
-</body>
-
-</html>
+.danger-button:hover {
+    background: #ff4444;
+}
