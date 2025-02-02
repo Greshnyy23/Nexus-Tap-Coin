@@ -14,21 +14,21 @@
     <div id="particles-js"></div>
 
     <div class="game-container">
-        <div class="header">
+        <header class="header">
             <h1 class="money-counter" id="money">0 Звёздных очков</h1>
-        </div>
+        </header>
 
         <div class="main-circle" id="circle">
             <img src="./assets/star.png" alt="Star" class="star-image">
             <div class="click-effect" id="clickEffect"></div>
         </div>
 
-        <div class="tabs">
+        <nav class="tabs">
             <button class="tab active" data-tab="achievements">🏆 Достижения</button>
             <button class="tab" data-tab="minigames">🎮 Мини-игры</button>
             <button class="tab" data-tab="upgrades">⚙️ Улучшения</button>
             <button class="tab" data-tab="settings">⚙ Настройки</button>
-        </div>
+        </nav>
 
         <div class="tab-content active" id="achievements">
             <h2 class="section-title">Достижения</h2>
@@ -37,17 +37,14 @@
 
         <div class="tab-content" id="minigames">
             <h2 class="section-title">Мини-игра: Поймай монету</h2>
-            <div class="minigame-area" id="coinGameArea" style="position: relative; width: 300px; height: 300px; border: 2px solid var(--neon-blue); border-radius: 10px; margin: 0 auto;">
-            </div>
+            <div id="coinGameArea" class="minigame-area"></div>
             <div id="coinScore">Счет: 0</div>
             <button id="restartCoinGameButton" class="btn" style="display:none;">Начать заново</button>
         </div>
 
-        <div class="tab-content" id="upgrades" style="display:none;">
+        <div class="tab-content" id="upgrades">
             <h2 class="section-title">Улучшения</h2>
-            <div class="upgrades-container">
-                <div id="upgradeList" class="upgrade-list"></div>
-            </div>
+            <div id="upgradeList" class="upgrade-list"></div>
             <button id="upgradeButton" class="btn">Потратить Звёздные очки</button>
         </div>
 
