@@ -82,13 +82,13 @@ body {
     cursor: pointer;
     padding: 8px;
     transition: color 0.3s, transform 0.3s;
-    font-size: 1.2em; /* Увеличенный размер текста */
+    font-size: 1.2em;
 }
 
 .tab.active {
     color: var(--neon-blue);
     text-shadow: 0 0 10px var(--glow);
-    transform: scale(1.1); /* Увеличение активной вкладки */
+    transform: scale(1.1);
 }
 
 .tab-content {
@@ -119,7 +119,7 @@ body {
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 5px;
-    font-size: 1.1em; /* Увеличенный размер текста */
+    font-size: 1.1em;
 }
 
 .minigame-area {
@@ -139,8 +139,8 @@ body {
 }
 
 .upgrade-list {
-    max-height: 200px;
     overflow-y: auto;
+    max-height: 150px;
     width: 100%;
 }
 
@@ -177,7 +177,7 @@ body {
 /* Кнопки */
 .btn {
     background: var(--neon-blue);
-    color: black; /* Жирный черный текст */
+    color: black;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
@@ -206,7 +206,7 @@ body {
 
 /* Модальные окна */
 .modal {
-    display: none; /* Скрыто по умолчанию */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
