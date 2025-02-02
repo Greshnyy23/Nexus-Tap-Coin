@@ -115,57 +115,87 @@ body {
     font-size: 1.1em; /* Увеличенный размер текста */
 }
 
+/* Мини-игры */
 .minigame-area {
-    height: 200px;
+    height: 300px;
     position: relative;
     background: var(--medium-bg);
     border-radius: 10px;
     overflow: hidden;
 }
 
-.falling-object {
+.coin {
+    position: absolute;
     width: 30px;
     height: 30px;
-    background: var(--neon-blue);
-    position: absolute;
+    background-color: gold;
     border-radius: 50%;
-    box-shadow: 0 0 15px var(--neon-blue);
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
-#minigameScore {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: var(--neon-blue);
-    font-size: 1.2em;
-    font-weight: bold;
+.coin:hover {
+    transform: scale(1.1);
 }
 
-#notifications {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.notification {
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--dark-bg);
-    padding: 10px;
-    margin: 5px 0;
+/* Оформление для 2048 */
+.tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    font-size: 2em;
+    color: white;
+    background-color: #ccc;
     border-radius: 5px;
 }
 
-.theme-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--medium-bg);
-    border: none;
-    color: var(--light-text);
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+/* Оформление для крестиков-ноликов */
+.ticTacToeCell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    font-size: 3em;
+    border: 2px solid var(--neon-blue);
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.ticTacToeCell:hover {
+    background-color: rgba(0, 204, 255, 0.2);
+}
+
+/* Кнопки */
+.btn {
+    background: var(--neon-blue);
+    color: black; /* Жирный черный текст */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: rgba(0, 204, 255, 0.8);
+}
+
+.danger-button {
+    background: #ff5555;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.danger-button:hover {
+    background: #ff4444;
 }
 
 /* Модальные окна */
@@ -201,34 +231,4 @@ body {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-}
-
-/* Кнопки */
-.btn {
-    background: var(--neon-blue);
-    color: black; /* Жирный черный текст */
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s, color 0.3s;
-    font-weight: bold;
-}
-
-.btn:hover {
-    background: rgba(0, 204, 255, 0.8);
-}
-
-.danger-button {
-    background: #ff5555;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.danger-button:hover {
-    background: #ff4444;
 }
