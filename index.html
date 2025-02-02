@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Звездный Кликер</title>
+    <title>Звездный Кликер - Поймай монету</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
     <script src="https://cdn.jsdelivr.net/npm/howler"></script>
@@ -36,33 +36,11 @@
         </div>
 
         <div class="tab-content" id="minigames">
-            <h2>Мини-игры</h2>
-            <div class="tabs">
-                <button class="minigame-tab active" data-minigame="coinCollector">💰 Охота на монеты</button>
-                <button class="minigame-tab" data-minigame="game2048">🟩 2048</button>
-                <button class="minigame-tab" data-minigame="ticTacToe">❌⭕ Крестики-нолики</button>
+            <h2>Мини-игра: Поймай монету</h2>
+            <div class="minigame-area" id="coinGameArea" style="position: relative; width: 300px; height: 300px; border: 2px solid var(--neon-blue); bor; border-radius: 10px; margin: 0 auto;">
             </div>
-
-            <div class="tab-content active" id="coinCollector">
-                <h2>Охота на монеты</h2>
-                <div id="coinGameArea" style="position: relative; width: 300px; height: 300px; border: 2px solid var(--neon-blue);"></div>
-                <div id="coinScore">Счет: 0</div>
-                <button id="restartCoinGameButton" class="btn" style="display:none;">Начать заново</button>
-            </div>
-
-            <div class="tab-content" id="game2048" style="display:none;">
-                <h2>2048</h2>
-                <div id="board" style="display: grid; grid-template-columns: repeat(4, 100px); grid-gap: 5px; margin: 10px auto; width: fit-content;"></div>
-                <div id="gameScore">Счет: 0</div>
-                <button id="restart2048Button" class="btn" style="display:none;">Начать заново</button>
-            </div>
-
-            <div class="tab-content" id="ticTacToe" style="display:none;">
-                <h2>Крестики-нолики</h2>
-                <div id="ticTacToeBoard" style="display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 5px; margin: 10px auto; width: fit-content;"></div>
-                <div id="ticTacToeStatus">Текущий игрок: X</div>
-                <button id="restartTicTacToeButton" class="btn" style="display:none;">Начать заново</button>
-            </div>
+            <div id="coinScore">Счет: 0</div>
+            <button id="restartCoinGameButton" class="btn" style="display:none;">Начать заново</button>
         </div>
 
         <div class="tab-content" id="settings">
