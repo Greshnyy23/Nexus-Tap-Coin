@@ -4,7 +4,6 @@
     --medium-bg: rgba(40, 40, 40, 0.9);
     --light-text: #e0e0e0;
     --glow: rgba(0, 204, 255, 0.5);
-    --accent-color: #ffba00; /* акцентный цвет */
 }
 
 * {
@@ -59,7 +58,7 @@ body {
 .star-image {
     width: 100%;
     height: 100%;
-    animation: rotate 5s linear infinite; /* Вращение звезды для эффекта */
+    animation: rotate 5s linear infinite;
 }
 
 @keyframes rotate {
@@ -122,10 +121,6 @@ body {
     background: var(--medium-bg);
     border-radius: 10px;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 .falling-object {
@@ -218,28 +213,11 @@ body {
     cursor: pointer;
     margin-top: 10px;
     transition: background-color 0.3s, color 0.3s;
-    font-weight: bold; /* Жирный текст */
+    font-weight: bold;
 }
 
 .btn:hover {
     background: rgba(0, 204, 255, 0.8);
-}
-
-.achievement {
-    background: rgba(50, 50, 50, 0.85);
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
-
-/* ✅ Измени на цвет, который вам нравится для полученных */
-.achievement.completed {
-    background: rgba(0, 255, 0, 0.7); /* Зеленый цвет для полученных достижений */
-}
-
-/* ❌ Измени на цвет, который вам нравится для неполученных */
-.achievement:not(.completed) {
-    background: rgba(255, 100, 100, 0.7); /* Красный цвет для неполученных достижений */
 }
 
 .danger-button {
