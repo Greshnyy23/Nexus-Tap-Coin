@@ -29,12 +29,14 @@
         </div>
 
         <div class="tab-content active" id="achievements">
+            <h2 class="tab-title">Достижения</h2>
             <div class="achievement-list" id="achievementList">
                 <!-- Достижения будут добавлены через JavaScript -->
             </div>
         </div>
 
         <div class="tab-content" id="minigame">
+            <h2 class="tab-title">Мини-игра</h2>
             <button id="startMinigameButton" class="btn">Начать мини-игру</button>
             <div class="minigame-area" id="minigameArea" style="display:none;">
                 <div class="falling-object" id="fallingObject"></div>
@@ -47,6 +49,7 @@
         </div>
 
         <div class="tab-content" id="settings">
+            <h2 class="tab-title">Настройки</h2>
             <div class="setting-item">
                 <label>Звуки:</label>
                 <input type="checkbox" id="soundToggle" checked>
@@ -58,9 +61,6 @@
         <div id="notifications"></div>
     </div>
 
-    <button id="themeButton" class="theme-toggle">🌙</button>
-
-    <!-- Modal for confirmation -->
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -69,6 +69,8 @@
             <button id="cancelReset" class="btn">Нет</button>
         </div>
     </div>
+
+    <button id="themeButton" class="theme-toggle">🌙</button>
 
     <script src="script.js"></script>
 </body>
