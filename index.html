@@ -54,23 +54,14 @@
                 <label for="soundToggle">Звуки:</label>
                 <input type="checkbox" id="soundToggle" checked>
             </div>
+            <button id="prestigeButton" class="btn" style="margin-top: 20px;">Совершить престиж</button>
             <button class="danger-button" id="resetProgress">Сбросить прогресс</button>
             <div class="credits">Версия 1.0 · Звездный Кликер</div>
         </div>
 
         <div id="notifications"></div>
+        <div id="prestigeStatus"></div>
     </div>
-
-    <div id="confirmationModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <p>Вы уверены, что хотите сбросить прогресс?</p>
-            <button id="confirmReset" class="btn">Да</button>
-            <button id="cancelReset" class="btn">Нет</button>
-        </div>
-    </div>
-
-    <button id="themeButton" class="theme-toggle">🌙</button>
 
     <script src="script.js"></script>
 </body>
