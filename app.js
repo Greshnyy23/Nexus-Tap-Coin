@@ -10,15 +10,15 @@ class Game {
         this.achievements = [];
         this.upgrades = [
             { name: 'Увеличить значение клика', cost: 50, effect: () => { this.clickMultiplier *= 2; } },
-            { name: 'Увеличить скорость клика', cost: 100, effect: () => { this.clickMultiplier += 1; } },
-            { name: 'Увеличить максимальный счет', cost: 150, effect: () => { /* Логика для максимального счета */ } },
-            { name: 'Добавить авто-кликер', cost: 200, effect: () => { /* Логика для авто-кликера */ } },
-            { name: 'Уменьшить время на спавн монет', cost: 250, effect: () => { /* Логика для ускорения спавна */ } },
-            { name: 'Получить дополнительное очко за клик', cost: 300, effect: () => { this.clickMultiplier += 0.5; } },
-            { name: 'Увеличить любимое число', cost: 400, effect: () => { /* Логика тут */ } },
-            { name: 'Случайная награда', cost: 500, effect: () => { this.money += Math.floor(Math.random() * 100) + 1; } },
-            { name: 'Бонус за удачное кликание', cost: 600, effect: () => { this.money += 10; } },
-            { name: 'Заблокировать спавн монет на 2 ч', cost: 700, effect: () => { /* Логика тут */ } }
+            { name: 'Удвоить скорость клика', cost: 100, effect: () => { this.clickMultiplier *= 1.5; } },
+            { name: 'Увеличить заработок за клик', cost: 150, effect: () => { this.clickMultiplier += 1; } },
+            { name: 'Авто-кликер (1 в секунду)', cost: 200, effect: () => { this.autoClickerActive = true; } },
+            { name: 'Снижение времени спавна монет', cost: 250, effect: () => { /* Здесь можно добавить логику /* } },
+            { name: 'Увеличить скорость спавна монет', cost: 300, effect: () => { /* Логика здесь */ } },
+            { name: 'Бонус за поимку монеты', cost: 350, effect: () => { this.clickMultiplier += 1; } },
+            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Можно добавить еще логику */ } },
+            { name: 'Случайная награда', cost: 450, effect: () => { this.money += Math.floor(Math.random() * 100) + 1; } },
+            { name: 'Увеличить прибыль от автокликера', cost: 500, effect: () => { this.clickMultiplier += 1; } }
         ];
 
         this.init();
@@ -30,7 +30,7 @@ class Game {
         document.getElementById('restartCoinGameButton').addEventListener('click', () => this.restartCoinCollector());
         document.getElementById('resetProgress').addEventListener('click', () => this.openConfirmationModal());
         this.setupTabSwitching();
-        this.setupUpgrades();
+        this.setupUpgrades(); // Устанавливаем улучшения при запуске
         document.getElementById('themeButton').addEventListener('click', () => this.toggleTheme());
         this.setupCoinCollector(); // Инициализируем игру с монетами
     }
