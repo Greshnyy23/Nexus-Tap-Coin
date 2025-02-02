@@ -10,10 +10,10 @@ class Game {
         this.achievements = [];
         this.upgrades = [
             { name: 'Увеличить значение клика', cost: 50, effect: () => { this.clickMultiplier *= 2; } },
-            { name: 'Удвоить скорость клика', cost: 100, effect: () => { this.clickMultiplier *= 1.5; } },
+            { name: 'Удвоить скорость клика', cost: 100, effect: () => { this.clickMultiplier *= 2; } },
             { name: 'Увеличить заработок за клик', cost: 150, effect: () => { this.clickMultiplier += 1; } },
-            { name: 'Авто-кликер (1 в секунду)', cost: 200, effect: () => { this.autoClickerActive = true; } },
-            { name: 'Снижение времени спавна монет', cost: 250, effect: () => { /* Здесь можно добавить логику /* } },
+            { name: 'Добавить авто-кликер', cost: 200, effect: () => { /* Логика для авто-кликера */ } },
+            { name: 'Снижение времени спавна монет', cost: 250, effect: () => { /* Логика тут */ } },
             { name: 'Увеличить скорость спавна монет', cost: 300, effect: () => { /* Логика здесь */ } },
             { name: 'Бонус за поимку монеты', cost: 350, effect: () => { this.clickMultiplier += 1; } },
             { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Можно добавить еще логику */ } },
