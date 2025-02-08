@@ -59,29 +59,23 @@ h1 {
     display: none;
 }
 
-.tab-content h2 {
-    font-size: 28px;
-    margin: 10px 0;
-    text-shadow: 0 0 5px #00ffff;
-}
-
 .buttons {
     display: flex;
     justify-content: center;
 }
 
 .starship {
-    width: 100px; /* Задайте желаемый размер */
+    width: 100px; /* Размер изображения */
     cursor: pointer; /* Указатель при наведении */
     animation: float 2s infinite; /* Применение анимации */
 }
 
 @keyframes float {
     0%, 100% {
-        transform: translatey(0); /* Исходное положение */
+        transform: translateY(0); /* Исходное положение */
     }
     50% {
-        transform: translatey(-10px); /* Подъем вверх */
+        transform: translateY(-10px); /* Подъем вверх */
     }
 }
 
