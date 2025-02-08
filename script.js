@@ -52,6 +52,8 @@ document.getElementById('mineButton').addEventListener('click', () => {
     saveGame();
 });
 
+// Остальные части кода остаются прежними
+
 document.getElementById('upgradeButton').addEventListener('click', () => {
     if (resources >= upgradeCost) {
         resources -= upgradeCost;
@@ -146,7 +148,7 @@ function startAutoMine() {
         updateResourceCount();
         checkAchievements();
         saveGame();
-    }, 2500); // Каждые 2.5 секунд
+    }, 5000); // Каждые 5 секунд
 }
 
 // Очищаем интервал при выгрузке страницы
@@ -172,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadGame();
     openTab(event, 'mineTab');
 });
+
 
 
 // Автообновление интерфейса каждую секунду
