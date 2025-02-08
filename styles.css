@@ -1,5 +1,5 @@
 body {
-    background: linear-gradient(to bottom right, #1a1a1a, #0b0b0b);
+    background: linear-gradient(to bottom, #000428, #004e92);
     color: white;
     font-family: 'Arial', sans-serif;
     display: flex;
@@ -7,6 +7,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    overflow: hidden; /* Prevent scrolling */
 }
 
 .container {
@@ -14,18 +15,17 @@ body {
     padding: 20px;
     border: 2px solid #00ffff;
     border-radius: 15px;
-    background-color: rgba(50, 50, 50, 0.7);
+    background-color: rgba(255, 255, 255, 0.1);
     box-shadow: 0 0 20px #00ffff;
 }
 
 h1 {
-    font-size: 2.5em; 
+    font-size: 2.5em; /* Responsive font size */
     margin-bottom: 20px;
-    text-shadow: 0 0 5px #00ffff;
 }
 
 .resource-count {
-    font-size: 2em; 
+    font-size: 2em; /* Responsive font size */
     margin: 20px 0;
 }
 
@@ -42,12 +42,11 @@ h1 {
     margin: 0 5px;
     cursor: pointer;
     border-radius: 10px;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.3s;
 }
 
 .tab-button:hover {
     background-color: rgba(0, 204, 204, 0.7);
-    transform: scale(1.05); /* Увеличение кнопки при наведении */
 }
 
 .tab-button.active {
@@ -64,17 +63,17 @@ h1 {
 }
 
 .starship {
-    width: 100px; 
-    cursor: pointer; 
-    animation: float 2s infinite; 
+    width: 100px; /* Размер изображения */
+    cursor: pointer; /* Указатель при наведении */
+    animation: float 2s infinite; /* Применение анимации */
 }
 
 @keyframes float {
     0%, 100% {
-        transform: translateY(0); 
+        transform: translateY(0); /* Исходное положение */
     }
     50% {
-        transform: translateY(-10px); 
+        transform: translateY(-10px); /* Подъем вверх */
     }
 }
 
@@ -89,12 +88,11 @@ h1 {
 .styled-button {
     background-color: rgba(0, 255, 255, 0.8);
     border: none;
-    padding: 12px;
+    padding: 10px;
     border-radius: 5px;
     margin: 10px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
-    font-size: 1em; /* Увеличиваем размер шрифта */
 }
 
 .styled-button:hover {
@@ -112,7 +110,7 @@ h1 {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    z-index: 1000; /* Убедитесь, что попап поверх остального */
 }
 
 .notification {
@@ -128,15 +126,15 @@ h1 {
 /* Адаптивный дизайн */
 @media (max-width: 600px) {
     h1 {
-        font-size: 1.5em; 
+        font-size: 1.5em; /* Меньший заголовок для малых экранов */
     }
     .resource-count {
-        font-size: 1.5em; 
+        font-size: 1.5em; /* Меньший размер для счётчика ресурсов */
     }
     .starship {
-        width: 80px; 
+        width: 80px; /* Уменьшение размера изображения для меньших экранов */
     }
     .styled-button {
-        font-size: 0.8em; 
+        font-size: 0.8em; /* Менькие кнопки на мобильных устройствах */
     }
 }
