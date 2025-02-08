@@ -121,6 +121,7 @@ body {
 
 .minigame-area {
     height: 300px;
+    position: relative;
     background: var(--medium-bg);
     border-radius: 10px;
     overflow: hidden;
