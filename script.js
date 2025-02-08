@@ -23,13 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedAutoMineRate = localStorage.getItem('autoMineRate');
         const savedClickMultiplier = localStorage.getItem('clickMultiplier');
         
-        if (savedResources) resources = parseInt(savedResources);
-        if (savedLevel) level = parseInt(savedLevel);
-        if (savedPrestigeLevel) prestigeLevel = parseInt(savedPrestigeLevel);
-        if (savedUpgradeCost) upgradeCost = parseInt(savedUpgradeCost);
-        if (savedMiningRate) miningRate = parseInt(savedMiningRate);
-        if (savedAutoMineRate) autoMineRate = parseInt(savedAutoMineRate);
-        if (savedClickMultiplier) clickMultiplier = parseFloat(savedClickMultiplier);
+        if (savedResources !== null) resources = parseInt(savedResources);
+        if (savedLevel !== null) level = parseInt(savedLevel);
+        if (savedPrestigeLevel !== null) prestigeLevel = parseInt(savedPrestigeLevel);
+        if (savedUpgradeCost !== null) upgradeCost = parseInt(savedUpgradeCost);
+        if (savedMiningRate !== null) miningRate = parseInt(savedMiningRate);
+        if (savedAutoMineRate !== null) autoMineRate = parseInt(savedAutoMineRate);
+        if (savedClickMultiplier !== null) clickMultiplier = parseFloat(savedClickMultiplier);
 
         updateResourceCount();
         document.getElementById('level').innerText = level;
@@ -204,12 +204,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedTab = document.getElementById(tabName);
         if (selectedTab) {
             selectedTab.style.display = 'block';
+        } else {
+            console.error("Tab not found:", tabName);
         }
 
         // Добавить активный класс к текущей кнопке
         const clickedButton = evt.currentTarget;
         if (clickedButton) {
             clickedButton.classList.add('active');
+        } else {
+            console.error("Clicked button not found");
         }
     }
 
@@ -232,4 +236,31 @@ document.addEventListener('DOMContentLoaded', () => {
             notification.style.display = 'none';
         }, 3000);
     }
+
+    // Описание для престижа
+    function promptPrestige() {
+        document.getElementById('prestigePrompt').style.display = 'block';
+    }
+
+    document.getElementById('confirmPrestige').addEventListener('click', () => {
+        // Сбросить уровень и дать бонус
+        prestigeLevel++;
+        level = 1; // Сброс уровня
+        miningRate = 1; // Сброс скорости добычи
+        resources += 100; // Бонус за престиж
+
+        // Обновление данных
+        document.getElementById('prestigeLevel').innerText = prestigeLevel;
+        document.getElementById('level').innerText = level;
+
+        // Сохранить данные
+        saveGame();
+        
+        // Скрыть уведомление
+        document.getElementById('prestigePrompt').style.display = 'none';
+    });
+
+    document.getElementById('cancelPrestige').addEventListener('click', () => {
+        document.getElementById('prestigePrompt').style.display = 'none'; // Скрыть уведомление
+    });
 });
