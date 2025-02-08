@@ -3,6 +3,13 @@ let level = 1;
 let upgradeCost = 0;
 let miningRate = 1; // Количество ресурсов за клик
 let autoMineInterval;
+let autoMineRate = 0;  // Ресурсы, получаемые автоматически
+let clickMultiplier = 1; // Множитель для клика
+let magnetActive = false;
+let magnetDuration = 0; // Время активации магнита в секундах
+let autoMineCost = 100; // Стоимость автодобычи
+let multiplierCost = 200; // Стоимость множителя
+let magnetCost = 500; // Стоимость магнита
 
 // Загружаем данные из localStorage
 function loadGame() {
@@ -10,15 +17,22 @@ function loadGame() {
     const savedLevel = localStorage.getItem('level');
     const savedUpgradeCost = localStorage.getItem('upgradeCost');
     const savedMiningRate = localStorage.getItem('miningRate');
-
+    const savedAutoMineRate = localStorage.getItem('autoMineRate');
+    const savedClickMultiplier = localStorage.getItem('clickMultiplier');
+    
     if (savedResources) resources = parseInt(savedResources);
     if (savedLevel) level = parseInt(savedLevel);
     if (savedUpgradeCost) upgradeCost = parseInt(savedUpgradeCost);
     if (savedMiningRate) miningRate = parseInt(savedMiningRate);
+    if (savedAutoMineRate) autoMineRate = parseInt(savedAutoMineRate);
+    if (savedClickMultiplier) clickMultiplier = parseFloat(savedClickMultiplier);
 
     updateResourceCount();
     document.getElementById('level').innerText = level;
     document.getElementById('upgradeButton').innerText = `Улучшить (${upgradeCost})`;
+    document.getElementById('autoMineButton').innerText = `Автовыработка (${autoMineCost})`;
+    document.getElementById('multiplierButton').innerText = `Увеличить клик (${multiplierCost})`;
+    document.getElementById('magnetButton').innerText = `Магнит (${magnetCost})`;
 }
 
 // Сохраняем данные в localStorage
@@ -27,10 +41,12 @@ function saveGame() {
     localStorage.setItem('level', level);
     localStorage.setItem('upgradeCost', upgradeCost);
     localStorage.setItem('miningRate', miningRate);
+    localStorage.setItem('autoMineRate', autoMineRate);
+    localStorage.setItem('clickMultiplier', clickMultiplier);
 }
 
 document.getElementById('mineButton').addEventListener('click', () => {
-    resources += miningRate;
+    resources += miningRate * clickMultiplier;
     updateResourceCount();
     checkAchievements();
     saveGame();
@@ -56,6 +72,59 @@ document.getElementById('upgradeButton').addEventListener('click', () => {
     }
 });
 
+// Автовыработка
+document.getElementById('autoMineButton').addEventListener('click', () => {
+    if (resources >= autoMineCost) {
+        resources -= autoMineCost;
+        autoMineRate += 1; // Увеличиваем скорость автодобычи
+        autoMineCost = Math.ceil(autoMineCost * 1.5); // Увеличиваем цену
+        document.getElementById('autoMineButton').innerText = `Автовыработка (${autoMineCost})`;
+        updateResourceCount();
+        saveGame();
+        
+        // Запускаем автодобычу, если она ещё не запущена
+        if (!autoMineInterval) {
+            startAutoMine();
+        }
+    } else {
+        alert('Недостаточно ресурсов для автодобычи!');
+    }
+});
+
+// Увеличение клика
+document.getElementById('multiplierButton').addEventListener('click', () => {
+    if (resources >= multiplierCost) {
+        resources -= multiplierCost;
+        clickMultiplier++;
+        multiplierCost = Math.ceil(multiplierCost * 1.5); // Увеличиваем цену
+        document.getElementById('multiplierButton').innerText = `Увеличить клик (${multiplierCost})`;
+        updateResourceCount();
+        saveGame();
+    } else {
+        alert('Недостаточно ресурсов для увеличения клика!');
+    }
+});
+
+// Магнит
+document.getElementById('magnetButton').addEventListener('click', () => {
+    if (resources >= magnetCost) {
+        resources -= magnetCost;
+        magnetActive = true;
+        magnetDuration = 10; // Активируем магнит на 10 секунд
+        document.getElementById('magnetButton').style.display = 'none'; // Скрыть кнопку
+        updateResourceCount();
+        saveGame();
+
+        // Сброс активности магнита через 10 секунд
+        setTimeout(() => {
+            magnetActive = false;
+            document.getElementById('magnetButton').style.display = 'inline-block'; // Показать кнопку назад
+        }, magnetDuration * 1000);
+    } else {
+        alert('Недостаточно ресурсов для магнита!');
+    }
+});
+
 function updateResourceCount() {
     document.getElementById('resourceCount').innerText = resources;
 }
@@ -73,11 +142,11 @@ function checkAchievements() {
 
 function startAutoMine() {
     autoMineInterval = setInterval(() => {
-        resources += miningRate;
+        resources += autoMineRate;
         updateResourceCount();
         checkAchievements();
         saveGame();
-    }, 2000); // Каждые 2 секунд
+    }, 2500); // Каждые 2.5 секунд
 }
 
 // Очищаем интервал при выгрузке страницы
@@ -103,6 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadGame();
     openTab(event, 'mineTab');
 });
+
 
 // Автообновление интерфейса каждую секунду
 setInterval(() => {
