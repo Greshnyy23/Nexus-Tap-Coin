@@ -10,7 +10,7 @@
     <div class="container">
         <h1>Космических ресурсов</h1>
         <div class="resource-count" id="resourceCount">0</div>
-        
+
         <div class="tabs">
             <button class="tab-button active" onclick="openTab(event, 'mineTab')">Добыча</button>
             <button class="tab-button" onclick="openTab(event, 'upgradeTab')">Улучшения</button>
@@ -26,6 +26,9 @@
         <div class="tab-content" id="upgradeTab" style="display:none;">
             <h2>Уровень: <span id="level">1</span></h2>
             <button id="upgradeButton">Улучшить (0)</button>
+            <button id="autoMineButton">Автовыработка (100)</button>
+            <button id="multiplierButton">Увеличить клик (200)</button>
+            <button id="magnetButton">Магнит (500)</button>
         </div>
 
         <div class="tab-content" id="achievementsTab" style="display:none;">
