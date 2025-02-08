@@ -1,65 +1,27 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Космический Кликер</title>
+    <title>Космические ресурсы</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
 </head>
-
 <body>
-    <div class="game-container">
-        <header class="header">
-            <h1 class="money-counter" id="money">0 Космических ресурсов</h1>
-        </header>
-
-        <div class="main-circle" id="circle">
-            <img src="./assets/spaceship.png" alt="Spaceship" class="star-image">
+    <div class="container">
+        <h1>Космических ресурсов</h1>
+        <div class="resource-count" id="resourceCount">0</div>
+        <div class="buttons">
+            <button id="mineButton">Добыть</button>
+            <button id="upgradeButton">Улучшить (0)</button>
         </div>
-
-        <nav class="tabs">
-            <button class="tab active" data-tab="achievements">🏆 Достижения</button>
-            <button class="tab" data-tab="minigames">🎮 Ловля астероидов</button>
-            <button class="tab" data-tab="upgrades">⚙️ Улучшения</button>
-            <button class="tab" data-tab="settings">⚙ Настройки</button>
-        </nav>
-
-        <div class="tab-content active" id="achievements">
-            <h2 class="section-title">Достижения</h2>
-            <div class="achievement-list" id="achievementList"></div>
+        <div class="level">
+            <h2>Уровень: <span id="level">1</span></h2>
         </div>
-
-        <div class="tab-content" id="minigames">
-            <h2 class="section-title">Ловля астероидов</h2>
-            <div id="coinGameArea" class="minigame-area"></div>
-            <div id="coinScore">Счет: 0</div>
-            <button id="restartCoinGameButton" class="btn" style="display:none;">Начать заново</button>
+        <div class="achievements">
+            <h2>Достижения</h2>
+            <div id="achievementList">Нет достижений</div>
         </div>
-
-        <div class="tab-content" id="upgrades">
-            <h2 class="section-title">Улучшения</h2>
-            <div id="upgradeList" class="upgrade-list"></div>
-            <button class="btn" id="upgradeButton">Потратить Космические ресурсы</button>
-        </div>
-
-        <div class="tab-content" id="settings">
-            <h2 class="section-title">Настройки</h2>
-            <div class="setting-item">
-                <label for="soundToggle">Звуки:</label>
-                <input type="checkbox" id="soundToggle" checked>
-            </div>
-            <button id="prestigeButton" class="btn">Совершить престиж</button>
-            <button class="danger-button" id="resetProgress">Сбросить прогресс</button>
-            <div class="credits">Версия 1.0 · Космический Кликер</div>
-        </div>
-
-        <div id="notifications"></div>
-        <div id="prestigeStatus"></div>
     </div>
-
     <script src="script.js"></script>
 </body>
-
 </html>
