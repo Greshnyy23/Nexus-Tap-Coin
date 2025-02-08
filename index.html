@@ -14,7 +14,6 @@
         <div class="tabs">
             <button class="tab-button active" onclick="openTab(event, 'mineTab')">Добыча</button>
             <button class="tab-button" onclick="openTab(event, 'upgradeTab')">Улучшения</button>
-            <button class="tab-button" onclick="openTab(event, 'achievementsTab')">Достижения</button>
         </div>
 
         <div class="tab-content" id="mineTab">
@@ -25,21 +24,11 @@
 
         <div class="tab-content" id="upgradeTab" style="display:none;">
             <h2>Уровень: <span id="level">1</span></h2>
-            <h3>Престиж: <span id="prestigeLevel">0</span></h3>
-            <div class="upgrade-buttons">
-                <button id="upgradeButton" class="styled-button">Улучшить (0)</button>
-                <button id="autoMineButton" class="styled-button">Автовыработка (100)</button>
-                <button id="multiplierButton" class="styled-button">Увеличить клик (200)</button>
-                <button id="magnetButton" class="styled-button">Магнит (500)</button>
-            </div>
+            <button id="upgradeButton" class="styled-button">Улучшить (0)</button>
+            <button id="prestigeButton" class="styled-button" style="display: none;">Престиж</button>
         </div>
 
-        <div class="tab-content" id="achievementsTab" style="display:none;">
-            <h2>Достижения</h2>
-            <div id="achievementList" class="achievement-list">
-                <!-- Достижения будут добавляться здесь -->
-            </div>
-        </div>
+        <div id="notification" class="notification" style="display:none;"></div>
     </div>
 
     <div id="prestigePrompt" class="popup" style="display:none;">
@@ -48,8 +37,6 @@
         <button id="confirmPrestige" class="styled-button">Да, делать престиж!</button>
         <button id="cancelPrestige" class="styled-button">Нет, спасибо.</button>
     </div>
-
-    <div id="notification" class="notification" style="display:none;"></div>
 
     <script src="script.js"></script>
 </body>
