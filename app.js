@@ -10,15 +10,16 @@ class Game {
         this.achievements = [];
         this.prestigeCount = 0;
 
+        // Определение улучшений
         this.upgrades = [
-            { name: 'Добавить 1 монету за клик', cost: 50, effect: () => { this.clickMultiplier += 1; } },
+            { name: 'Добавить 1 космический ресурс за клик', cost: 50, effect: () => { this.clickMultiplier += 1; } },
             { name: 'Удвоить скорость клика', cost: 100, effect: () => { this.clickMultiplier *= 2; } },
             { name: 'Увеличить заработок за клик', cost: 150, effect: () => { this.clickMultiplier += 1; } },
             { name: 'Добавить авто-кликер (1 в секунду)', cost: 200, effect: () => { /* Логика для авто-кликера */ } },
-            { name: 'Снижение времени спавна монет', cost: 250, effect: () => { /* Логика тут */ } },
-            { name: 'Увеличить скорость спавна монет', cost: 300, effect: () => { /* Логика здесь */ } },
-            { name: 'Бонус за поимку монеты', cost: 350, effect: () => { this.clickMultiplier += 1; } },
-            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Логика сюда */ } },
+            { name: 'Снижение времени спавна астероидов', cost: 250, effect: () => { /* Логика тут */ } },
+            { name: 'Увеличить скорость спавна астероидов', cost: 300, effect: () => { /* Логика здесь */ } },
+            { name: 'Бонус за поимку астероида', cost: 350, effect: () => { this.clickMultiplier += 1; } },
+            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Можно добавить еще логику */ } },
             { name: 'Случайная награда', cost: 450, effect: () => { this.money += Math.floor(Math.random() * 100) + 1; } },
             { name: 'Увеличить прибыль от автокликера', cost: 500, effect: () => { this.clickMultiplier += 1; } }
         ];
@@ -31,7 +32,7 @@ class Game {
         this.setupEventListeners();
         this.setupCoinCollector();
         this.setupUpgrades();
-        this.updatePrestigeDisplay(); // Обновляем отображение престижа
+        this.updatePrestigeDisplay();
     }
 
     loadGame() {
@@ -75,21 +76,21 @@ class Game {
     }
 
     addMoney(amount) {
-        if (amount < 0) return; // Проверка на отрицательные значения
+        if (amount < 0) return;
         this.money += amount;
         this.checkForAchievements();
         this.updateMoneyDisplay();
     }
 
     updateMoneyDisplay() {
-        this.$moneyDisplay.textContent = `${this.money} Звёздных очков`;
-        this.updatePrestigeDisplay(); // Обновляем отображение престижа
+        this.$moneyDisplay.textContent = `${this.money} Космических ресурсов`;
+        this.updatePrestigeDisplay();
     }
 
     checkForAchievements() {
-        if (this.money >= 100 && !this.achievements.includes("Собрано 100 звёздных очков")) {
-            this.achievements.push("Собрано 100 звёздных очков");
-            this.showAchievement("Собрано 500 звёздных очков"); // Пример достижения
+        if (this.money >= 100 && !this.achievements.includes("Собрано 100 космических ресурсов")) {
+            this.achievements.push("Собрано 100 космических ресурсов");
+            this.showAchievement("Собрано 500 космических ресурсов");
         }
         this.saveGame();
     }
@@ -151,7 +152,7 @@ class Game {
             upgradeCard.className = 'upgrade-card';
             upgradeCard.innerHTML = `
                 <div class="upgrade-name">${upgrade.name}</div>
-                <div class="upgrade-cost">Цена: ${upgrade.cost} Звёздных очков</div>
+                <div class="upgrade-cost">Цена: ${upgrade.cost} Космических ресурсов</div>
                 <button class="upgrade-btn" data-index="${index}">Купить</button>
             `;
 
@@ -169,7 +170,7 @@ class Game {
             this.setupUpgrades();
             this.updateMoneyDisplay();
         } else {
-            this.showNotification('Недостаточно Звёздных очков для этого улучшения!', 'error');
+            this.showNotification('Недостаточно Космических ресурсов для этого улучшения!', 'error');
         }
     }
 
@@ -197,7 +198,7 @@ class Game {
         this.saveGame();
         this.updateMoneyDisplay();
         document.getElementById('achievementList').innerHTML = '';
-        this.updatePrestigeDisplay(); // Обновляем отображение
+        this.updatePrestigeDisplay();
         this.showNotification('Прогресс сброшен!', 'success');
     }
 
@@ -205,7 +206,7 @@ class Game {
         if (this.money >= 5000) {
             this.performPrestige();
         } else {
-            this.showNotification('Нужно 5000 Звёздных очков для престижа!', 'error');
+            this.showNotification('Нужно 5000 Космических ресурсов для престижа!', 'error');
         }
     }
 
