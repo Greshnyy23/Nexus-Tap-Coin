@@ -8,7 +8,7 @@ class Game {
         this.coinScore = 0;
         this.coinInterval = null;
         this.achievements = [];
-        this.prestigeCount = 0; // Счетчик престижа
+        this.prestigeCount = 0;
 
         this.upgrades = [
             { name: 'Добавить 1 монету за клик', cost: 50, effect: () => { this.clickMultiplier += 1; } },
@@ -18,7 +18,7 @@ class Game {
             { name: 'Снижение времени спавна монет', cost: 250, effect: () => { /* Логика тут */ } },
             { name: 'Увеличить скорость спавна монет', cost: 300, effect: () => { /* Логика здесь */ } },
             { name: 'Бонус за поимку монеты', cost: 350, effect: () => { this.clickMultiplier += 1; } },
-            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Можно добавить еще логику */ } },
+            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Логика сюда */ } },
             { name: 'Случайная награда', cost: 450, effect: () => { this.money += Math.floor(Math.random() * 100) + 1; } },
             { name: 'Увеличить прибыль от автокликера', cost: 500, effect: () => { this.clickMultiplier += 1; } }
         ];
