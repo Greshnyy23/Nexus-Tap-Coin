@@ -8,7 +8,7 @@ class Game {
         this.coinScore = 0;
         this.coinInterval = null;
         this.achievements = [];
-        this.prestigeCount = 0; // Счетчик престижа
+        this.prestigeCount = 0;
 
         this.upgrades = [
             { name: 'Добавить 1 монету за клик', cost: 50, effect: () => { this.clickMultiplier += 1; } },
@@ -31,7 +31,7 @@ class Game {
         this.setupEventListeners();
         this.setupCoinCollector();
         this.setupUpgrades();
-        this.updatePrestigeDisplay(); // Обновляем отображение престижа
+        this.updatePrestigeDisplay();
     }
 
     loadGame() {
@@ -65,7 +65,7 @@ class Game {
                 tabButtons.forEach(btn => {
                     btn.classList.remove('active');
                 });
-                
+
                 // Устанавливаем новый активный класс
                 const currentTabContent = document.getElementById(tabName);
                 currentTabContent.classList.add('active');
