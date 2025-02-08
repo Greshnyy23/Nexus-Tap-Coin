@@ -10,7 +10,6 @@ class Game {
         this.achievements = [];
         this.prestigeCount = 0;
 
-        // Определение улучшений
         this.upgrades = [
             { name: 'Добавить 1 космический ресурс за клик', cost: 50, effect: () => { this.clickMultiplier += 1; } },
             { name: 'Удвоить скорость клика', cost: 100, effect: () => { this.clickMultiplier *= 2; } },
@@ -19,7 +18,7 @@ class Game {
             { name: 'Снижение времени спавна астероидов', cost: 250, effect: () => { /* Логика тут */ } },
             { name: 'Увеличить скорость спавна астероидов', cost: 300, effect: () => { /* Логика здесь */ } },
             { name: 'Бонус за поимку астероида', cost: 350, effect: () => { this.clickMultiplier += 1; } },
-            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Можно добавить еще логику */ } },
+            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Логика сюда */ } },
             { name: 'Случайная награда', cost: 450, effect: () => { this.money += Math.floor(Math.random() * 100) + 1; } },
             { name: 'Увеличить прибыль от автокликера', cost: 500, effect: () => { this.clickMultiplier += 1; } }
         ];
@@ -68,8 +67,7 @@ class Game {
                 });
                 
                 // Устанавливаем новый активный класс
-                const currentTabContent = document.getElementById(tabName);
-                currentTabContent.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
                 button.classList.add('active');
             });
         });
@@ -198,7 +196,7 @@ class Game {
         this.saveGame();
         this.updateMoneyDisplay();
         document.getElementById('achievementList').innerHTML = '';
-        this.updatePrestigeDisplay();
+        this.updatePrestigeDisplay(); // Обновляем отображение
         this.showNotification('Прогресс сброшен!', 'success');
     }
 
