@@ -7,6 +7,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    overflow: hidden; /* Prevent scrolling */
 }
 
 .container {
@@ -19,13 +20,13 @@ body {
 }
 
 h1 {
-    font-size: 48px;
+    font-size: 2.5em; /* Responsive font size */
     margin-bottom: 20px;
     text-shadow: 0 0 5px #00ffff;
 }
 
 .resource-count {
-    font-size: 56px;
+    font-size: 2em; /* Responsive font size */
     margin: 20px 0;
     color: #00ffff;
     text-shadow: 0 0 10px #00ffff;
@@ -122,4 +123,20 @@ h1 {
     padding: 10px;
     border-radius: 5px;
     display: none;
+}
+
+/* Адаптивный дизайн */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2em; /* Меньший заголовок для малых экранов */
+    }
+    .resource-count {
+        font-size: 1.5em; /* Меньший размер для счётчика ресурсов */
+    }
+    .starship {
+        width: 80px; /* Уменьшение размера изображения для меньших экранов */
+    }
+    .styled-button {
+        font-size: 0.8em; /* Менькие кнопки на мобильных устройствах */
+    }
 }
