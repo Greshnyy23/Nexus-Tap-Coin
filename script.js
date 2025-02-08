@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let prestigeLevel = 0; // Уровень престижа
     let upgradeCost = 0;
     let miningRate = 1; // Количество ресурсов за клик
-    let autoMineInterval; 
+    let autoMineInterval;
     let autoMineRate = 0;  // Ресурсы, получаемые автоматически
     let clickMultiplier = 1; // Множитель для клика
     let magnetActive = false; // Активировать магнит
@@ -13,16 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let multiplierCost = 200; // Стоимость множителя
     let magnetCost = 500; // Стоимость магнита
 
-    // Загружаем данные из localStorage
+    // Загружаем данные из sessionStorage
     function loadGame() {
-        const savedResources = localStorage.getItem('resources');
-        const savedLevel = localStorage.getItem('level');
-        const savedPrestigeLevel = localStorage.getItem('prestigeLevel');
-        const savedUpgradeCost = localStorage.getItem('upgradeCost');
-        const savedMiningRate = localStorage.getItem('miningRate');
-        const savedAutoMineRate = localStorage.getItem('autoMineRate');
-        const savedClickMultiplier = localStorage.getItem('clickMultiplier');
-
+        const savedResources = sessionStorage.getItem('resources');
+        const savedLevel = sessionStorage.getItem('level');
+        const savedPrestigeLevel = sessionStorage.getItem('prestigeLevel');
+        const savedUpgradeCost = sessionStorage.getItem('upgradeCost');
+        const savedMiningRate = sessionStorage.getItem('miningRate');
+        const savedAutoMineRate = sessionStorage.getItem('autoMineRate');
+        const savedClickMultiplier = sessionStorage.getItem('clickMultiplier');
+        
         if (savedResources !== null) resources = parseInt(savedResources);
         if (savedLevel !== null) level = parseInt(savedLevel);
         if (savedPrestigeLevel !== null) prestigeLevel = parseInt(savedPrestigeLevel);
@@ -40,15 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('magnetButton').innerText = `Магнит (${magnetCost})`;
     }
 
-    // Сохраняем данные в localStorage
+    // Сохраняем данные в sessionStorage
     function saveGame() {
-        localStorage.setItem('resources', resources);
-        localStorage.setItem('level', level);
-        localStorage.setItem('prestigeLevel', prestigeLevel);
-        localStorage.setItem('upgradeCost', upgradeCost);
-        localStorage.setItem('miningRate', miningRate);
-        localStorage.setItem('autoMineRate', autoMineRate);
-        localStorage.setItem('clickMultiplier', clickMultiplier);
+        sessionStorage.setItem('resources', resources);
+        sessionStorage.setItem('level', level);
+        sessionStorage.setItem('prestigeLevel', prestigeLevel);
+        sessionStorage.setItem('upgradeCost', upgradeCost);
+        sessionStorage.setItem('miningRate', miningRate);
+        sessionStorage.setItem('autoMineRate', autoMineRate);
+        sessionStorage.setItem('clickMultiplier', clickMultiplier);
     }
 
     // Обработчик клика по кораблю
@@ -201,6 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedTab = document.getElementById(tabName);
         if (selectedTab) {
             selectedTab.style.display = 'block';
+        } else {
+            console.error("Tab not found:", tabName);
         }
 
         const clickedButton = evt.currentTarget;
