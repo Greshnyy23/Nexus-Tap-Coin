@@ -52,8 +52,6 @@ document.getElementById('mineButton').addEventListener('click', () => {
     saveGame();
 });
 
-// Остальные части кода остаются прежними
-
 document.getElementById('upgradeButton').addEventListener('click', () => {
     if (resources >= upgradeCost) {
         resources -= upgradeCost;
@@ -89,7 +87,7 @@ document.getElementById('autoMineButton').addEventListener('click', () => {
             startAutoMine();
         }
     } else {
-        alert('Недостаточно ресурсов для автодобычи!');
+        alert('Недостаточно ресурсов для автовыработки!');
     }
 });
 
@@ -159,14 +157,29 @@ window.addEventListener('beforeunload', () => {
 
 // Функция для переключения между вкладками
 function openTab(evt, tabName) {
+    // Скрыть все содержимое вкладок
     const tabContents = document.querySelectorAll('.tab-content');
-    tabContents.forEach(tab => tab.style.display = 'none');
+    tabContents.forEach(tab => {
+        tab.style.display = 'none';
+    });
 
+    // Удалить активный класс у всех кнопок
     const tabButtons = document.querySelectorAll('.tab-button');
-    tabButtons.forEach(button => button.classList.remove('active'));
+    tabButtons.forEach(button => {
+        button.classList.remove('active');
+    });
 
-    document.getElementById(tabName).style.display = 'block';
-    evt.currentTarget.classList.add('active');
+    // Показать выбранную вкладку
+    const selectedTab = document.getElementById(tabName);
+    if (selectedTab) {
+        selectedTab.style.display = 'block';
+    }
+
+    // Добавить активный класс к текущей кнопке
+    const clickedButton = evt.currentTarget;
+    if (clickedButton) {
+        clickedButton.classList.add('active');
+    }
 }
 
 // Открыть вкладку "Добыча" по умолчанию при загрузке страницы
