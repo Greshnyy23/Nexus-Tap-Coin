@@ -1,31 +1,28 @@
+// СобытиеDOMContentLoaded для инициализации
 document.addEventListener('DOMContentLoaded', () => {
     let resources = 0;
     let level = 1;
-    let prestigeLevel = 0; // Уровень престижа
     let upgradeCost = 0;
     let miningRate = 1; // Количество ресурсов за клик
     let autoMineInterval;
-    let autoMineRate = 0;  // Ресурсы, получаемые автоматически
+    let autoMineRate = 0; // Ресурсы, получаемые автоматически
     let clickMultiplier = 1; // Множитель для клика
-    let magnetActive = false;
+    let magnetActive = false; // Активировать магнит
     let magnetDuration = 0; // Время активации магнита в секундах
     let autoMineCost = 100; // Стоимость автодобычи
     let multiplierCost = 200; // Стоимость множителя
     let magnetCost = 500; // Стоимость магнита
 
-    // Загружаем данные из localStorage
     function loadGame() {
         const savedResources = localStorage.getItem('resources');
         const savedLevel = localStorage.getItem('level');
-        const savedPrestigeLevel = localStorage.getItem('prestigeLevel');
         const savedUpgradeCost = localStorage.getItem('upgradeCost');
         const savedMiningRate = localStorage.getItem('miningRate');
         const savedAutoMineRate = localStorage.getItem('autoMineRate');
         const savedClickMultiplier = localStorage.getItem('clickMultiplier');
-        
+
         if (savedResources) resources = parseInt(savedResources);
         if (savedLevel) level = parseInt(savedLevel);
-        if (savedPrestigeLevel) prestigeLevel = parseInt(savedPrestigeLevel);
         if (savedUpgradeCost) upgradeCost = parseInt(savedUpgradeCost);
         if (savedMiningRate) miningRate = parseInt(savedMiningRate);
         if (savedAutoMineRate) autoMineRate = parseInt(savedAutoMineRate);
@@ -33,18 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateResourceCount();
         document.getElementById('level').innerText = level;
-        document.getElementById('prestigeLevel').innerText = prestigeLevel;
         document.getElementById('upgradeButton').innerText = `Улучшить (${upgradeCost})`;
         document.getElementById('autoMineButton').innerText = `Автовыработка (${autoMineCost})`;
         document.getElementById('multiplierButton').innerText = `Увеличить клик (${multiplierCost})`;
         document.getElementById('magnetButton').innerText = `Магнит (${magnetCost})`;
     }
 
-    // Сохраняем данные в localStorage
     function saveGame() {
         localStorage.setItem('resources', resources);
         localStorage.setItem('level', level);
-        localStorage.setItem('prestigeLevel', prestigeLevel);
         localStorage.setItem('upgradeCost', upgradeCost);
         localStorage.setItem('miningRate', miningRate);
         localStorage.setItem('autoMineRate', autoMineRate);
@@ -59,11 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateResourceCount();
             checkAchievements();
             saveGame();
-
-            // Проверка на достижение 150 уровня
-            if (level === 150) {
-                promptPrestige();
-            }
         });
     }
 
@@ -102,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('autoMineButton').innerText = `Автовыработка (${autoMineCost})`;
                 updateResourceCount();
                 saveGame();
-                
+
                 // Запускаем автодобычу, если она ещё не запущена
                 if (!autoMineInterval) {
                     startAutoMine();
@@ -157,36 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('resourceCount').innerText = resources;
     }
 
-    // Показать уведомление при достижении 150 уровня
-    function promptPrestige() {
-        document.getElementById('prestigePrompt').style.display = 'block';
-    }
-
-    // Обработчик подтверждения престижа
-    const confirmPrestige = document.getElementById('confirmPrestige');
-    if (confirmPrestige) {
-        confirmPrestige.addEventListener('click', () => {
-            prestigeLevel++; // Увеличиваем уровень престижа
-            level = 1; // Сбрасываем уровень
-            miningRate *= 2; // Увеличиваем добычу в 2 раза
-            resources = 0; // Сбрасываем ресурсы
-            updateResourceCount();
-            document.getElementById('prestigeLevel').innerText = prestigeLevel;
-            document.getElementById('level').innerText = level;
-            document.getElementById('prestigePrompt').style.display = 'none';
-            saveGame();
-        });
-    }
-
-    // Обработчик отмены престижа
-    const cancelPrestige = document.getElementById('cancelPrestige');
-    if (cancelPrestige) {
-        cancelPrestige.addEventListener('click', () => {
-            document.getElementById('prestigePrompt').style.display = 'none';
-        });
-    }
-
-    // Проверка достижений
     function checkAchievements() {
         const achievementList = document.getElementById('achievementList');
         if (resources === 10) {
@@ -198,23 +157,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Автоматическая добыча
     function startAutoMine() {
         autoMineInterval = setInterval(() => {
             resources += autoMineRate;
             updateResourceCount();
             checkAchievements();
             saveGame();
-        }, 2500); // Каждые 2.5 секунд
+        }, 5000); // Каждые 5 секунд
     }
 
-    // Автообновление интерфейса каждую секунду
-    setInterval(() => {
-        updateResourceCount();
-    }, 100);
+    // Очищаем интервал при выгрузке страницы
+    window.addEventListener('beforeunload', () => {
+        saveGame();
+        clearInterval(autoMineInterval);
+    });
 
     // Функция для переключения между вкладками
-    function openTab(evt, tabName) {
+    window.openTab = function openTab(evt, tabName) {
         // Скрыть все содержимое вкладок
         const tabContents = document.querySelectorAll('.tab-content');
         tabContents.forEach(tab => {
@@ -241,11 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Открыть вкладку "Добыча" по умолчанию при загрузке страницы
-    const defaultTabButton = document.querySelector('.tab-button.active');
-    if (defaultTabButton) {
-        defaultTabButton.click();
-    }
+    openTab(event, 'mineTab');
 
-    // Загрузка игры при старте
-    loadGame();
+    // Автообновление интерфейса каждую секунду
+    setInterval(() => {
+        updateResourceCount();
+    }, 1000);
 });
