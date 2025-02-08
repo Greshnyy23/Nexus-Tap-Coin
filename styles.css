@@ -28,7 +28,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 0 50px var(--glow);
     position: relative;
-    margin-top: 200px; /* Новый верхний отступ в 200 пикселей */
+    margin-top: 200px;
 }
 
 .header {
@@ -83,13 +83,13 @@ body {
     cursor: pointer;
     padding: 8px;
     transition: color 0.3s, transform 0.3s;
-    font-size: 1.2em;
+    font-size: 1.2em; 
 }
 
 .tab.active {
     color: var(--neon-blue);
     text-shadow: 0 0 10px var(--glow);
-    transform: scale(1.1);
+    transform: scale(1.1); 
 }
 
 .tab-content {
@@ -120,7 +120,7 @@ body {
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 5px;
-    font-size: 1.1em;
+    font-size: 1.1em; 
 }
 
 .minigame-area {
@@ -153,36 +153,36 @@ body {
 }
 
 .upgrade-name {
-    font-size: 1.2em;
-    color: var(--neon-blue);
-    margin-bottom: 10px;
+    font-size: 1.2em; 
+    color: var(--neon-blue); 
+    margin-bottom: 10px; 
 }
 
 .upgrade-cost {
-    font-size: 0.9em;
-    color: var(--light-text);
-    margin-bottom: 15px;
+    font-size: 0.9em; 
+    color: var(--light-text); 
+    margin-bottom: 15px; 
 }
 
 .upgrade-btn {
     background: var(--neon-blue);
-    color: #fff;
+    color: #fff; 
     border: none;
     border-radius: 5px;
     padding: 10px;
     cursor: pointer;
-    width: 100%;
+    width: 100%; 
     transition: background 0.3s;
-    font-weight: bold;
+    font-weight: bold; 
 }
 
 .upgrade-btn:hover {
-    background: rgba(0, 204, 255, 0.8);
+    background: rgba(0, 204, 255, 0.8); 
 }
 
 .btn {
     background: var(--neon-blue);
-    color: black;
+    color: black; 
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
@@ -209,11 +209,10 @@ body {
     background: #ff4444;
 }
 
-/* Уведомления */
 .notification {
     position: fixed;
-    top: 20px; /* Отступ сверху */
-    right: 20px; /* Отступ справа */
+    top: 20px; 
+    right: 20px; 
     background: rgba(50, 50, 50, 0.85);
     color: white;
     padding: 10px 15px;
@@ -224,58 +223,15 @@ body {
 }
 
 .notification.success {
-    background: rgba(0, 204, 0, 0.8);
+    background: rgba(0, 204, 0, 0.8); 
 }
 
 .notification.error {
-    background: rgba(204, 0, 0, 0.8);
+    background: rgba(204, 0, 0, 0.8); 
 }
 
-/* Модальные окна */
-.modal {
-    display: none; /* Скрыто по умолчанию */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-.modal-content {
-    background-color: var(--medium-bg);
-    margin: 15% auto;
-    padding: 20px;
-    width: 80%;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.close-modal {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-modal:hover,
-.close-modal:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Переключатель темы */
-.theme-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--medium-bg);
-    border: none;
+#prestigeStatus {
+    margin-top: 20px;
+    font-size: 1.2em;
     color: var(--light-text);
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    cursor: pointer;
 }
