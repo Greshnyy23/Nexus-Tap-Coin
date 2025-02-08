@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let prestigeLevel = 0; // Уровень престижа
     let upgradeCost = 0;
     let miningRate = 1; // Количество ресурсов за клик
-    let autoMineInterval;
+    let autoMineInterval; 
     let autoMineRate = 0;  // Ресурсы, получаемые автоматически
     let clickMultiplier = 1; // Множитель для клика
     let magnetActive = false; // Активировать магнит
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedMiningRate = localStorage.getItem('miningRate');
         const savedAutoMineRate = localStorage.getItem('autoMineRate');
         const savedClickMultiplier = localStorage.getItem('clickMultiplier');
-        
+
         if (savedResources !== null) resources = parseInt(savedResources);
         if (savedLevel !== null) level = parseInt(savedLevel);
         if (savedPrestigeLevel !== null) prestigeLevel = parseInt(savedPrestigeLevel);
@@ -188,27 +188,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция для переключения между вкладками
     window.openTab = function openTab(evt, tabName) {
-        // Скрыть все содержимое вкладок
         const tabContents = document.querySelectorAll('.tab-content');
         tabContents.forEach(tab => {
             tab.style.display = 'none';
         });
 
-        // Удалить активный класс у всех кнопок
         const tabButtons = document.querySelectorAll('.tab-button');
         tabButtons.forEach(button => {
             button.classList.remove('active');
         });
 
-        // Показать выбранную вкладку
         const selectedTab = document.getElementById(tabName);
         if (selectedTab) {
             selectedTab.style.display = 'block';
-        } else {
-            console.error("Tab not found:", tabName);
         }
 
-        // Добавить активный класс к текущей кнопке
         const clickedButton = evt.currentTarget;
         if (clickedButton) {
             clickedButton.classList.add('active');
@@ -243,20 +237,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('confirmPrestige').addEventListener('click', () => {
-        // Сбросить уровень и дать бонус
         prestigeLevel++;
         level = 1; // Сброс уровня
         miningRate = 1; // Сброс скорости добычи
         resources += 100; // Бонус за престиж
 
-        // Обновление данных
         document.getElementById('prestigeLevel').innerText = prestigeLevel;
         document.getElementById('level').innerText = level;
-
-        // Сохранить данные
         saveGame();
-        
-        // Скрыть уведомление
         document.getElementById('prestigePrompt').style.display = 'none';
     });
 
