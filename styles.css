@@ -7,7 +7,6 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    overflow: hidden; /* Prevent scrolling */
 }
 
 .container {
@@ -20,16 +19,13 @@ body {
 }
 
 h1 {
-    font-size: 2.5em; /* Responsive font size */
+    font-size: 2em;
     margin-bottom: 20px;
-    text-shadow: 0 0 5px #00ffff;
 }
 
 .resource-count {
-    font-size: 2em; /* Responsive font size */
+    font-size: 2em;
     margin: 20px 0;
-    color: #00ffff;
-    text-shadow: 0 0 10px #00ffff;
 }
 
 .tabs {
@@ -66,26 +62,18 @@ h1 {
 }
 
 .starship {
-    width: 100px; /* Размер изображения */
-    cursor: pointer; /* Указатель при наведении */
-    animation: float 2s infinite; /* Применение анимации */
+    width: 100px;
+    cursor: pointer;
+    animation: float 2s infinite;
 }
 
 @keyframes float {
     0%, 100% {
-        transform: translateY(0); /* Исходное положение */
+        transform: translateY(0);
     }
     50% {
-        transform: translateY(-10px); /* Подъем вверх */
+        transform: translateY(-10px);
     }
-}
-
-.achievement-list {
-    margin-top: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    border-radius: 5px;
-    text-align: left;
 }
 
 .styled-button {
@@ -102,7 +90,6 @@ h1 {
     background-color: rgba(0, 204, 204, 1);
 }
 
-/* Стили для всплывающего уведомления */
 .popup {
     position: fixed;
     top: 50%;
@@ -112,14 +99,14 @@ h1 {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    z-index: 1000; /* Убедитесь, что попап поверх остального */
+    z-index: 1000;
 }
 
 .notification {
     position: fixed;
     top: 20px;
     right: 20px;
-    background-color: rgba(255, 255, 50, 0.9);
+    background-color: rgba(255, 50, 50, 0.9);
     padding: 10px;
     border-radius: 5px;
     display: none;
@@ -128,15 +115,15 @@ h1 {
 /* Адаптивный дизайн */
 @media (max-width: 600px) {
     h1 {
-        font-size: 2em; /* Меньший заголовок для малых экранов */
+        font-size: 1.5em;
     }
     .resource-count {
-        font-size: 1.5em; /* Меньший размер для счётчика ресурсов */
+        font-size: 1.5em;
     }
     .starship {
-        width: 80px; /* Уменьшение размера изображения для меньших экранов */
+        width: 80px;
     }
     .styled-button {
-        font-size: 0.8em; /* Менькие кнопки на мобильных устройствах */
+        font-size: 0.8em;
     }
 }
