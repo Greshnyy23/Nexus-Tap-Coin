@@ -18,7 +18,7 @@ class Game {
             { name: 'Снижение времени спавна монет', cost: 250, effect: () => { /* Логика тут */ } },
             { name: 'Увеличить скорость спавна монет', cost: 300, effect: () => { /* Логика здесь */ } },
             { name: 'Бонус за поимку монеты', cost: 350, effect: () => { this.clickMultiplier += 1; } },
-            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Можно добавить еще логику */ } },
+            { name: 'Увеличить максимальный счет', cost: 400, effect: () => { /* Логика сюда */ } },
             { name: 'Случайная награда', cost: 450, effect: () => { this.money += Math.floor(Math.random() * 100) + 1; } },
             { name: 'Увеличить прибыль от автокликера', cost: 500, effect: () => { this.clickMultiplier += 1; } }
         ];
@@ -31,7 +31,7 @@ class Game {
         this.setupEventListeners();
         this.setupCoinCollector();
         this.setupUpgrades();
-        this.updatePrestigeDisplay();
+        this.updatePrestigeDisplay(); // Обновляем отображение престижа
     }
 
     loadGame() {
@@ -65,7 +65,7 @@ class Game {
                 tabButtons.forEach(btn => {
                     btn.classList.remove('active');
                 });
-
+                
                 // Устанавливаем новый активный класс
                 const currentTabContent = document.getElementById(tabName);
                 currentTabContent.classList.add('active');
