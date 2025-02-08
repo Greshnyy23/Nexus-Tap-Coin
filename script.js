@@ -1,11 +1,11 @@
-// СобытиеDOMContentLoaded для инициализации
 document.addEventListener('DOMContentLoaded', () => {
     let resources = 0;
     let level = 1;
+    let prestigeLevel = 0; // Уровень престижа
     let upgradeCost = 0;
     let miningRate = 1; // Количество ресурсов за клик
     let autoMineInterval;
-    let autoMineRate = 0; // Ресурсы, получаемые автоматически
+    let autoMineRate = 0;  // Ресурсы, получаемые автоматически
     let clickMultiplier = 1; // Множитель для клика
     let magnetActive = false; // Активировать магнит
     let magnetDuration = 0; // Время активации магнита в секундах
@@ -13,16 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let multiplierCost = 200; // Стоимость множителя
     let magnetCost = 500; // Стоимость магнита
 
+    // Загружаем данные из localStorage
     function loadGame() {
         const savedResources = localStorage.getItem('resources');
         const savedLevel = localStorage.getItem('level');
+        const savedPrestigeLevel = localStorage.getItem('prestigeLevel');
         const savedUpgradeCost = localStorage.getItem('upgradeCost');
         const savedMiningRate = localStorage.getItem('miningRate');
         const savedAutoMineRate = localStorage.getItem('autoMineRate');
         const savedClickMultiplier = localStorage.getItem('clickMultiplier');
-
+        
         if (savedResources) resources = parseInt(savedResources);
         if (savedLevel) level = parseInt(savedLevel);
+        if (savedPrestigeLevel) prestigeLevel = parseInt(savedPrestigeLevel);
         if (savedUpgradeCost) upgradeCost = parseInt(savedUpgradeCost);
         if (savedMiningRate) miningRate = parseInt(savedMiningRate);
         if (savedAutoMineRate) autoMineRate = parseInt(savedAutoMineRate);
@@ -30,15 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateResourceCount();
         document.getElementById('level').innerText = level;
+        document.getElementById('prestigeLevel').innerText = prestigeLevel;
         document.getElementById('upgradeButton').innerText = `Улучшить (${upgradeCost})`;
         document.getElementById('autoMineButton').innerText = `Автовыработка (${autoMineCost})`;
         document.getElementById('multiplierButton').innerText = `Увеличить клик (${multiplierCost})`;
         document.getElementById('magnetButton').innerText = `Магнит (${magnetCost})`;
     }
 
+    // Сохраняем данные в localStorage
     function saveGame() {
         localStorage.setItem('resources', resources);
         localStorage.setItem('level', level);
+        localStorage.setItem('prestigeLevel', prestigeLevel);
         localStorage.setItem('upgradeCost', upgradeCost);
         localStorage.setItem('miningRate', miningRate);
         localStorage.setItem('autoMineRate', autoMineRate);
@@ -53,6 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
             updateResourceCount();
             checkAchievements();
             saveGame();
+
+            // Проверка на достижение 150 уровня
+            if (level === 150) {
+                promptPrestige();
+            }
         });
     }
 
@@ -75,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 saveGame();
             } else {
-                alert('Недостаточно ресурсов для улучшения!');
+                showNotification('Недостаточно ресурсов для улучшения!');
             }
         });
     }
@@ -97,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     startAutoMine();
                 }
             } else {
-                alert('Недостаточно ресурсов для автовыработки!');
+                showNotification('Недостаточно ресурсов для автовыработки!');
             }
         });
     }
@@ -114,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateResourceCount();
                 saveGame();
             } else {
-                alert('Недостаточно ресурсов для увеличения клика!');
+                showNotification('Недостаточно ресурсов для увеличения клика!');
             }
         });
     }
@@ -137,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('magnetButton').style.display = 'inline-block'; // Показать кнопку назад
                 }, magnetDuration * 1000);
             } else {
-                alert('Недостаточно ресурсов для магнита!');
+                showNotification('Недостаточно ресурсов для магнита!');
             }
         });
     }
@@ -148,12 +159,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkAchievements() {
         const achievementList = document.getElementById('achievementList');
-        if (resources === 10) {
-            achievementList.innerText = "Достигнуто: 10 ресурсов";
-        } else if (resources === 50) {
-            achievementList.innerText = "Достигнуто: 50 ресурсов";
-        } else if (resources === 100) {
-            achievementList.innerText = "Достигнуто: 100 ресурсов";
+        achievementList.innerHTML = ''; // Очистить достижения
+        if (resources >= 10) {
+            achievementList.innerHTML += "<p>Достигнуто: 10 ресурсов</p>";
+        }
+        if (resources >= 50) {
+            achievementList.innerHTML += "<p>Достигнуто: 50 ресурсов</p>";
+        }
+        if (resources >= 100) {
+            achievementList.innerHTML += "<p>Достигнуто: 100 ресурсов</p>";
         }
     }
 
@@ -206,4 +220,16 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
         updateResourceCount();
     }, 1000);
+
+    // Всплывающее уведомление
+    function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.innerText = message;
+        notification.style.display = 'block';
+
+        // Скрыть сообщение после 3 секунд
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
+    }
 });
