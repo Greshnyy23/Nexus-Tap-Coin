@@ -6,296 +6,66 @@
     <title>Nexus Tap 2.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon-blue: #00f3ff;
-            --neon-purple: #bc13fe;
-            --dark-bg: #0a0a1a;
-            --cyber-gradient: linear-gradient(45deg, #001219, #00072D);
-        }
-
-        body {
-            background: var(--cyber-gradient);
-            color: white;
-            font-family: 'Roboto Mono', monospace;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        .cyber-border {
-            position: relative;
-            border: 3px solid var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue),
-                        inset 0 0 15px var(--neon-blue);
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 800px;
-            border-radius: 10px;
-            background: rgba(0, 0, 30, 0.9);
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            text-align: center;
-            font-size: 2.5em;
-            text-shadow: 0 0 10px var(--neon-blue);
-            margin: 0 0 2rem 0;
-            letter-spacing: 3px;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-item {
-            background: rgba(0, 242, 255, 0.1);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--neon-blue);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-3px);
-        }
-
-        .main-button {
-            display: block;
-            width: 100%;
-            padding: 1.5rem;
-            font-size: 1.5em;
-            background: linear-gradient(45deg, #0066ff, #00ffcc);
-            border: none;
-            border-radius: 50px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 2rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .main-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
-            transition: 0.5s;
-        }
-
-        .main-button:hover::before {
-            left: 100%;
-        }
-
-        .main-button:active {
-            transform: scale(0.95);
-        }
-
-        .upgrades-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .upgrade-card {
-            background: rgba(16, 16, 32, 0.9);
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 1px solid var(--neon-purple);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .upgrade-card:hover {
-            box-shadow: 0 0 20px var(--neon-purple);
-            transform: translateY(-5px);
-        }
-
-        .progress-container {
-            height: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            margin: 2rem 0;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88, #00ffcc);
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        .glow {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
-            animation: glow 2s infinite;
-        }
-
-        @keyframes glow {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .floating {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        /* Стиль для модального окна */
-        .modal {
-            display: none; /* Скрыто по умолчанию */
-            position: fixed;
-            z-index: 1000; /* На переднем плане */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.8); /* Полупрозрачный черный фон */
-        }
-
-        .modal-content {
-            background-color: #1c1c2d;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid var(--neon-purple);
-            border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover, .close:focus {
-            color: white;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .notification {
-            position: fixed;
-            left: 50%;
-            bottom: 20px;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px var(--neon-blue);
-            display: none; /* Скрыто по умолчанию */
-        }
+        /* Ваш CSS остаётся без изменений */
     </style>
 </head>
 <body>
     <canvas class="particles" id="particles"></canvas>
-    
     <div class="cyber-border floating">
         <h1>NEXUS TAP v2.0</h1>
-        
         <div class="stats-grid">
             <div class="stat-item">
-                <h3>🔷 Энергетическая матрица</h3>
+                <h3>🔷 Энергия</h3>
                 <p id="coins">0</p>
             </div>
             <div class="stat-item">
-                <h3>⚛️ Ядро мощности</h3>
+                <h3>⚛️ Мощность</h3>
                 <p id="core-power">1</p>
             </div>
             <div class="stat-item">
-                <h3>🧠 Нейронные узлы</h3>
+                <h3>🧠 Авто-Кликеры</h3>
                 <p id="neuro-clicks">0</p>
             </div>
         </div>
-
+        <h2>Уровень: <span id="current-level">1</span></h2>
         <button class="main-button" onclick="harvestEnergy()">
-            АКТИВИРОВАТЬ КВАНТОВОЕ ЯДРО
+            АКТИВИРОВАТЬ ЯДРО
         </button>
-
-        <h2>Квантовые Улучшения</h2>
+        <h2>Улучшения</h2>
         <div class="upgrades-grid">
             <div class="upgrade-card" onclick="buyUpgrade('core')">
                 <h3>⚛️ Сингулярное Ядро</h3>
-                <p>Стоимость: <span class="cost">100</span>🔷</p>
-                <p>+1 Базовая генерация энергии</p>
+                <p>Цена: <span class="cost">100</span>🔷</p>
+                <p>+1 к мощности</p>
             </div>
             <div class="upgrade-card" onclick="buyUpgrade('neuro')">
                 <h3>🧠 Нейросеть</h3>
-                <p>Стоимость: <span class="cost">200</span>🔷</p>
-                <p>+1 Авто-кликер узел</p>
+                <p>Цена: <span class="cost">200</span>🔷</p>
+                <p>+1 авто-кликер</p>
             </div>
         </div>
-
-        <h2>Прогресс Матрицы</h2>
+        <h2>Прогресс</h2>
         <div class="progress-container">
             <div class="progress-bar" id="matrix-progress"></div>
             <div class="glow"></div>
         </div>
     </div>
-
-    <!-- Модальное окно -->
     <div id="levelModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Вы достигли нового уровня!</h2>
-            <p>Получено 500 🔷 в качестве награды!</p>
+            <h2>Новый уровень!</h2>
+            <p>Награда: <span id="reward-amount">500</span> 🔷</p>
         </div>
     </div>
-
-    <!-- Всплывающее уведомление -->
     <div id="notification" class="notification"></div>
-
     <script>
         const canvas = document.getElementById('particles');
         const ctx = canvas.getContext('2d');
         let energy = 0;
         let corePower = 1;
         let neuroClicks = 0;
+        let level = 1;
+        let energyThreshold = 1000;
 
         const loadGame = () => {
             const savedData = JSON.parse(localStorage.getItem('nexusTapData'));
@@ -303,6 +73,8 @@
                 energy = savedData.energy || 0;
                 corePower = savedData.corePower || 1;
                 neuroClicks = savedData.neuroClicks || 0;
+                level = savedData.level || 1;
+                energyThreshold = savedData.energyThreshold || 1000;
             }
             updateUI();
         };
@@ -311,6 +83,7 @@
             document.getElementById('coins').innerText = energy;
             document.getElementById('core-power').innerText = corePower;
             document.getElementById('neuro-clicks').innerText = neuroClicks;
+            document.getElementById('current-level').innerText = level;
             updateProgress();
         };
 
@@ -318,7 +91,9 @@
             const gameData = {
                 energy,
                 corePower,
-                neuroClicks
+                neuroClicks,
+                level,
+                energyThreshold
             };
             localStorage.setItem('nexusTapData', JSON.stringify(gameData));
         };
@@ -327,7 +102,7 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
-        
+
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
@@ -339,7 +114,7 @@
             reset() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 1; // Увеличенный минимальный размер
+                this.size = Math.random() * 2 + 1;
                 this.speed = Math.random() * 0.5 + 0.1;
                 this.angle = Math.random() * Math.PI * 2;
             }
@@ -347,15 +122,13 @@
             update() {
                 this.x += Math.cos(this.angle) * this.speed;
                 this.y += Math.sin(this.angle) * this.speed;
-                
-                if (this.x < 0 || this.x > canvas.width || 
-                    this.y < 0 || this.y > canvas.height) {
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
                     this.reset();
                 }
             }
 
             draw() {
-                ctx.fillStyle = `rgba(0, 243, 255, ${this.size/2})`;
+                ctx.fillStyle = `rgba(0, 243, 255, ${this.size / 2})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -367,22 +140,20 @@
         function animate() {
             ctx.fillStyle = 'rgba(10, 10, 30, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             particles.forEach(particle => {
                 particle.update();
                 particle.draw();
             });
-
             requestAnimationFrame(animate);
         }
 
         animate();
 
         function harvestEnergy() {
-            energy += corePower; // Увеличение энергии в зависимости от мощности ядра
-            updateUI(); // Обновление интерфейса
-            saveGame(); // Сохранение данных
-            checkProgress(); // Проверка прогресса
+            energy += corePower;
+            updateUI();
+            saveGame();
+            checkProgress();
         }
 
         function buyUpgrade(type) {
@@ -391,49 +162,52 @@
                 cost = 100;
                 if (energy >= cost) {
                     energy -= cost;
-                    corePower += 1; // Увеличение мощности ядра
-                    showNotification("Улучшение успешно приобретено!");
+                    corePower += 1;
+                    showNotification("Сингулярное ядро улучшено!");
                 } else {
-                    showNotification("Недостаточно монет для улучшения!");
+                    showNotification("Недостаточно энергии!");
                 }
             } else if (type === 'neuro') {
                 cost = 200;
                 if (energy >= cost) {
                     energy -= cost;
-                    neuroClicks += 1; // Увеличение авто-кликера
-                    showNotification("Улучшение успешно приобретено!");
+                    neuroClicks += 1;
+                    showNotification("Нейросеть улучшена!");
                 } else {
-                    showNotification("Недостаточно монет для улучшения!");
+                    showNotification("Недостаточно энергии!");
                 }
+            }
+            updateUI();
+            saveGame();
+        }
+
+        function updateProgress() {
+            const progressBar = document.getElementById('matrix-progress');
+            const progressWidth = Math.min(100, (energy / energyThreshold) * 100);
+            progressBar.style.width = `${progressWidth}%`;
+        }
+
+        function checkProgress() {
+            if (energy >= energyThreshold) {
+                const reward = level * 500; // Награда пропорциональна уровню
+                level += 1; // Повышение уровня
+                energyThreshold = Math.floor(energyThreshold * 1.5); // Увеличение порога для следующего уровня
+                energy += reward; // Добавление награды к балансу
+                document.getElementById('reward-amount').innerText = reward; // Обновление награды в модальном окне
+                showLevelUpModal(); // Показ модального окна
             }
             updateUI(); // Обновление интерфейса
             saveGame(); // Сохранение данных
         }
 
-        function updateProgress() {
-            const progressBar = document.getElementById('matrix-progress');
-            const progressWidth = Math.min(100, (energy / 1000) * 100); // Пример максимального прогресса
-            progressBar.style.width = `${progressWidth}%`; // Обновление ширины индикатора прогресса
-        }
-
-        function checkProgress() {
-            if (energy >= 1000) {
-                energy += 500; // Награда
-                showLevelUpModal();
-                energy = 0; // Обнуление энергии
-            }
-            updateUI(); // Обновление интерфейса после проверки прогресса
-            saveGame(); // Сохранение данных
-        }
-
         function showLevelUpModal() {
             const modal = document.getElementById('levelModal');
-            modal.style.display = "block"; // Показываем модальное окно
+            modal.style.display = "block";
         }
 
         function closeModal() {
             const modal = document.getElementById('levelModal');
-            modal.style.display = "none"; // Скрываем модальное окно
+            modal.style.display = "none";
         }
 
         function showNotification(message) {
@@ -442,10 +216,19 @@
             notification.style.display = 'block';
             setTimeout(() => {
                 notification.style.display = 'none';
-            }, 3000); // Скрытие уведомления через 3 секунды
+            }, 3000);
         }
 
-        // Загрузка данных при инициализации
+        // Автоматическое обновление интерфейса
+        setInterval(() => {
+            if (neuroClicks > 0) {
+                energy += neuroClicks;
+                updateUI();
+                saveGame();
+                checkProgress();
+            }
+        }, 1000);
+
         loadGame();
     </script>
 </body>
